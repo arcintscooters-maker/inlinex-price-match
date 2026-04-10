@@ -31,9 +31,14 @@ async function main() {
   const dryRun = process.argv.includes('--dry-run');
   const brandsArg = process.argv.find(a => a.startsWith('--brands='));
   const brands = brandsArg ? brandsArg.split('=')[1].split(',') : null;
+  const marketsArg = process.argv.find(a => a.startsWith('--markets='));
+  const markets = marketsArg ? marketsArg.split('=')[1].split(',') : ['US'];
+  const enableUS = markets.includes('US');
+  const enableAU = markets.includes('AU');
 
   log('MAIN', `=== Price Match Run Started ===`);
   log('MAIN', `Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
+  log('MAIN', `Markets: ${markets.join(', ')}`);
   if (brands) log('MAIN', `Brands: ${brands.join(', ')}`);
 
   // Ensure reports directory exists
@@ -104,7 +109,7 @@ async function main() {
     const { shopifyProduct, shopifyVariant, variantGid, currentPrice, iwMatch, iwMethod, xtMatch, xtMethod } = match;
 
     // --- US Market Pricing ---
-    if (usPriceList) {
+    if (usPriceList && enableUS) {
       let usNewPrice = null;
       let usCompetitor = null;
       let usCompPrice = null;
@@ -158,7 +163,7 @@ async function main() {
     }
 
     // --- AU Market Pricing ---
-    if (auPriceList) {
+    if (auPriceList && enableAU) {
       // Find AU-specific xtremeinn match
       const xtAuMatch = xtAuProducts.find(p => {
         if (xtMatch && p.sku === xtMatch.sku) return true;

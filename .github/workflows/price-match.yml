@@ -13,6 +13,10 @@ on:
         description: 'Comma-separated brands to match (empty = all)'
         type: string
         default: ''
+      markets:
+        description: 'Markets to update: US, AU, or US,AU'
+        type: string
+        default: 'US'
 
 permissions:
   contents: write
@@ -45,6 +49,9 @@ jobs:
           fi
           if [ -n "${{ inputs.brands }}" ]; then
             ARGS="$ARGS --brands=${{ inputs.brands }}"
+          fi
+          if [ -n "${{ inputs.markets }}" ]; then
+            ARGS="$ARGS --markets=${{ inputs.markets }}"
           fi
           node price-match.js $ARGS
 

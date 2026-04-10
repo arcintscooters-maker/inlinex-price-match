@@ -55,6 +55,7 @@
   .panel-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
   .panel-row:last-child { margin-bottom: 0; }
   input[type="password"], input[type="text"] { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px; }
+  select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff; min-width: 140px; cursor: pointer; }
   button { padding: 8px 16px; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
   button:hover { opacity: 0.85; }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -138,19 +139,32 @@
   <h2>Trigger Run</h2>
   <div class="panel">
     <div class="panel-row">
-      <input type="password" id="tokenInput" placeholder="GitHub Personal Access Token (repo scope)">
-      <button class="btn-save" onclick="saveToken()">Save</button>
-      <button class="btn-clear" onclick="clearToken()">Clear</button>
-      <span class="token-status" id="tokenStatus"></span>
-    </div>
-    <div class="panel-row">
-      <input type="text" id="brandsInput" placeholder="Brands filter (e.g. Powerslide,USD) — leave empty for all">
-    </div>
-    <div class="panel-row">
-      <button class="btn-dry" id="btnDry" onclick="triggerRun(true)" disabled>Trigger Dry Run</button>
-      <button class="btn-live" id="btnLive" onclick="triggerRun(false)" disabled>Trigger Live Run</button>
+      <select id="brandsSelect">
+        <option value="">All Brands</option>
+        <option value="Powerslide">Powerslide</option>
+        <option value="USD">USD</option>
+        <option value="Rollerblade">Rollerblade</option>
+        <option value="FR Skates">FR Skates</option>
+        <option value="Flying Eagle">Flying Eagle</option>
+        <option value="K2">K2</option>
+        <option value="Seba">Seba</option>
+        <option value="Ennui">Ennui</option>
+      </select>
+      <select id="marketSelect">
+        <option value="US">US Market</option>
+        <option value="AU">AU Market</option>
+        <option value="US,AU">Both Markets</option>
+      </select>
+      <button class="btn-dry" onclick="triggerRun(true)">Dry Run</button>
+      <button class="btn-live" onclick="triggerRun(false)">Live Run</button>
     </div>
     <div class="feedback" id="triggerFeedback"></div>
+    <div id="tokenSetup" style="display:none; margin-top:10px;">
+      <div class="panel-row">
+        <input type="password" id="tokenInput" placeholder="GitHub PAT (repo scope) — one-time setup">
+        <button class="btn-save" onclick="saveToken()">Save</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -278,27 +292,40 @@ function sortTable(col) {
 
 async function triggerRun(dryRun) {
   const token = localStorage.getItem('ghToken');
-  if (!token) return;
+  if (!token) {
+    document.getElementById('tokenSetup').style.display = 'block';
+    document.getElementById('triggerFeedback').textContent = 'Enter your GitHub PAT first (one-time setup).';
+    document.getElementById('triggerFeedback').className = 'feedback err';
+    return;
+  }
 
   const fb = document.getElementById('triggerFeedback');
   fb.textContent = 'Triggering...';
   fb.className = 'feedback';
 
-  const brands = document.getElementById('brandsInput').value.trim();
+  const brands = document.getElementById('brandsSelect').value;
+  const markets = document.getElementById('marketSelect').value;
 
   try {
     const res = await fetch(`${REPO_API}/actions/workflows/${WORKFLOW}/dispatches`, {
       method: 'POST',
       headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands } })
+      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands, markets } })
     });
 
     if (res.status === 204) {
-      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered! Check GitHub Actions for progress.`;
+      const label = brands || 'All Brands';
+      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}). Check back in a few minutes.`;
       fb.className = 'feedback ok';
     } else {
       const data = await res.json().catch(() => ({}));
-      fb.textContent = `Failed: ${data.message || res.status}`;
+      if (res.status === 401) {
+        localStorage.removeItem('ghToken');
+        document.getElementById('tokenSetup').style.display = 'block';
+        fb.textContent = 'Token expired or invalid. Please enter a new one.';
+      } else {
+        fb.textContent = `Failed: ${data.message || res.status}`;
+      }
       fb.className = 'feedback err';
     }
   } catch (e) {
@@ -307,26 +334,16 @@ async function triggerRun(dryRun) {
   }
 }
 
-// --- Token ---
+// --- Token (one-time setup, hidden after save) ---
 
 function saveToken() {
   const val = document.getElementById('tokenInput').value.trim();
   if (!val) return;
   localStorage.setItem('ghToken', val);
   document.getElementById('tokenInput').value = '';
-  updateTokenUI();
-}
-
-function clearToken() {
-  localStorage.removeItem('ghToken');
-  updateTokenUI();
-}
-
-function updateTokenUI() {
-  const has = !!localStorage.getItem('ghToken');
-  document.getElementById('tokenStatus').textContent = has ? 'Token saved' : 'No token';
-  document.getElementById('btnDry').disabled = !has;
-  document.getElementById('btnLive').disabled = !has;
+  document.getElementById('tokenSetup').style.display = 'none';
+  document.getElementById('triggerFeedback').textContent = 'Token saved. You can now trigger runs.';
+  document.getElementById('triggerFeedback').className = 'feedback ok';
 }
 
 // --- Helpers ---
@@ -343,7 +360,6 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s || 
 
 // --- Init ---
 loadStatus();
-updateTokenUI();
 setInterval(loadStatus, 60000);
 </script>
 </body>
