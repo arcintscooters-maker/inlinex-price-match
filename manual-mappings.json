@@ -1,0 +1,10 @@
+{
+  "_comment": "Manual product mappings: IW SKU -> Shopify product title substring. Use when fuzzy matching fails or is ambiguous.",
+  "mappings": [
+    { "iwSku": "904641", "shopifyMatch": "Accel Race Black Boot", "note": "Accel Race Black Boot $399.97" },
+    { "iwSku": "904643", "shopifyMatch": "Accel Race Reflective Boot", "note": "Accel Race Reflective Boot $349.95" },
+    { "iwSku": "904640", "shopifyMatch": "Accel Black 100 Racing", "note": "Accel Race 100 complete skate $549.95" },
+    { "iwSku": "904639", "shopifyMatch": "Accel Black 110 Racing", "note": "Accel 110/100 complete skate $549.95" },
+    { "iwSku": "904626", "shopifyMatch": "Accel Race 195 Boot", "note": "Accel 195 boot $479.95" }
+  ]
+}
