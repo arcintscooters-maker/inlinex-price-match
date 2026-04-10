@@ -1,14 +1,15 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T03:31:00.000Z",
-    "mode": "DRY RUN",
+    "timestamp": "2026-04-10T03:48:22.190Z",
+    "mode": "LIVE",
     "durationMinutes": 0,
     "totalMatches": 0,
     "usUpdates": 0,
     "auUpdates": 0,
     "skipped": 0,
     "totalChanges": 0,
-    "status": "success"
+    "status": "error",
+    "error": "GraphQL: [{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",0,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",1,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",2,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",3,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",4,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",5,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",6,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",7,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",8,\"catalog\",\"markets\"]},{\"message\":\"Access denied for markets field.\",\"locations\":[{\"line\":15,\"column\":13}],\"extensions\":{\"code\":\"ACCESS_DENIED\",\"documentation\":\"https://shopify.dev/api/usage/access-scopes\"},\"path\":[\"priceLists\",\"nodes\",9,\"catalog\",\"markets\"]}]"
   },
   "priceChanges": [],
   "history": [
@@ -18,6 +19,13 @@
       "usUpdates": 0,
       "auUpdates": 0,
       "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T03:48:22.190Z",
+      "mode": "LIVE",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "status": "error"
     }
   ]
 }
