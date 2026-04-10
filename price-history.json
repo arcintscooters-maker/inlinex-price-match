@@ -1424,6 +1424,643 @@
       ],
       "xt_us": [],
       "xt_au": []
+    },
+    {
+      "timestamp": "2026-04-10T04:56:07.758Z",
+      "iw": [
+        {
+          "name": "Powerslide Phuzion Radon 80 SMU",
+          "sku": "P901975",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 80",
+          "sku": "940704",
+          "price": 139.97
+        },
+        {
+          "name": "Powerslide Phuzion 80",
+          "sku": "940698",
+          "price": 189.99
+        },
+        {
+          "name": "Powerslide Phuzion Radon 80",
+          "sku": "940663",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 80",
+          "sku": "940666",
+          "price": 169.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 84",
+          "sku": "940699",
+          "price": 159.99
+        },
+        {
+          "name": "Powerslide Phuzion RFC Raw 90",
+          "sku": "940682",
+          "price": 159.97
+        },
+        {
+          "name": "Powerslide Phuzion Xenon 90",
+          "sku": "940677",
+          "price": 169.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 80",
+          "sku": "940668",
+          "price": 179.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 84",
+          "sku": "940700",
+          "price": 169.99
+        },
+        {
+          "name": "Powerslide Phuzion Radon 90",
+          "sku": "940694",
+          "price": 149.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 90",
+          "sku": "940715",
+          "price": 199.99
+        },
+        {
+          "name": "Powerslide Phuzion Argon 90",
+          "sku": "940716",
+          "price": 199.95
+        },
+        {
+          "name": "Powerslide Phuzion Argon 100",
+          "sku": "940695",
+          "price": 229.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 100",
+          "sku": "940696",
+          "price": 199.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 110",
+          "sku": "940686",
+          "price": 189.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon Syncro 110",
+          "sku": "940680",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 100",
+          "sku": "940669",
+          "price": 179.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 100",
+          "sku": "940697",
+          "price": 199.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 110",
+          "sku": "940687",
+          "price": 219.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon Syncro 110",
+          "sku": "940681",
+          "price": 259.97
+        },
+        {
+          "name": "Powerslide Swell Lite 100",
+          "sku": "510055",
+          "price": 189.97
+        },
+        {
+          "name": "Powerslide Swell Lite 100",
+          "sku": "510068",
+          "price": 279.97
+        },
+        {
+          "name": "Powerslide Swell 100",
+          "sku": "510064",
+          "price": 269.95
+        },
+        {
+          "name": "Powerslide Swell 100 3D Adapt",
+          "sku": "510061",
+          "price": 249.99
+        },
+        {
+          "name": "Powerslide Swell 100",
+          "sku": "510066",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide Swell 100 3D Adapt",
+          "sku": "510052",
+          "price": 199.97
+        },
+        {
+          "name": "Powerslide Swell 100 3D Adapt",
+          "sku": "510051",
+          "price": 199.97
+        },
+        {
+          "name": "Powerslide Swell 110",
+          "sku": "510038",
+          "price": 269.97
+        },
+        {
+          "name": "Powerslide Swell 110 3D Adapt",
+          "sku": "510056",
+          "price": 329.95
+        },
+        {
+          "name": "Powerslide Swell 110",
+          "sku": "510048",
+          "price": 219.97
+        },
+        {
+          "name": "Powerslide R2 100",
+          "sku": "904564",
+          "price": 299.95
+        },
+        {
+          "name": "Powerslide R6 Marathon",
+          "sku": "904632",
+          "price": 479.95
+        },
+        {
+          "name": "Powerslide Hardcore Evo Pro 110",
+          "sku": "908460",
+          "price": 649
+        },
+        {
+          "name": "Powerslide Next 100",
+          "sku": "908462",
+          "price": 299.99
+        },
+        {
+          "name": "Powerslide Zoom Pro 80",
+          "sku": "908482",
+          "price": 219.99
+        },
+        {
+          "name": "Powerslide Zoom Pro 80",
+          "sku": "908481",
+          "price": 199.99
+        },
+        {
+          "name": "Powerslide Zoom Torelli Pro NT1",
+          "sku": "908472",
+          "price": 329.95
+        },
+        {
+          "name": "Powerslide Zoom 90",
+          "sku": "908470",
+          "price": 194.95
+        },
+        {
+          "name": "Powerslide Zoom Pro 100",
+          "sku": "908491",
+          "price": 214.99
+        },
+        {
+          "name": "Powerslide Hardcore Evo Pro",
+          "sku": "908468",
+          "price": 449.99
+        },
+        {
+          "name": "Powerslide Imperial 110",
+          "sku": "908425",
+          "price": 219.97
+        },
+        {
+          "name": "Powerslide Next Core 80",
+          "sku": "908434",
+          "price": 259.95
+        },
+        {
+          "name": "Powerslide Next Core 90",
+          "sku": "908435",
+          "price": 289.95
+        },
+        {
+          "name": "Powerslide Next Core 100",
+          "sku": "908436",
+          "price": 279.95
+        },
+        {
+          "name": "Powerslide Next 100",
+          "sku": "908430",
+          "price": 299.95
+        },
+        {
+          "name": "Powerslide Next Core 110",
+          "sku": "908437",
+          "price": 289.95
+        },
+        {
+          "name": "Powerslide Next Pro 110",
+          "sku": "908463",
+          "price": 339.95
+        },
+        {
+          "name": "Powerslide Next 110",
+          "sku": "908409",
+          "price": 259.97
+        },
+        {
+          "name": "Powerslide Next Trinity",
+          "sku": "520013",
+          "price": 189.95
+        },
+        {
+          "name": "Powerslide Next Shells",
+          "sku": "NXTSHL",
+          "price": 39.99
+        },
+        {
+          "name": "Powerslide Storm Meteor 80",
+          "sku": "908453",
+          "price": 249.99
+        },
+        {
+          "name": "Powerslide Storm Nicoly Pro 80",
+          "sku": "908441",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide Storm 110",
+          "sku": "908445",
+          "price": 269.99
+        },
+        {
+          "name": "Powerslide Kaze 110",
+          "sku": "908235",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide Tau Carbon 90",
+          "sku": "908266",
+          "price": 339.97
+        },
+        {
+          "name": "Powerslide Hardcore Evo Pro 90",
+          "sku": "908379",
+          "price": 499.97
+        },
+        {
+          "name": "Powerslide Final 125",
+          "sku": "904696",
+          "price": 269.95
+        },
+        {
+          "name": "Powerslide Final 110",
+          "sku": "904695",
+          "price": 269.95
+        },
+        {
+          "name": "Powerslide Accel Race 100",
+          "sku": "904640",
+          "price": 549.95
+        },
+        {
+          "name": "Powerslide Accel 110/100",
+          "sku": "904639",
+          "price": 549.95
+        },
+        {
+          "name": "Powerslide Next Edge SUV 150",
+          "sku": "908464",
+          "price": 459.95
+        },
+        {
+          "name": "Powerslide Zoom Renegade SUV 125",
+          "sku": "908340",
+          "price": 349.97
+        },
+        {
+          "name": "Powerslide Next Renegade Werbeski Pro 125",
+          "sku": "908422",
+          "price": 349.97
+        },
+        {
+          "name": "Powerslide XC Trainer Bronx 150",
+          "sku": "908344",
+          "price": 449
+        },
+        {
+          "name": "Powerslide Next Mery Munoz Pro 80",
+          "sku": "908469",
+          "price": 324.99
+        },
+        {
+          "name": "Powerslide Next SL 80",
+          "sku": "908406",
+          "price": 199.97
+        },
+        {
+          "name": "Powerslide Next 125 30th Anniversary",
+          "sku": "908465",
+          "price": 369.95
+        },
+        {
+          "name": "Powerslide S1",
+          "sku": "908451",
+          "price": 289.97
+        },
+        {
+          "name": "Powerslide Tau Bis_onte",
+          "sku": "908384",
+          "price": 459.95
+        },
+        {
+          "name": "Powerslide Falcon",
+          "sku": "904652",
+          "price": 289
+        },
+        {
+          "name": "Powerslide Accel Race",
+          "sku": "904643",
+          "price": 349.95
+        },
+        {
+          "name": "Powerslide Accel Race",
+          "sku": "904641",
+          "price": 399.97
+        },
+        {
+          "name": "Powerslide Accel 195",
+          "sku": "904626",
+          "price": 479.95
+        },
+        {
+          "name": "Powerslide Triple X5 Inline 2pt Speed Skate Frames",
+          "sku": "TX2PT",
+          "price": 179.95
+        },
+        {
+          "name": "Powerslide Core Performance",
+          "sku": "904595",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide XXX Inline",
+          "sku": "XXX2PT",
+          "price": 179.97
+        },
+        {
+          "name": "Powerslide DH365",
+          "sku": "P561",
+          "price": 199.99
+        },
+        {
+          "name": "Powerslide Sabres Inline to Ice",
+          "sku": "902275",
+          "price": 32.99
+        },
+        {
+          "name": "Reign Trident Trinity",
+          "sku": "120016",
+          "price": 119
+        },
+        {
+          "name": "Powerslide Elite FSK Casted Aluminum Trinity",
+          "sku": "520086",
+          "price": 79.99
+        },
+        {
+          "name": "Powerslide Nova",
+          "sku": "904645",
+          "price": 149.99
+        },
+        {
+          "name": "Powerslide Surface 2 in 1",
+          "sku": "904649",
+          "price": 98.95
+        },
+        {
+          "name": "Powerslide Elite Casted Aluminum Trinity",
+          "sku": "PS52001",
+          "price": 69.99
+        },
+        {
+          "name": "Powerslide Elite Casted Magnesium Trinity",
+          "sku": "520028",
+          "price": 94.99
+        },
+        {
+          "name": "Powerslide Combat Rocker",
+          "sku": "CBTR",
+          "price": 169.99
+        },
+        {
+          "name": "Powerslide Nexus Trinity",
+          "sku": "TRIFRR",
+          "price": 89.97
+        },
+        {
+          "name": "Powerslide Renegade 125",
+          "sku": "P245",
+          "price": 319
+        },
+        {
+          "name": "Powerslide Edge 150",
+          "sku": "P243",
+          "price": 269.99
+        },
+        {
+          "name": "Powerslide Outback 150",
+          "sku": "P242",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide SUV 125",
+          "sku": "P241",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide Neons LED",
+          "sku": "905417",
+          "price": 34.97
+        },
+        {
+          "name": "Powerslide Neons LED",
+          "sku": "905413",
+          "price": 34.97
+        },
+        {
+          "name": "Powerslide Neons LED",
+          "sku": "905412",
+          "price": 54.97
+        },
+        {
+          "name": "Powerslide Torrent Rain",
+          "sku": "TORR",
+          "price": 49.95
+        },
+        {
+          "name": "Powerslide Graphix White LED",
+          "sku": "905361",
+          "price": 11.97
+        },
+        {
+          "name": "Powerslide Phoenix DD",
+          "sku": "905448",
+          "price": 255
+        },
+        {
+          "name": "Powerslide Phoenix DD",
+          "sku": "905428",
+          "price": 265
+        },
+        {
+          "name": "Powerslide Phoenix SD",
+          "sku": "905456",
+          "price": 109.99
+        },
+        {
+          "name": "Powerslide Phoenix SD",
+          "sku": "905458",
+          "price": 129.99
+        },
+        {
+          "name": "Powerslide Spinner",
+          "sku": "P905324",
+          "price": 39.97
+        },
+        {
+          "name": "Powerslide Spinner",
+          "sku": "P905325",
+          "price": 31.97
+        },
+        {
+          "name": "Powerslide Spinner",
+          "sku": "P905319",
+          "price": 39.99
+        },
+        {
+          "name": "Powerslide SUV 150mm",
+          "sku": "150N",
+          "price": 35
+        },
+        {
+          "name": "Powerslide Nordic Roadrunner Wheels",
+          "sku": "900670",
+          "price": 29.95
+        },
+        {
+          "name": "Powerslide Nordic Skating",
+          "sku": "908089",
+          "price": 119
+        },
+        {
+          "name": "Powerslide Road Warrior SUV 125mm Tubes & Tires",
+          "sku": "125N",
+          "price": 32.95
+        },
+        {
+          "name": "Powerslide Pneumatic Mini",
+          "sku": "908099",
+          "price": 55
+        },
+        {
+          "name": "Powerslide Standard",
+          "sku": "903313",
+          "price": 14.95
+        },
+        {
+          "name": "Powerslide Onesie",
+          "sku": "903310",
+          "price": 29.99
+        },
+        {
+          "name": "Powerslide Onesie",
+          "sku": "903309",
+          "price": 29.99
+        },
+        {
+          "name": "Powerslide Onesie Wristguards Women's",
+          "sku": "903234",
+          "price": 14.97
+        },
+        {
+          "name": "Powerslide Race Pro Series Gloves",
+          "sku": "PSRG23",
+          "price": 29.95
+        },
+        {
+          "name": "Powerslide Standard",
+          "sku": "903305",
+          "price": 24.95
+        },
+        {
+          "name": "Powerslide Onesie Knee Pads Teal",
+          "sku": "903302",
+          "price": 34.99
+        },
+        {
+          "name": "Powerslide Onesie Knee Pads Black",
+          "sku": "903301",
+          "price": 34.99
+        },
+        {
+          "name": "Powerslide UBC",
+          "sku": "PSLSOL",
+          "price": 69.99
+        },
+        {
+          "name": "Powerslide UBC",
+          "sku": "907058",
+          "price": 24.97
+        },
+        {
+          "name": "Powerslide UBC Road Runner v2",
+          "sku": "907092",
+          "price": 109.95
+        },
+        {
+          "name": "Powerslide Circuit",
+          "sku": "907091",
+          "price": 94.95
+        },
+        {
+          "name": "Powerslide Fitness Backpack",
+          "sku": "907085",
+          "price": 49.97
+        },
+        {
+          "name": "Powerslide Skate Carry Hook",
+          "sku": "P907046",
+          "price": 8
+        },
+        {
+          "name": "Powerslide Skate Carry Straps",
+          "sku": "PSSCS",
+          "price": 9.5
+        },
+        {
+          "name": "Powerslide MyFit",
+          "sku": "908260",
+          "price": 9.95
+        },
+        {
+          "name": "Powerslide MyFit Gel Heel Pads",
+          "sku": "908217",
+          "price": 14.95
+        },
+        {
+          "name": "Powerslide Skate Trail Finger Bell",
+          "sku": "PWBELL",
+          "price": 19.5
+        }
+      ],
+      "xt_us": [],
+      "xt_au": []
     }
   ]
 }
