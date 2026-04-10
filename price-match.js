@@ -258,6 +258,9 @@ async function main() {
   log('MAIN', `=== Price Match Complete in ${elapsed} minutes ===`);
   log('MAIN', `Report: ${reportPath}`);
 
+  // Save dashboard status
+  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, null);
+
   // Set output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
     fs.appendFileSync(process.env.GITHUB_OUTPUT,
@@ -290,8 +293,61 @@ function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
   log('MAIN', `Price history saved (${history.runs.length} runs)`);
 }
 
+function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, error) {
+  const docsDir = path.join(__dirname, 'docs');
+  if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
+
+  const statusFile = path.join(docsDir, 'status.json');
+  const existing = loadJSON(statusFile) || { history: [] };
+
+  const run = {
+    timestamp: new Date().toISOString(),
+    mode: dryRun ? 'DRY RUN' : 'LIVE',
+    durationMinutes: parseFloat(elapsed) || 0,
+    totalMatches: matches ? matches.length : 0,
+    usUpdates: usPriceUpdates ? usPriceUpdates.length : 0,
+    auUpdates: auPriceUpdates ? auPriceUpdates.length : 0,
+    skipped: priceChanges ? priceChanges.filter(c => c.skipped).length : 0,
+    totalChanges: priceChanges ? priceChanges.length : 0,
+    status: error ? 'error' : 'success',
+    error: error || undefined,
+  };
+
+  existing.history.push({
+    timestamp: run.timestamp,
+    mode: run.mode,
+    usUpdates: run.usUpdates,
+    auUpdates: run.auUpdates,
+    status: run.status,
+  });
+  if (existing.history.length > 20) existing.history = existing.history.slice(-20);
+
+  const status = {
+    lastRun: run,
+    priceChanges: (priceChanges || []).map(c => ({
+      product: c.productTitle,
+      variant: c.variantTitle,
+      sku: c.sku,
+      brand: c.brand,
+      market: c.market,
+      oldPrice: c.oldPrice,
+      newPrice: c.newPrice,
+      competitor: c.competitorSource,
+      competitorPrice: c.competitorPrice,
+      matchMethod: c.matchMethod,
+      skipped: c.skipped,
+      applied: c.applied,
+    })),
+    history: existing.history,
+  };
+
+  saveJSON(statusFile, status);
+  log('MAIN', 'Dashboard status saved');
+}
+
 main().catch(e => {
   log('MAIN', `FATAL ERROR: ${e.message}`);
   console.error(e.stack);
+  saveStatus(null, null, null, null, false, '0', e.message);
   process.exit(1);
 });

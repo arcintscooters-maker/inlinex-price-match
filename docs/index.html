@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inlinex Price Match Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #222; line-height: 1.5; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  h2 { font-size: 1.1rem; margin-bottom: 12px; color: #555; font-weight: 500; }
+  .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Status card */
+  .status-card { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .status-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.success { background: #22c55e; }
+  .status-dot.error { background: #ef4444; }
+  .status-dot.none { background: #d1d5db; }
+  .status-info { flex: 1; min-width: 200px; }
+  .status-info .label { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-info .value { font-size: 1.4rem; font-weight: 700; }
+  .status-meta { font-size: 0.85rem; color: #666; }
+
+  /* Stats grid */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat { background: #fff; border-radius: 8px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .stat .num { font-size: 2rem; font-weight: 700; }
+  .stat .label { font-size: 0.8rem; color: #888; margin-top: 2px; }
+  .stat.us .num { color: #2563eb; }
+  .stat.au .num { color: #7c3aed; }
+  .stat.skip .num { color: #f59e0b; }
+  .stat.match .num { color: #059669; }
+
+  /* Tables */
+  .table-wrap { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; padding: 8px 10px; border-bottom: 2px solid #e5e7eb; color: #555; font-weight: 600; white-space: nowrap; cursor: pointer; user-select: none; }
+  th:hover { color: #000; }
+  td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
+  tr:hover td { background: #fafafa; }
+  .pos { color: #22c55e; font-weight: 600; }
+  .neg { color: #ef4444; font-weight: 600; }
+  .skip-row { opacity: 0.55; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+  .badge.applied { background: #dcfce7; color: #166534; }
+  .badge.skipped { background: #fef3c7; color: #92400e; }
+  .badge.pending { background: #e0e7ff; color: #3730a3; }
+  .badge.error { background: #fee2e2; color: #991b1b; }
+  .badge.success-badge { background: #dcfce7; color: #166534; }
+
+  /* Trigger panel */
+  .panel { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .panel-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  .panel-row:last-child { margin-bottom: 0; }
+  input[type="password"], input[type="text"] { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; flex: 1; min-width: 150px; }
+  button { padding: 8px 16px; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  button:hover { opacity: 0.85; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-dry { background: #e0e7ff; color: #3730a3; }
+  .btn-live { background: #dc2626; color: #fff; }
+  .btn-save { background: #059669; color: #fff; }
+  .btn-clear { background: #e5e7eb; color: #555; }
+  .btn-refresh { background: #f0f0f0; color: #333; }
+  .feedback { font-size: 0.8rem; margin-top: 6px; }
+  .feedback.ok { color: #059669; }
+  .feedback.err { color: #dc2626; }
+  .token-status { font-size: 0.8rem; color: #888; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 40px; color: #999; }
+
+  @media (max-width: 600px) {
+    .status-card { flex-direction: column; align-items: flex-start; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Inlinex Price Match</h1>
+  <div class="subtitle" id="lastUpdated">Loading...</div>
+
+  <!-- Status Card -->
+  <div class="status-card" id="statusCard">
+    <div class="status-dot none" id="statusDot"></div>
+    <div class="status-info">
+      <div class="label">Last Run</div>
+      <div class="value" id="statusText">No data</div>
+      <div class="status-meta" id="statusMeta"></div>
+    </div>
+    <button class="btn-refresh" onclick="loadStatus()">Refresh</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="statsGrid">
+    <div class="stat us"><div class="num" id="usCount">-</div><div class="label">US Price Updates</div></div>
+    <div class="stat au"><div class="num" id="auCount">-</div><div class="label">AU Price Updates</div></div>
+    <div class="stat skip"><div class="num" id="skipCount">-</div><div class="label">Already Cheaper</div></div>
+    <div class="stat match"><div class="num" id="matchCount">-</div><div class="label">Total Matches</div></div>
+  </div>
+
+  <!-- Price Changes Table -->
+  <h2>Price Changes</h2>
+  <div class="table-wrap">
+    <table id="changesTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Product</th>
+          <th onclick="sortTable(1)">SKU</th>
+          <th onclick="sortTable(2)">Brand</th>
+          <th onclick="sortTable(3)">Market</th>
+          <th onclick="sortTable(4)">Old Price</th>
+          <th onclick="sortTable(5)">New Price</th>
+          <th onclick="sortTable(6)">Change</th>
+          <th onclick="sortTable(7)">Competitor</th>
+          <th onclick="sortTable(8)">Match</th>
+          <th onclick="sortTable(9)">Status</th>
+        </tr>
+      </thead>
+      <tbody id="changesBody"></tbody>
+    </table>
+    <div class="empty" id="changesEmpty">No price changes yet. Run a price match to see results.</div>
+  </div>
+
+  <!-- Run History -->
+  <h2>Run History</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Date</th><th>Mode</th><th>US Updates</th><th>AU Updates</th><th>Status</th></tr></thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+    <div class="empty" id="historyEmpty">No runs yet.</div>
+  </div>
+
+  <!-- Trigger Panel -->
+  <h2>Trigger Run</h2>
+  <div class="panel">
+    <div class="panel-row">
+      <input type="password" id="tokenInput" placeholder="GitHub Personal Access Token (repo scope)">
+      <button class="btn-save" onclick="saveToken()">Save</button>
+      <button class="btn-clear" onclick="clearToken()">Clear</button>
+      <span class="token-status" id="tokenStatus"></span>
+    </div>
+    <div class="panel-row">
+      <input type="text" id="brandsInput" placeholder="Brands filter (e.g. Powerslide,USD) — leave empty for all">
+    </div>
+    <div class="panel-row">
+      <button class="btn-dry" id="btnDry" onclick="triggerRun(true)" disabled>Trigger Dry Run</button>
+      <button class="btn-live" id="btnLive" onclick="triggerRun(false)" disabled>Trigger Live Run</button>
+    </div>
+    <div class="feedback" id="triggerFeedback"></div>
+  </div>
+</div>
+
+<script>
+const REPO = 'arcintscooters-maker/inlinex-price-match';
+const WORKFLOW = 'price-match.yml';
+const REPO_API = `https://api.github.com/repos/${REPO}`;
+
+let statusData = null;
+let sortCol = -1, sortAsc = true;
+
+// --- Load & Render ---
+
+async function loadStatus() {
+  document.getElementById('lastUpdated').textContent = 'Loading...';
+  try {
+    const res = await fetch('./status.json?' + Date.now());
+    if (!res.ok) throw new Error('No status.json found');
+    statusData = await res.json();
+    render();
+  } catch (e) {
+    document.getElementById('lastUpdated').textContent = 'No data yet. Run the price matcher to generate status.';
+    document.getElementById('statusDot').className = 'status-dot none';
+    document.getElementById('statusText').textContent = 'No runs yet';
+  }
+}
+
+function render() {
+  const r = statusData.lastRun;
+
+  // Last updated
+  document.getElementById('lastUpdated').textContent = `Last updated: ${timeAgo(r.timestamp)} (${new Date(r.timestamp).toLocaleString()})`;
+
+  // Status dot
+  const dot = document.getElementById('statusDot');
+  dot.className = `status-dot ${r.status}`;
+
+  // Status text
+  document.getElementById('statusText').textContent = r.status === 'success'
+    ? `${r.mode} completed`
+    : `${r.mode} failed`;
+
+  document.getElementById('statusMeta').textContent = r.error
+    ? `Error: ${r.error}`
+    : `${r.durationMinutes} min | ${r.totalChanges} changes | ${r.totalMatches} matches`;
+
+  // Stats
+  document.getElementById('usCount').textContent = r.usUpdates;
+  document.getElementById('auCount').textContent = r.auUpdates;
+  document.getElementById('skipCount').textContent = r.skipped;
+  document.getElementById('matchCount').textContent = r.totalMatches;
+
+  // Price changes table
+  const tbody = document.getElementById('changesBody');
+  const empty = document.getElementById('changesEmpty');
+  const changes = statusData.priceChanges || [];
+
+  if (changes.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = changes.map(c => {
+      const diff = c.oldPrice - c.newPrice;
+      const pct = c.oldPrice > 0 ? (diff / c.oldPrice * 100).toFixed(1) : '0';
+      const cls = c.skipped ? 'skip-row' : '';
+      const diffClass = diff > 0 ? 'pos' : diff < 0 ? 'neg' : '';
+      const statusBadge = c.skipped ? '<span class="badge skipped">Skipped</span>'
+        : c.applied ? '<span class="badge applied">Applied</span>'
+        : '<span class="badge pending">Pending</span>';
+      const sym = c.market === 'AU' ? 'A$' : '$';
+      return `<tr class="${cls}">
+        <td>${esc(c.product)}${c.variant && c.variant !== 'Default Title' ? `<br><small>${esc(c.variant)}</small>` : ''}</td>
+        <td>${esc(c.sku)}</td>
+        <td>${esc(c.brand)}</td>
+        <td>${c.market}</td>
+        <td>${sym}${c.oldPrice.toFixed(2)}</td>
+        <td>${sym}${c.newPrice.toFixed(2)}</td>
+        <td class="${diffClass}">${diff > 0 ? '-' : '+'}${sym}${Math.abs(diff).toFixed(2)} (${pct}%)</td>
+        <td>${esc(c.competitor || '')}<br><small>${sym}${(c.competitorPrice||0).toFixed(2)}</small></td>
+        <td>${esc(c.matchMethod || '')}</td>
+        <td>${statusBadge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Run history
+  const hBody = document.getElementById('historyBody');
+  const hEmpty = document.getElementById('historyEmpty');
+  const history = (statusData.history || []).slice().reverse();
+
+  if (history.length === 0) {
+    hBody.innerHTML = '';
+    hEmpty.style.display = 'block';
+  } else {
+    hEmpty.style.display = 'none';
+    hBody.innerHTML = history.map(h => `<tr>
+      <td>${new Date(h.timestamp).toLocaleString()}</td>
+      <td>${h.mode}</td>
+      <td>${h.usUpdates}</td>
+      <td>${h.auUpdates}</td>
+      <td><span class="badge ${h.status === 'success' ? 'success-badge' : 'error'}">${h.status}</span></td>
+    </tr>`).join('');
+  }
+}
+
+// --- Sort ---
+
+function sortTable(col) {
+  if (!statusData || !statusData.priceChanges) return;
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+  const keys = ['product','sku','brand','market','oldPrice','newPrice','oldPrice','competitor','matchMethod','skipped'];
+  const key = keys[col];
+  statusData.priceChanges.sort((a, b) => {
+    let va = a[key], vb = b[key];
+    if (col === 6) { va = a.oldPrice - a.newPrice; vb = b.oldPrice - b.newPrice; }
+    if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    return sortAsc ? va - vb : vb - va;
+  });
+  render();
+}
+
+// --- Trigger ---
+
+async function triggerRun(dryRun) {
+  const token = localStorage.getItem('ghToken');
+  if (!token) return;
+
+  const fb = document.getElementById('triggerFeedback');
+  fb.textContent = 'Triggering...';
+  fb.className = 'feedback';
+
+  const brands = document.getElementById('brandsInput').value.trim();
+
+  try {
+    const res = await fetch(`${REPO_API}/actions/workflows/${WORKFLOW}/dispatches`, {
+      method: 'POST',
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands } })
+    });
+
+    if (res.status === 204) {
+      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered! Check GitHub Actions for progress.`;
+      fb.className = 'feedback ok';
+    } else {
+      const data = await res.json().catch(() => ({}));
+      fb.textContent = `Failed: ${data.message || res.status}`;
+      fb.className = 'feedback err';
+    }
+  } catch (e) {
+    fb.textContent = `Error: ${e.message}`;
+    fb.className = 'feedback err';
+  }
+}
+
+// --- Token ---
+
+function saveToken() {
+  const val = document.getElementById('tokenInput').value.trim();
+  if (!val) return;
+  localStorage.setItem('ghToken', val);
+  document.getElementById('tokenInput').value = '';
+  updateTokenUI();
+}
+
+function clearToken() {
+  localStorage.removeItem('ghToken');
+  updateTokenUI();
+}
+
+function updateTokenUI() {
+  const has = !!localStorage.getItem('ghToken');
+  document.getElementById('tokenStatus').textContent = has ? 'Token saved' : 'No token';
+  document.getElementById('btnDry').disabled = !has;
+  document.getElementById('btnLive').disabled = !has;
+}
+
+// --- Helpers ---
+
+function timeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + ' min ago';
+  if (s < 86400) return Math.floor(s / 3600) + ' hours ago';
+  return Math.floor(s / 86400) + ' days ago';
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+// --- Init ---
+loadStatus();
+updateTokenUI();
+setInterval(loadStatus, 60000);
+</script>
+</body>
+</html>

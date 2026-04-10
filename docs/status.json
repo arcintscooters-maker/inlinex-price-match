@@ -1,0 +1,23 @@
+{
+  "lastRun": {
+    "timestamp": "2026-04-10T03:31:00.000Z",
+    "mode": "DRY RUN",
+    "durationMinutes": 0,
+    "totalMatches": 0,
+    "usUpdates": 0,
+    "auUpdates": 0,
+    "skipped": 0,
+    "totalChanges": 0,
+    "status": "success"
+  },
+  "priceChanges": [],
+  "history": [
+    {
+      "timestamp": "2026-04-10T03:31:00.000Z",
+      "mode": "DRY RUN",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "status": "success"
+    }
+  ]
+}
