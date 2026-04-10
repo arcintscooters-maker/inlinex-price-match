@@ -1,0 +1,297 @@
+/**
+ * Inlinex Price Match — Main Orchestrator
+ *
+ * Scrapes competitor prices, matches to Shopify products,
+ * calculates market-specific pricing, and updates Shopify.
+ *
+ * Usage:
+ *   node price-match.js                    # Full run
+ *   node price-match.js --dry-run          # Calculate but don't update Shopify
+ *   node price-match.js --brands=Powerslide,USD  # Only specific brands
+ */
+const { log, loadJSON, saveJSON, sleep } = require('./lib/utils');
+const shopify = require('./lib/shopify');
+const iwScraper = require('./lib/inline-warehouse');
+const xtScraper = require('./lib/xtremeinn');
+const matcher = require('./lib/matcher');
+const report = require('./lib/report');
+const fs = require('fs');
+const path = require('path');
+
+// Pricing constants
+const IW_DISCOUNT = 0.95;         // 5% cheaper than IW
+const XT_DISCOUNT = 0.95;         // 5% cheaper than xtremeinn + shipping
+const XT_SHIPPING_USD = 40;       // Estimated xtremeinn shipping to US (midpoint of $30-50)
+const XT_SHIPPING_AUD = 40;       // Estimated xtremeinn shipping to AU (midpoint of $30-50)
+const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
+const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
+
+async function main() {
+  const startTime = Date.now();
+  const dryRun = process.argv.includes('--dry-run');
+  const brandsArg = process.argv.find(a => a.startsWith('--brands='));
+  const brands = brandsArg ? brandsArg.split('=')[1].split(',') : null;
+
+  log('MAIN', `=== Price Match Run Started ===`);
+  log('MAIN', `Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
+  if (brands) log('MAIN', `Brands: ${brands.join(', ')}`);
+
+  // Ensure reports directory exists
+  const reportsDir = path.join(__dirname, 'reports');
+  if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+
+  // ==========================================
+  // 1. Fetch Shopify products
+  // ==========================================
+  log('MAIN', 'Step 1: Fetching Shopify products...');
+  const products = await shopify.getAllProducts();
+  log('MAIN', `Fetched ${products.length} active products`);
+
+  // Filter by brand if specified
+  const filteredProducts = brands
+    ? products.filter(p => brands.some(b => (p.vendor || '').toLowerCase().includes(b.toLowerCase())))
+    : products;
+  log('MAIN', `Products to match: ${filteredProducts.length}`);
+
+  // ==========================================
+  // 2. Get Shopify market price lists
+  // ==========================================
+  log('MAIN', 'Step 2: Finding market price lists...');
+  const { usPriceList, auPriceList } = await shopify.getMarketPriceLists();
+
+  if (!usPriceList) log('MAIN', 'WARNING: US price list not found');
+  if (!auPriceList) log('MAIN', 'WARNING: AU price list not found');
+
+  // Get current fixed prices
+  let usFixedPrices = {};
+  let auFixedPrices = {};
+  if (usPriceList) {
+    log('MAIN', 'Fetching current US fixed prices...');
+    usFixedPrices = await shopify.getFixedPrices(usPriceList.id);
+    log('MAIN', `US fixed prices: ${Object.keys(usFixedPrices).length}`);
+  }
+  if (auPriceList) {
+    log('MAIN', 'Fetching current AU fixed prices...');
+    auFixedPrices = await shopify.getFixedPrices(auPriceList.id);
+    log('MAIN', `AU fixed prices: ${Object.keys(auFixedPrices).length}`);
+  }
+
+  // ==========================================
+  // 3. Scrape competitor prices
+  // ==========================================
+  log('MAIN', 'Step 3: Scraping Inline Warehouse...');
+  const iwProducts = await iwScraper.scrapeAll(brands);
+
+  log('MAIN', 'Step 4: Scraping xtremeinn...');
+  const { usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands);
+
+  // ==========================================
+  // 4. Match products
+  // ==========================================
+  log('MAIN', 'Step 5: Matching products...');
+  const matches = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
+
+  // ==========================================
+  // 5. Calculate new prices
+  // ==========================================
+  log('MAIN', 'Step 6: Calculating prices...');
+  const priceChanges = [];
+  const usPriceUpdates = [];
+  const auPriceUpdates = [];
+
+  for (const match of matches) {
+    const { shopifyProduct, shopifyVariant, variantGid, currentPrice, iwMatch, iwMethod, xtMatch, xtMethod } = match;
+
+    // --- US Market Pricing ---
+    if (usPriceList) {
+      let usNewPrice = null;
+      let usCompetitor = null;
+      let usCompPrice = null;
+      let usCompSource = null;
+      let usMatchMethod = null;
+
+      // Rule 1: Check IW first
+      if (iwMatch) {
+        usNewPrice = Math.round(iwMatch.price * IW_DISCOUNT * 100) / 100;
+        usCompetitor = iwMatch;
+        usCompPrice = iwMatch.price;
+        usCompSource = 'Inline Warehouse';
+        usMatchMethod = iwMethod;
+      }
+      // Rule 2: If not on IW, check xtremeinn
+      else if (xtMatch && xtMatch.currency === 'USD') {
+        const totalXtPrice = xtMatch.price + XT_SHIPPING_USD;
+        usNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
+        usCompetitor = xtMatch;
+        usCompPrice = xtMatch.price;
+        usCompSource = `xtremeinn (+$${XT_SHIPPING_USD} ship)`;
+        usMatchMethod = xtMethod;
+      }
+
+      if (usNewPrice) {
+        // Get current effective US price
+        const currentUsPrice = usFixedPrices[variantGid] || (currentPrice * US_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'US',
+          oldPrice: Math.round(currentUsPrice * 100) / 100,
+          newPrice: usNewPrice,
+          competitorPrice: usCompPrice,
+          competitorSource: usCompSource,
+          competitorUrl: usCompetitor.url,
+          matchMethod: usMatchMethod,
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        // Don't change if already cheaper
+        if (currentUsPrice <= usNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentUsPrice;
+        } else {
+          usPriceUpdates.push({
+            variantId: variantGid,
+            price: usNewPrice,
+            currency: 'USD'
+          });
+        }
+
+        priceChanges.push(change);
+      }
+    }
+
+    // --- AU Market Pricing ---
+    if (auPriceList) {
+      // Find AU-specific xtremeinn match
+      const xtAuMatch = xtAuProducts.find(p => {
+        if (xtMatch && p.sku === xtMatch.sku) return true;
+        return false;
+      }) || (xtMatch && xtMatch.currency === 'AUD' ? xtMatch : null);
+
+      if (xtAuMatch) {
+        const totalXtPrice = xtAuMatch.price + XT_SHIPPING_AUD;
+        const auNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
+
+        const currentAuPrice = auFixedPrices[variantGid] || (currentPrice * AU_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'AU',
+          oldPrice: Math.round(currentAuPrice * 100) / 100,
+          newPrice: auNewPrice,
+          competitorPrice: xtAuMatch.price,
+          competitorSource: `xtremeinn (+$${XT_SHIPPING_AUD} ship)`,
+          competitorUrl: xtAuMatch.url,
+          matchMethod: xtMethod || 'name',
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        if (currentAuPrice <= auNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentAuPrice;
+        } else {
+          auPriceUpdates.push({
+            variantId: variantGid,
+            price: auNewPrice,
+            currency: 'AUD'
+          });
+        }
+
+        priceChanges.push(change);
+      }
+    }
+  }
+
+  log('MAIN', `Price changes calculated: ${priceChanges.length} total`);
+  log('MAIN', `  US updates: ${usPriceUpdates.length}`);
+  log('MAIN', `  AU updates: ${auPriceUpdates.length}`);
+  log('MAIN', `  Skipped (already cheaper): ${priceChanges.filter(c => c.skipped).length}`);
+
+  // ==========================================
+  // 6. Apply prices to Shopify
+  // ==========================================
+  if (!dryRun) {
+    if (usPriceUpdates.length > 0 && usPriceList) {
+      log('MAIN', `Step 7a: Applying ${usPriceUpdates.length} US price updates...`);
+      await shopify.setFixedPrices(usPriceList.id, usPriceUpdates);
+      usPriceUpdates.forEach(u => {
+        const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'US');
+        if (change) change.applied = true;
+      });
+    }
+
+    if (auPriceUpdates.length > 0 && auPriceList) {
+      log('MAIN', `Step 7b: Applying ${auPriceUpdates.length} AU price updates...`);
+      await shopify.setFixedPrices(auPriceList.id, auPriceUpdates);
+      auPriceUpdates.forEach(u => {
+        const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'AU');
+        if (change) change.applied = true;
+      });
+    }
+  } else {
+    log('MAIN', 'Step 7: SKIPPED (dry run)');
+  }
+
+  // ==========================================
+  // 7. Generate report
+  // ==========================================
+  log('MAIN', 'Step 8: Generating Excel report...');
+  const reportPath = await report.generate(priceChanges, dryRun);
+
+  // ==========================================
+  // 8. Save competitor price history
+  // ==========================================
+  log('MAIN', 'Step 9: Saving price history...');
+  savePriceHistory(iwProducts, xtUsProducts, xtAuProducts);
+
+  const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
+  log('MAIN', `=== Price Match Complete in ${elapsed} minutes ===`);
+  log('MAIN', `Report: ${reportPath}`);
+
+  // Set output for GitHub Actions
+  if (process.env.GITHUB_OUTPUT) {
+    fs.appendFileSync(process.env.GITHUB_OUTPUT,
+      `report_path=${reportPath}\n` +
+      `us_updates=${usPriceUpdates.length}\n` +
+      `au_updates=${auPriceUpdates.length}\n` +
+      `total_matches=${matches.length}\n`
+    );
+  }
+}
+
+function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
+  const historyFile = path.join(__dirname, 'price-history.json');
+  const history = loadJSON(historyFile) || { runs: [] };
+  const timestamp = new Date().toISOString();
+
+  history.runs.push({
+    timestamp,
+    iw: iwProducts.map(p => ({ name: p.name, sku: p.sku, price: p.price })),
+    xt_us: xtUsProducts.map(p => ({ name: p.name, sku: p.sku, price: p.price })),
+    xt_au: xtAuProducts.map(p => ({ name: p.name, sku: p.sku, price: p.price })),
+  });
+
+  // Keep last 10 runs
+  if (history.runs.length > 10) {
+    history.runs = history.runs.slice(-10);
+  }
+
+  saveJSON(historyFile, history);
+  log('MAIN', `Price history saved (${history.runs.length} runs)`);
+}
+
+main().catch(e => {
+  log('MAIN', `FATAL ERROR: ${e.message}`);
+  console.error(e.stack);
+  process.exit(1);
+});

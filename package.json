@@ -1,0 +1,12 @@
+{
+  "name": "inlinex-price-match",
+  "version": "1.0.0",
+  "description": "Automated competitor price matching for Inlinex Shopify store",
+  "scripts": {
+    "price-match": "node price-match.js",
+    "dry-run": "node price-match.js --dry-run"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  }
+}
