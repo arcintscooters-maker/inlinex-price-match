@@ -151,6 +151,158 @@
       ],
       "xt_us": [],
       "xt_au": []
+    },
+    {
+      "timestamp": "2026-04-10T03:58:01.951Z",
+      "iw": [
+        {
+          "name": "Powerslide Phuzion Radon 80 SMU",
+          "sku": "P901975",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 80",
+          "sku": "940704",
+          "price": 139.97
+        },
+        {
+          "name": "Powerslide Phuzion 80",
+          "sku": "940698",
+          "price": 189.99
+        },
+        {
+          "name": "Powerslide Phuzion Radon 80",
+          "sku": "940663",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 80",
+          "sku": "940666",
+          "price": 169.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 84",
+          "sku": "940699",
+          "price": 159.99
+        },
+        {
+          "name": "Powerslide Phuzion RFC Raw 90",
+          "sku": "940682",
+          "price": 159.97
+        },
+        {
+          "name": "Powerslide Phuzion Xenon 90",
+          "sku": "940677",
+          "price": 169.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 80",
+          "sku": "940668",
+          "price": 179.97
+        },
+        {
+          "name": "Powerslide Phuzion Radon 84",
+          "sku": "940700",
+          "price": 169.99
+        },
+        {
+          "name": "Powerslide Phuzion Radon 90",
+          "sku": "940694",
+          "price": 149.97
+        },
+        {
+          "name": "Powerslide Phuzion Argon 90",
+          "sku": "940715",
+          "price": 199.99
+        },
+        {
+          "name": "Powerslide Triple X5 Inline 2pt Speed Skate Frames",
+          "sku": "TX2PT",
+          "price": 179.95
+        },
+        {
+          "name": "Powerslide Core Performance",
+          "sku": "904595",
+          "price": 119.97
+        },
+        {
+          "name": "Powerslide XXX Inline",
+          "sku": "XXX2PT",
+          "price": 179.97
+        },
+        {
+          "name": "Powerslide DH365",
+          "sku": "P561",
+          "price": 199.99
+        },
+        {
+          "name": "Powerslide Sabres Inline to Ice",
+          "sku": "902275",
+          "price": 32.99
+        },
+        {
+          "name": "Reign Trident Trinity",
+          "sku": "120016",
+          "price": 119
+        },
+        {
+          "name": "Powerslide Elite FSK Casted Aluminum Trinity",
+          "sku": "520086",
+          "price": 79.99
+        },
+        {
+          "name": "Powerslide Nova",
+          "sku": "904645",
+          "price": 149.99
+        },
+        {
+          "name": "Powerslide Surface 2 in 1",
+          "sku": "904649",
+          "price": 98.95
+        },
+        {
+          "name": "Powerslide Elite Casted Aluminum Trinity",
+          "sku": "PS52001",
+          "price": 69.99
+        },
+        {
+          "name": "Powerslide Elite Casted Magnesium Trinity",
+          "sku": "520028",
+          "price": 94.99
+        },
+        {
+          "name": "Powerslide Combat Rocker",
+          "sku": "CBTR",
+          "price": 169.99
+        },
+        {
+          "name": "Powerslide Nexus Trinity",
+          "sku": "TRIFRR",
+          "price": 89.97
+        },
+        {
+          "name": "Powerslide Renegade 125",
+          "sku": "P245",
+          "price": 319
+        },
+        {
+          "name": "Powerslide Edge 150",
+          "sku": "P243",
+          "price": 269.99
+        },
+        {
+          "name": "Powerslide Outback 150",
+          "sku": "P242",
+          "price": 249.97
+        },
+        {
+          "name": "Powerslide SUV 125",
+          "sku": "P241",
+          "price": 249.97
+        }
+      ],
+      "xt_us": [],
+      "xt_au": []
     }
   ]
 }
