@@ -2698,6 +2698,118 @@
       ],
       "xt_us": [],
       "xt_au": []
+    },
+    {
+      "timestamp": "2026-04-10T05:15:46.358Z",
+      "iw": [
+        {
+          "name": "UnderCover Team Pro",
+          "sku": "UCTPRO",
+          "price": 65
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406269",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 90mm",
+          "sku": "406268",
+          "price": 59.99
+        },
+        {
+          "name": "UnderCover Vortex 110-125mm/Urban",
+          "sku": "406364",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm",
+          "sku": "406356",
+          "price": 38
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406267",
+          "price": 59.95
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "406265",
+          "price": 69.99
+        },
+        {
+          "name": "UnderCover Nick Lomax Movie II",
+          "sku": "406403",
+          "price": 49.97
+        },
+        {
+          "name": "UnderCover King of Slides",
+          "sku": "406294",
+          "price": 35
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406185",
+          "price": 44.95
+        },
+        {
+          "name": "UnderCover Team 80mm",
+          "sku": "406179",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 110mm",
+          "sku": "406266",
+          "price": 59.99
+        },
+        {
+          "name": "UnderCover Eugen Enin Pro 58mm",
+          "sku": "406371",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Lauric Picard",
+          "sku": "406370",
+          "price": 48.99
+        },
+        {
+          "name": "UnderCover Bobi Spassov",
+          "sku": "406369",
+          "price": 47.99
+        },
+        {
+          "name": "UnderCover Jay Yoon",
+          "sku": "406366",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Team 60mm",
+          "sku": "406182",
+          "price": 44.95
+        },
+        {
+          "name": "UnderCover Vortex 58-64mm",
+          "sku": "406354",
+          "price": 44
+        },
+        {
+          "name": "UnderCover Team Blank 55-60mm",
+          "sku": "U406184",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 45-47mm",
+          "sku": "406349",
+          "price": 26.99
+        },
+        {
+          "name": "Flying Eagle Rampage",
+          "sku": "FERMP",
+          "price": 29.95
+        }
+      ],
+      "xt_us": [],
+      "xt_au": []
     }
   ]
 }
