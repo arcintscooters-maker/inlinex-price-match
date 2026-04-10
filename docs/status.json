@@ -1,9 +1,9 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T08:39:31.979Z",
+    "timestamp": "2026-04-10T09:52:02.765Z",
     "mode": "DRY RUN",
-    "durationMinutes": 6.2,
-    "totalMatches": 22,
+    "durationMinutes": 2.5,
+    "totalMatches": 239,
     "usUpdates": 0,
     "auUpdates": 15,
     "skipped": 7,
@@ -11,62 +11,6 @@
     "status": "success"
   },
   "priceChanges": [
-    {
-      "product": "Powerslide Urban Brake Set",
-      "variant": "Small",
-      "sku": "4040333375747",
-      "brand": "Powerslide",
-      "market": "AU",
-      "oldPrice": 28.75,
-      "newPrice": 23.77,
-      "competitor": "xtremeinn (free AU ship)",
-      "competitorPrice": 25.02,
-      "matchMethod": "name(1.00)",
-      "skipped": false,
-      "applied": false
-    },
-    {
-      "product": "Powerslide Urban Brake Set",
-      "variant": "Medium",
-      "sku": "4040333375754",
-      "brand": "Powerslide",
-      "market": "AU",
-      "oldPrice": 28.75,
-      "newPrice": 23.77,
-      "competitor": "xtremeinn (free AU ship)",
-      "competitorPrice": 25.02,
-      "matchMethod": "name(1.00)",
-      "skipped": false,
-      "applied": false
-    },
-    {
-      "product": "Powerslide Urban Brake Set",
-      "variant": "Large",
-      "sku": "4040333477151",
-      "brand": "Powerslide",
-      "market": "AU",
-      "oldPrice": 28.75,
-      "newPrice": 23.77,
-      "competitor": "xtremeinn (free AU ship)",
-      "competitorPrice": 25.02,
-      "matchMethod": "name(1.00)",
-      "skipped": false,
-      "applied": false
-    },
-    {
-      "product": "Powerslide Urban Brake Set",
-      "variant": "Mega",
-      "sku": "4040333417843",
-      "brand": "Powerslide",
-      "market": "AU",
-      "oldPrice": 28.75,
-      "newPrice": 23.77,
-      "competitor": "xtremeinn (free AU ship)",
-      "competitorPrice": 25.02,
-      "matchMethod": "name(1.00)",
-      "skipped": false,
-      "applied": false
-    },
     {
       "product": "Powerslide Next 110 Core Skates",
       "variant": "EU 36-37",
@@ -149,6 +93,62 @@
       "competitorPrice": 351.95,
       "matchMethod": "name(0.83)",
       "skipped": true,
+      "applied": false
+    },
+    {
+      "product": "Powerslide Urban Brake Set",
+      "variant": "Small",
+      "sku": "4040333375747",
+      "brand": "Powerslide",
+      "market": "AU",
+      "oldPrice": 28.75,
+      "newPrice": 23.77,
+      "competitor": "xtremeinn (free AU ship)",
+      "competitorPrice": 25.02,
+      "matchMethod": "name(1.00)",
+      "skipped": false,
+      "applied": false
+    },
+    {
+      "product": "Powerslide Urban Brake Set",
+      "variant": "Medium",
+      "sku": "4040333375754",
+      "brand": "Powerslide",
+      "market": "AU",
+      "oldPrice": 28.75,
+      "newPrice": 23.77,
+      "competitor": "xtremeinn (free AU ship)",
+      "competitorPrice": 25.02,
+      "matchMethod": "name(1.00)",
+      "skipped": false,
+      "applied": false
+    },
+    {
+      "product": "Powerslide Urban Brake Set",
+      "variant": "Large",
+      "sku": "4040333477151",
+      "brand": "Powerslide",
+      "market": "AU",
+      "oldPrice": 28.75,
+      "newPrice": 23.77,
+      "competitor": "xtremeinn (free AU ship)",
+      "competitorPrice": 25.02,
+      "matchMethod": "name(1.00)",
+      "skipped": false,
+      "applied": false
+    },
+    {
+      "product": "Powerslide Urban Brake Set",
+      "variant": "Mega",
+      "sku": "4040333417843",
+      "brand": "Powerslide",
+      "market": "AU",
+      "oldPrice": 28.75,
+      "newPrice": 23.77,
+      "competitor": "xtremeinn (free AU ship)",
+      "competitorPrice": 25.02,
+      "matchMethod": "name(1.00)",
+      "skipped": false,
       "applied": false
     },
     {
@@ -435,6 +435,13 @@
     },
     {
       "timestamp": "2026-04-10T08:39:31.979Z",
+      "mode": "DRY RUN",
+      "usUpdates": 0,
+      "auUpdates": 15,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T09:52:02.765Z",
       "mode": "DRY RUN",
       "usUpdates": 0,
       "auUpdates": 15,
