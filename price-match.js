@@ -82,14 +82,15 @@ async function main() {
   log('MAIN', 'Step 3: Scraping Inline Warehouse...');
   const iwProducts = await iwScraper.scrapeAll(brands);
 
-  log('MAIN', 'Step 4: Scraping xtremeinn...');
-  const { usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands);
+  // xtremeinn disabled until scraper is tuned (returns 0 results)
+  const xtUsProducts = [];
+  const xtAuProducts = [];
 
   // ==========================================
   // 4. Match products
   // ==========================================
-  log('MAIN', 'Step 5: Matching products...');
-  const matches = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
+  log('MAIN', 'Step 4: Matching products...');
+  const matches = matcher.matchAll(filteredProducts, iwProducts, []);
 
   // ==========================================
   // 5. Calculate new prices
@@ -110,22 +111,13 @@ async function main() {
       let usCompSource = null;
       let usMatchMethod = null;
 
-      // Rule 1: Check IW first
+      // US market: IW only (xtremeinn disabled until scraper is tuned)
       if (iwMatch) {
         usNewPrice = Math.round(iwMatch.price * IW_DISCOUNT * 100) / 100;
         usCompetitor = iwMatch;
         usCompPrice = iwMatch.price;
         usCompSource = 'Inline Warehouse';
         usMatchMethod = iwMethod;
-      }
-      // Rule 2: If not on IW, check xtremeinn
-      else if (xtMatch && xtMatch.currency === 'USD') {
-        const totalXtPrice = xtMatch.price + XT_SHIPPING_USD;
-        usNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
-        usCompetitor = xtMatch;
-        usCompPrice = xtMatch.price;
-        usCompSource = `xtremeinn (+$${XT_SHIPPING_USD} ship)`;
-        usMatchMethod = xtMethod;
       }
 
       if (usNewPrice) {
