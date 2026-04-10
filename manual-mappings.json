@@ -1,5 +1,5 @@
 {
-  "_comment": "Manual product mappings: IW SKU -> Shopify product title substring. Use when fuzzy matching fails or is ambiguous.",
+  "_comment": "Manual product mappings for products where fuzzy matching fails. Only needed for single-variant IW products with ambiguous names.",
   "mappings": [
     { "iwSku": "904641", "shopifyMatch": "Accel Race Black Boot", "note": "PS Accel Race Black Boot $399.97" },
     { "iwSku": "904643", "shopifyMatch": "Accel Race Reflective Boot", "note": "PS Accel Race Reflective Boot $349.95" },
@@ -7,27 +7,10 @@
     { "iwSku": "904639", "shopifyMatch": "Accel Black 110 Racing", "note": "PS Accel 110/100 complete $549.95" },
     { "iwSku": "904626", "shopifyMatch": "Accel Race 195 Boot", "note": "PS Accel 195 boot $479.95" },
 
-    { "iwSku": "UCTPRO", "shopifyMatch": "Team PRO 80 White", "note": "UC Team Pro (IW generic) -> 80mm $65" },
-    { "iwSku": "406294", "shopifyMatch": "King of Slides Wheels 76mm", "note": "UC King of Slides -> 76mm $35" },
     { "iwSku": "406371", "shopifyMatch": "Eugen Enin 58/90A", "note": "UC Eugen Enin Pro 58mm $55" },
     { "iwSku": "406370", "shopifyMatch": "Lauric Picard 60/90A", "note": "UC Lauric Picard $48.99" },
     { "iwSku": "406369", "shopifyMatch": "Bobi Spassov 60/90A", "note": "UC Bobi Spassov $47.99" },
     { "iwSku": "406366", "shopifyMatch": "Jay Yoon 58/92A", "note": "UC Jay Yoon $55" },
-    { "iwSku": "406403", "shopifyMatch": "Nick Lomax 80mm/88A", "note": "UC Nick Lomax Movie II $49.97" },
-
-    { "iwSku": "406356", "shopifyMatch": "Vortex 68mm", "note": "UC Vortex 68-100mm -> 68mm $38" },
-    { "iwSku": "406364", "shopifyMatch": "Vortex 110mm", "note": "UC Vortex 110-125mm -> 110mm $55" },
-    { "iwSku": "406354", "shopifyMatch": "Vortex 58mm", "note": "UC Vortex 58-64mm -> 58mm $44" },
-
-    { "iwSku": "U406269", "shopifyMatch": "Team Blank 80mm", "note": "UC Team Wheels (IW generic) -> Blank 80mm $49.95" },
-    { "iwSku": "406268", "shopifyMatch": "Team Blank 90mm", "note": "UC Team 90mm -> Blank 90mm $59.99" },
-    { "iwSku": "U406267", "shopifyMatch": "Team Blank 100mm", "note": "UC Team Wheels (IW generic) -> Blank 100mm $59.95" },
-    { "iwSku": "406265", "shopifyMatch": "Team Blank 110mm", "note": "UC Team Wheels -> Blank 110mm $69.99" },
-    { "iwSku": "406266", "shopifyMatch": "Team Blank 125mm", "note": "UC Team 110mm -> Blank 125mm $59.99" },
-    { "iwSku": "U406185", "shopifyMatch": "Team Blank 72mm", "note": "UC Team Wheels -> Blank 72mm $44.95" },
-    { "iwSku": "406179", "shopifyMatch": "Team Blank 76mm", "note": "UC Team 80mm -> Blank 76mm $49.95" },
-    { "iwSku": "406182", "shopifyMatch": "Team Blank 60mm", "note": "UC Team 60mm -> Blank 60mm $44.95" },
-    { "iwSku": "U406184", "shopifyMatch": "Team Blank 55mm", "note": "UC Team Blank 55-60mm -> Blank 55mm $49.95" },
-    { "iwSku": "406349", "shopifyMatch": "Antirocker 45mm", "note": "UC Team 45-47mm -> Antirocker 45mm $26.99" }
+    { "iwSku": "406403", "shopifyMatch": "Nick Lomax 80mm/88A", "note": "UC Nick Lomax Movie II $49.97" }
   ]
 }
