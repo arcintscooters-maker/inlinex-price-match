@@ -87,15 +87,16 @@ async function main() {
   log('MAIN', 'Step 3: Scraping Inline Warehouse...');
   const iwProducts = await iwScraper.scrapeAll(brands);
 
-  // xtremeinn disabled until scraper is tuned (returns 0 results)
-  const xtUsProducts = [];
-  const xtAuProducts = [];
+  log('MAIN', 'Step 3b: Scraping xtremeinn...');
+  const { usProducts: xtUsProducts, auProducts: xtAuProducts } = enableAU
+    ? await xtScraper.scrapeAll(brands)
+    : { usProducts: [], auProducts: [] };
 
   // ==========================================
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const matches = matcher.matchAll(filteredProducts, iwProducts, []);
+  const matches = matcher.matchAll(filteredProducts, iwProducts, xtAuProducts);
 
   // ==========================================
   // 5. Calculate new prices
@@ -164,15 +165,14 @@ async function main() {
 
     // --- AU Market Pricing ---
     if (auPriceList && enableAU) {
-      // Find AU-specific xtremeinn match
-      const xtAuMatch = xtAuProducts.find(p => {
-        if (xtMatch && p.sku === xtMatch.sku) return true;
-        return false;
-      }) || (xtMatch && xtMatch.currency === 'AUD' ? xtMatch : null);
+      // Match against xtremeinn AU products (already in AUD, shipping included)
+      const { iwMatch: _unused, iwMethod: _unused2, xtMatch: xtAuMatch, xtMethod: xtAuMethod } = match;
+      // xtMatch from the combined matcher might already have an AU match
+      // If not, we still use it since xtremeinn products are in AUD
+      const auComp = xtAuMatch || null;
 
-      if (xtAuMatch) {
-        const totalXtPrice = xtAuMatch.price + XT_SHIPPING_AUD;
-        const auNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
+      if (auComp && auComp.currency === 'AUD') {
+        const auNewPrice = Math.round(auComp.price * XT_DISCOUNT * 100) / 100;
 
         const currentAuPrice = auFixedPrices[variantGid] || (currentPrice * AU_DEFAULT_MARKUP);
 
@@ -184,10 +184,10 @@ async function main() {
           market: 'AU',
           oldPrice: Math.round(currentAuPrice * 100) / 100,
           newPrice: auNewPrice,
-          competitorPrice: xtAuMatch.price,
-          competitorSource: `xtremeinn (+$${XT_SHIPPING_AUD} ship)`,
-          competitorUrl: xtAuMatch.url,
-          matchMethod: xtMethod || 'name',
+          competitorPrice: auComp.price,
+          competitorSource: 'xtremeinn (free AU ship)',
+          competitorUrl: auComp.url,
+          matchMethod: xtAuMethod || 'name',
           variantGid,
           skipped: false,
           applied: false,
