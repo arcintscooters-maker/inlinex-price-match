@@ -1,158 +1,6 @@
 {
   "runs": [
     {
-      "timestamp": "2026-04-10T03:58:01.951Z",
-      "iw": [
-        {
-          "name": "Powerslide Phuzion Radon 80 SMU",
-          "sku": "P901975",
-          "price": 119.97
-        },
-        {
-          "name": "Powerslide Phuzion Radon 80",
-          "sku": "940704",
-          "price": 139.97
-        },
-        {
-          "name": "Powerslide Phuzion 80",
-          "sku": "940698",
-          "price": 189.99
-        },
-        {
-          "name": "Powerslide Phuzion Radon 80",
-          "sku": "940663",
-          "price": 119.97
-        },
-        {
-          "name": "Powerslide Phuzion Argon 80",
-          "sku": "940666",
-          "price": 169.97
-        },
-        {
-          "name": "Powerslide Phuzion Radon 84",
-          "sku": "940699",
-          "price": 159.99
-        },
-        {
-          "name": "Powerslide Phuzion RFC Raw 90",
-          "sku": "940682",
-          "price": 159.97
-        },
-        {
-          "name": "Powerslide Phuzion Xenon 90",
-          "sku": "940677",
-          "price": 169.97
-        },
-        {
-          "name": "Powerslide Phuzion Argon 80",
-          "sku": "940668",
-          "price": 179.97
-        },
-        {
-          "name": "Powerslide Phuzion Radon 84",
-          "sku": "940700",
-          "price": 169.99
-        },
-        {
-          "name": "Powerslide Phuzion Radon 90",
-          "sku": "940694",
-          "price": 149.97
-        },
-        {
-          "name": "Powerslide Phuzion Argon 90",
-          "sku": "940715",
-          "price": 199.99
-        },
-        {
-          "name": "Powerslide Triple X5 Inline 2pt Speed Skate Frames",
-          "sku": "TX2PT",
-          "price": 179.95
-        },
-        {
-          "name": "Powerslide Core Performance",
-          "sku": "904595",
-          "price": 119.97
-        },
-        {
-          "name": "Powerslide XXX Inline",
-          "sku": "XXX2PT",
-          "price": 179.97
-        },
-        {
-          "name": "Powerslide DH365",
-          "sku": "P561",
-          "price": 199.99
-        },
-        {
-          "name": "Powerslide Sabres Inline to Ice",
-          "sku": "902275",
-          "price": 32.99
-        },
-        {
-          "name": "Reign Trident Trinity",
-          "sku": "120016",
-          "price": 119
-        },
-        {
-          "name": "Powerslide Elite FSK Casted Aluminum Trinity",
-          "sku": "520086",
-          "price": 79.99
-        },
-        {
-          "name": "Powerslide Nova",
-          "sku": "904645",
-          "price": 149.99
-        },
-        {
-          "name": "Powerslide Surface 2 in 1",
-          "sku": "904649",
-          "price": 98.95
-        },
-        {
-          "name": "Powerslide Elite Casted Aluminum Trinity",
-          "sku": "PS52001",
-          "price": 69.99
-        },
-        {
-          "name": "Powerslide Elite Casted Magnesium Trinity",
-          "sku": "520028",
-          "price": 94.99
-        },
-        {
-          "name": "Powerslide Combat Rocker",
-          "sku": "CBTR",
-          "price": 169.99
-        },
-        {
-          "name": "Powerslide Nexus Trinity",
-          "sku": "TRIFRR",
-          "price": 89.97
-        },
-        {
-          "name": "Powerslide Renegade 125",
-          "sku": "P245",
-          "price": 319
-        },
-        {
-          "name": "Powerslide Edge 150",
-          "sku": "P243",
-          "price": 269.99
-        },
-        {
-          "name": "Powerslide Outback 150",
-          "sku": "P242",
-          "price": 249.97
-        },
-        {
-          "name": "Powerslide SUV 125",
-          "sku": "P241",
-          "price": 249.97
-        }
-      ],
-      "xt_us": [],
-      "xt_au": []
-    },
-    {
       "timestamp": "2026-04-10T04:02:03.572Z",
       "iw": [
         {
@@ -3850,6 +3698,213 @@
           "name": "Rollerblade Zetrablade",
           "sku": "25MZ",
           "price": 149
+        }
+      ],
+      "xt_us": [],
+      "xt_au": []
+    },
+    {
+      "timestamp": "2026-04-10T06:05:29.937Z",
+      "iw": [
+        {
+          "name": "UnderCover Team Pro 80mm",
+          "sku": "UCTPRO-80",
+          "price": 65
+        },
+        {
+          "name": "UnderCover Team Pro 84mm",
+          "sku": "UCTPRO-84",
+          "price": 65
+        },
+        {
+          "name": "UnderCover Team Pro 90mm",
+          "sku": "UCTPRO-90",
+          "price": 64.95
+        },
+        {
+          "name": "UnderCover Team Pro 100mm",
+          "sku": "UCTPRO-95",
+          "price": 72.99
+        },
+        {
+          "name": "UnderCover Team Pro 110mm",
+          "sku": "UCTPRO-97",
+          "price": 64.95
+        },
+        {
+          "name": "UnderCover Team Pro 110mm",
+          "sku": "UCTPRO-97",
+          "price": 64.95
+        },
+        {
+          "name": "UnderCover Team Pro 125mm",
+          "sku": "UCTPRO-98",
+          "price": 69.95
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406269",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 90mm",
+          "sku": "406268",
+          "price": 59.99
+        },
+        {
+          "name": "UnderCover Vortex 110-125mm/Urban 110mm",
+          "sku": "406364-97",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Vortex 110-125mm/Urban 125mm",
+          "sku": "406364-98",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 68mm",
+          "sku": "406356-68",
+          "price": 38
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 72mm",
+          "sku": "406356-72",
+          "price": 38
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 76mm",
+          "sku": "406356-76",
+          "price": 38
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 80mm",
+          "sku": "406356-80",
+          "price": 42
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 84mm",
+          "sku": "406356-84",
+          "price": 45
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 90mm",
+          "sku": "406356-90",
+          "price": 48
+        },
+        {
+          "name": "UnderCover Vortex 68-100mm 100mm",
+          "sku": "406356-95",
+          "price": 50
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406267",
+          "price": 59.95
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "406265",
+          "price": 69.99
+        },
+        {
+          "name": "UnderCover Nick Lomax Movie II",
+          "sku": "406403",
+          "price": 49.97
+        },
+        {
+          "name": "UnderCover King of Slides 76mm",
+          "sku": "406294-76",
+          "price": 35
+        },
+        {
+          "name": "UnderCover King of Slides 80mm",
+          "sku": "406294-80",
+          "price": 35
+        },
+        {
+          "name": "UnderCover Team Wheels",
+          "sku": "U406185",
+          "price": 44.95
+        },
+        {
+          "name": "UnderCover Team 80mm",
+          "sku": "406179",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 110mm",
+          "sku": "406266",
+          "price": 59.99
+        },
+        {
+          "name": "UnderCover Eugen Enin Pro 58mm",
+          "sku": "406371",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Lauric Picard",
+          "sku": "406370",
+          "price": 48.99
+        },
+        {
+          "name": "UnderCover Bobi Spassov",
+          "sku": "406369",
+          "price": 47.99
+        },
+        {
+          "name": "UnderCover Jay Yoon",
+          "sku": "406366",
+          "price": 55
+        },
+        {
+          "name": "UnderCover Team 60mm",
+          "sku": "406182",
+          "price": 44.95
+        },
+        {
+          "name": "UnderCover Vortex 58-64mm 58mm",
+          "sku": "406354-58",
+          "price": 44
+        },
+        {
+          "name": "UnderCover Vortex 58-64mm 60mm",
+          "sku": "406354-60",
+          "price": 44
+        },
+        {
+          "name": "UnderCover Vortex 58-64mm 64mm",
+          "sku": "406354-64",
+          "price": 44
+        },
+        {
+          "name": "UnderCover Team Blank 55-60mm 55mm",
+          "sku": "U406184-55",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team Blank 55-60mm 58mm",
+          "sku": "U406184-58",
+          "price": 49.95
+        },
+        {
+          "name": "UnderCover Team 45-47mm 45mm",
+          "sku": "406349-45",
+          "price": 26.99
+        },
+        {
+          "name": "UnderCover Team 45-47mm 47mm",
+          "sku": "406349-47",
+          "price": 26.99
+        },
+        {
+          "name": "UnderCover Team 45-47mm 49mm",
+          "sku": "406349-49",
+          "price": 26.99
+        },
+        {
+          "name": "Flying Eagle Rampage",
+          "sku": "FERMP",
+          "price": 29.95
         }
       ],
       "xt_us": [],
