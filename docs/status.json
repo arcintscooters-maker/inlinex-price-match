@@ -1,7 +1,7 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T04:56:07.760Z",
-    "mode": "DRY RUN",
+    "timestamp": "2026-04-10T05:04:32.416Z",
+    "mode": "LIVE",
     "durationMinutes": 1.8,
     "totalMatches": 223,
     "usUpdates": 113,
@@ -23,7 +23,7 @@
       "competitorPrice": 14.95,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Standard Elbow",
@@ -37,7 +37,7 @@
       "competitorPrice": 14.95,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Standard Elbow",
@@ -51,7 +51,7 @@
       "competitorPrice": 14.95,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Standard Elbow",
@@ -65,7 +65,7 @@
       "competitorPrice": 14.95,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Fitness Backpack",
@@ -79,7 +79,7 @@
       "competitorPrice": 49.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Fitness Backpack",
@@ -93,7 +93,7 @@
       "competitorPrice": 49.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Fitness Backpack",
@@ -107,7 +107,7 @@
       "competitorPrice": 49.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Fitness Backpack",
@@ -121,7 +121,7 @@
       "competitorPrice": 49.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Tau 90 Carbon Skates",
@@ -345,7 +345,7 @@
       "competitorPrice": 9.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Phuzion Radon 80 Trinity  Skates",
@@ -359,7 +359,7 @@
       "competitorPrice": 139.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Phuzion Radon 80 Trinity  Skates",
@@ -373,7 +373,7 @@
       "competitorPrice": 139.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Zoom Pro 100 Skates",
@@ -457,7 +457,7 @@
       "competitorPrice": 8,
       "matchMethod": "name(0.75)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Skate Hook",
@@ -471,7 +471,7 @@
       "competitorPrice": 8,
       "matchMethod": "name(0.75)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next 80 Core Skates",
@@ -667,7 +667,7 @@
       "competitorPrice": 39.97,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next 110 Core Skates",
@@ -779,7 +779,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Trinity Boot Only",
@@ -793,7 +793,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Trinity Boot Only",
@@ -807,7 +807,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Trinity Boot Only",
@@ -821,7 +821,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Trinity Boot Only",
@@ -835,7 +835,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Trinity Boot Only",
@@ -849,7 +849,7 @@
       "competitorPrice": 189.95,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Outback 150 SUV Frame",
@@ -863,7 +863,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nexus Trinity Frame",
@@ -877,7 +877,7 @@
       "competitorPrice": 89.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nexus Trinity Frame",
@@ -891,7 +891,7 @@
       "competitorPrice": 89.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nexus Trinity Frame",
@@ -905,7 +905,7 @@
       "competitorPrice": 89.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nexus Trinity Frame",
@@ -919,7 +919,7 @@
       "competitorPrice": 89.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Core Performance 12.8/3x125 Frame",
@@ -933,7 +933,7 @@
       "competitorPrice": 119.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Nicoly Pro 80 Skates",
@@ -947,7 +947,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Nicoly Pro 80 Skates",
@@ -961,7 +961,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Nicoly Pro 80 Skates",
@@ -975,7 +975,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Nicoly Pro 80 Skates",
@@ -989,7 +989,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Nicoly Pro 80 Skates",
@@ -1003,7 +1003,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Renegade Werbeski Pro 125 Skates",
@@ -1017,7 +1017,7 @@
       "competitorPrice": 349.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Renegade Werbeski Pro 125 Skates",
@@ -1031,7 +1031,7 @@
       "competitorPrice": 349.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Renegade Werbeski Pro 125 Skates",
@@ -1045,7 +1045,7 @@
       "competitorPrice": 349.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Renegade Werbeski Pro 125 Skates",
@@ -1059,7 +1059,7 @@
       "competitorPrice": 349.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Renegade Werbeski Pro 125 Skates",
@@ -1073,7 +1073,7 @@
       "competitorPrice": 349.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Combat Rocker 4x100 Trinity Frame",
@@ -1087,7 +1087,7 @@
       "competitorPrice": 169.99,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Renegade 125 SUV Frame",
@@ -1101,7 +1101,7 @@
       "competitorPrice": 319,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Edge 150 SUV Frame",
@@ -1115,7 +1115,7 @@
       "competitorPrice": 269.99,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1129,7 +1129,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1143,7 +1143,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1157,7 +1157,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1171,7 +1171,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1185,7 +1185,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1199,7 +1199,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "🔥🔥🔥Powerslide Kaze 110 Trinity Skates",
@@ -1213,7 +1213,7 @@
       "competitorPrice": 249.97,
       "matchMethod": "name(0.90)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Pneumatic Mini Pump",
@@ -1227,7 +1227,7 @@
       "competitorPrice": 55,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Black 110 Racing Skates",
@@ -1787,7 +1787,7 @@
       "competitorPrice": 149.99,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nova 3x110 Frame",
@@ -1801,7 +1801,7 @@
       "competitorPrice": 149.99,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nova 3x110 Frame",
@@ -1815,7 +1815,7 @@
       "competitorPrice": 149.99,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Nova 3x110 Frame",
@@ -1829,7 +1829,7 @@
       "competitorPrice": 149.99,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Tau Bis_onte Boot Only",
@@ -1969,7 +1969,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -1983,7 +1983,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -1997,7 +1997,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -2011,7 +2011,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -2025,7 +2025,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -2039,7 +2039,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next SL 80 Skates",
@@ -2053,7 +2053,7 @@
       "competitorPrice": 199.97,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next 30th Anniversary 125 Skates",
@@ -2151,7 +2151,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2165,7 +2165,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2179,7 +2179,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2193,7 +2193,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2207,7 +2207,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2221,7 +2221,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2235,7 +2235,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race Pink Boot Only",
@@ -2249,7 +2249,7 @@
       "competitorPrice": 349.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Accel Race 195 Boot Only",
@@ -2431,7 +2431,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2445,7 +2445,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2459,7 +2459,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2473,7 +2473,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2487,7 +2487,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2501,7 +2501,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2515,7 +2515,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2529,7 +2529,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide R6 Marathon Skates",
@@ -2543,7 +2543,7 @@
       "competitorPrice": 479.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2557,7 +2557,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2571,7 +2571,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2585,7 +2585,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2599,7 +2599,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2613,7 +2613,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Pro 110 Skates",
@@ -2627,7 +2627,7 @@
       "competitorPrice": 339.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Circuit Bag Ti Bag",
@@ -2641,7 +2641,7 @@
       "competitorPrice": 94.95,
       "matchMethod": "name(0.80)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Meteor 80 Skates",
@@ -2655,7 +2655,7 @@
       "competitorPrice": 249.99,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Meteor 80 Skates",
@@ -2669,7 +2669,7 @@
       "competitorPrice": 249.99,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Meteor 80 Skates",
@@ -2683,7 +2683,7 @@
       "competitorPrice": 249.99,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Storm Meteor 80 Skates",
@@ -2697,7 +2697,7 @@
       "competitorPrice": 249.99,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Next Mery Munoz Pro 80 Skates",
@@ -2767,7 +2767,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2781,7 +2781,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2795,7 +2795,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2809,7 +2809,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2823,7 +2823,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2837,7 +2837,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide S1 Skates",
@@ -2851,7 +2851,7 @@
       "competitorPrice": 289.97,
       "matchMethod": "name(0.97)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2865,7 +2865,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2879,7 +2879,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2893,7 +2893,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2907,7 +2907,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2921,7 +2921,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2935,7 +2935,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2949,7 +2949,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2963,7 +2963,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2977,7 +2977,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 125 Skates",
@@ -2991,7 +2991,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3005,7 +3005,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3019,7 +3019,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3033,7 +3033,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3047,7 +3047,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3061,7 +3061,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3075,7 +3075,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3089,7 +3089,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3103,7 +3103,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3117,7 +3117,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     },
     {
       "product": "Powerslide Final 110 Skates",
@@ -3131,7 +3131,7 @@
       "competitorPrice": 269.95,
       "matchMethod": "name(1.00)",
       "skipped": false,
-      "applied": false
+      "applied": true
     }
   ],
   "history": [
@@ -3187,6 +3187,13 @@
     {
       "timestamp": "2026-04-10T04:56:07.760Z",
       "mode": "DRY RUN",
+      "usUpdates": 113,
+      "auUpdates": 0,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T05:04:32.416Z",
+      "mode": "LIVE",
       "usUpdates": 113,
       "auUpdates": 0,
       "status": "success"
