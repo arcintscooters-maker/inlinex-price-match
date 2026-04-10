@@ -1,13 +1,13 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T04:02:03.573Z",
+    "timestamp": "2026-04-10T04:07:04.333Z",
     "mode": "DRY RUN",
-    "durationMinutes": 0.6,
-    "totalMatches": 15,
-    "usUpdates": 15,
+    "durationMinutes": 1.1,
+    "totalMatches": 17,
+    "usUpdates": 17,
     "auUpdates": 0,
     "skipped": 0,
-    "totalChanges": 15,
+    "totalChanges": 17,
     "status": "success"
   },
   "priceChanges": [
@@ -36,6 +36,20 @@
       "competitor": "Inline Warehouse",
       "competitorPrice": 139.97,
       "matchMethod": "name(0.97)",
+      "skipped": false,
+      "applied": false
+    },
+    {
+      "product": "Rollerblade 255 3x110 Frame",
+      "variant": "Black",
+      "sku": "8050459910131",
+      "brand": "Rollerblade",
+      "market": "US",
+      "oldPrice": 128.38,
+      "newPrice": 80.75,
+      "competitor": "Inline Warehouse",
+      "competitorPrice": 85,
+      "matchMethod": "name(1.00)",
       "skipped": false,
       "applied": false
     },
@@ -220,6 +234,20 @@
       "matchMethod": "name(0.80)",
       "skipped": false,
       "applied": false
+    },
+    {
+      "product": "Rollerblade Flow 5x80 Frame",
+      "variant": "Default Title",
+      "sku": "8050032072874",
+      "brand": "Rollerblade",
+      "market": "US",
+      "oldPrice": 180.4,
+      "newPrice": 137.75,
+      "competitor": "Inline Warehouse",
+      "competitorPrice": 145,
+      "matchMethod": "name(0.80)",
+      "skipped": false,
+      "applied": false
     }
   ],
   "history": [
@@ -255,6 +283,13 @@
       "timestamp": "2026-04-10T04:02:03.573Z",
       "mode": "DRY RUN",
       "usUpdates": 15,
+      "auUpdates": 0,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T04:07:04.333Z",
+      "mode": "DRY RUN",
+      "usUpdates": 17,
       "auUpdates": 0,
       "status": "success"
     }
