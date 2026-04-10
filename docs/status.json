@@ -1,8 +1,8 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T07:43:34.679Z",
+    "timestamp": "2026-04-10T07:55:44.017Z",
     "mode": "LIVE",
-    "durationMinutes": 0.6,
+    "durationMinutes": 1.5,
     "totalMatches": 0,
     "usUpdates": 0,
     "auUpdates": 0,
@@ -112,6 +112,13 @@
     },
     {
       "timestamp": "2026-04-10T07:43:34.679Z",
+      "mode": "LIVE",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T07:55:44.017Z",
       "mode": "LIVE",
       "usUpdates": 0,
       "auUpdates": 0,
