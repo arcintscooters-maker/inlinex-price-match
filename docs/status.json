@@ -1,8 +1,8 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-10T14:46:33.159Z",
+    "timestamp": "2026-04-10T14:57:51.991Z",
     "mode": "DRY RUN",
-    "durationMinutes": 2.4,
+    "durationMinutes": 2.3,
     "totalMatches": 244,
     "usUpdates": 0,
     "auUpdates": 28,
@@ -701,6 +701,13 @@
     },
     {
       "timestamp": "2026-04-10T14:46:33.159Z",
+      "mode": "DRY RUN",
+      "usUpdates": 0,
+      "auUpdates": 28,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-10T14:57:51.991Z",
       "mode": "DRY RUN",
       "usUpdates": 0,
       "auUpdates": 28,
