@@ -352,10 +352,9 @@ async function triggerRun(dryRun) {
   try {
     if (isRailway) {
       // Railway API — trigger directly on the server
-      const apiKey = token || 'inlinex-price-match-2026';
       const res = await fetch(`${API_BASE}/api/run`, {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ dry_run: dryRun, brands, markets, source })
       });
       const data = await res.json();

@@ -10,7 +10,6 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const PORT = process.env.PORT || 3000;
-const API_KEY = process.env.API_KEY || 'inlinex-price-match-2026';
 
 let currentRun = null; // { status, startedAt, logs, pid }
 
@@ -20,21 +19,13 @@ const server = http.createServer((req, res) => {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
   // --- API Routes ---
 
   // Trigger a run
   if (url.pathname === '/api/run' && req.method === 'POST') {
-    // Check API key
-    const auth = req.headers.authorization || '';
-    if (auth !== `Bearer ${API_KEY}`) {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'Unauthorized' }));
-      return;
-    }
-
     let body = '';
     req.on('data', c => body += c);
     req.on('end', () => {
