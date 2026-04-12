@@ -99,7 +99,7 @@ async function main() {
   let xtUsProducts = [], xtAuProducts = [];
   if (enableXT) {
     log('MAIN', 'Step 3b: Scraping xtremeinn...');
-    ({ usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands));
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands, markets));
   } else {
     log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
   }
@@ -108,7 +108,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const matches = matcher.matchAll(filteredProducts, iwProducts, xtAuProducts);
+  const matches = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
 
   // ==========================================
   // 5. Calculate new prices
