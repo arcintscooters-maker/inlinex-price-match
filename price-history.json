@@ -1,12 +1,6 @@
 {
   "runs": [
     {
-      "timestamp": "2026-04-10T07:43:34.677Z",
-      "iw": [],
-      "xt_us": [],
-      "xt_au": []
-    },
-    {
       "timestamp": "2026-04-10T07:55:44.016Z",
       "iw": [],
       "xt_us": [],
@@ -7616,6 +7610,273 @@
           "name": "Wicked Hardware Inline Y multitool",
           "sku": "11998180",
           "price": 16.36
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-04-12T00:42:30.525Z",
+      "iw": [],
+      "xt_us": [],
+      "xt_au": [
+        {
+          "name": "Wicked Hardware Abec 7 fs bearing 8 units",
+          "sku": "151419720",
+          "price": 24.94
+        },
+        {
+          "name": "Wicked Hardware Caliber multitool",
+          "sku": "150398164",
+          "price": 155.93
+        },
+        {
+          "name": "Wicked Hardware Felix rijhnen ii bearing",
+          "sku": "145205498",
+          "price": 112.27
+        },
+        {
+          "name": "Wicked Hardware Wcd jason suttels 688 bearing",
+          "sku": "145205502",
+          "price": 170.76
+        },
+        {
+          "name": "Wicked Hardware Extreme pro bearing",
+          "sku": "145205497",
+          "price": 71.72
+        },
+        {
+          "name": "Wicked Hardware Wcd 688 adapter",
+          "sku": "145205500",
+          "price": 28.84
+        },
+        {
+          "name": "Wicked Hardware Wcd 688 mg skate bushings",
+          "sku": "145205501",
+          "price": 19.47
+        },
+        {
+          "name": "Wicked Hardware Fr ceramic bearing",
+          "sku": "145205499",
+          "price": 169.2
+        },
+        {
+          "name": "Wicked Hardware Aero racing team short sleeve suit",
+          "sku": "144708177",
+          "price": 279.94
+        },
+        {
+          "name": "Wicked Hardware Precision Kit Bushings",
+          "sku": "141319940",
+          "price": 99.02
+        },
+        {
+          "name": "Wicked Hardware Smart Bearing Remover multitool",
+          "sku": "17527033",
+          "price": 18.7
+        },
+        {
+          "name": "Wicked Hardware Felix Rijhnen bearing 16 units",
+          "sku": "17527028",
+          "price": 113.83
+        },
+        {
+          "name": "Wicked Hardware Nick Lomax bearing 16 units",
+          "sku": "17527029",
+          "price": 107.59
+        },
+        {
+          "name": "Wicked Hardware Nicola Torelli bearing 16 units",
+          "sku": "17527030",
+          "price": 82.64
+        },
+        {
+          "name": "Wicked Hardware Nicoly Machaddo bearing 16 units",
+          "sku": "17527031",
+          "price": 63.92
+        },
+        {
+          "name": "Wicked Hardware Pastel 9 bearing 16 units",
+          "sku": "17527032",
+          "price": 37.41
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002410",
+          "price": 3.11
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002411",
+          "price": 3.11
+        },
+        {
+          "name": "Wicked Hardware SUV Rustproof bearing 4 units",
+          "sku": "14765765",
+          "price": 21.05
+        },
+        {
+          "name": "Wicked Hardware Twincam ILQ 9 CL bearing 16 units",
+          "sku": "17002416",
+          "price": 70.16
+        },
+        {
+          "name": "Wicked Hardware Abec 9 bearing 12 units",
+          "sku": "14765763",
+          "price": 276.04
+        },
+        {
+          "name": "Wicked Hardware Twincam ILQ 9 CL Bearing 12 units",
+          "sku": "17002415",
+          "price": 57.68
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002412",
+          "price": 2.32
+        },
+        {
+          "name": "Wicked Hardware Abec 9 bearing",
+          "sku": "11948606",
+          "price": 37.41
+        },
+        {
+          "name": "Wicked Hardware Abec 7 Carbon Pro bearing",
+          "sku": "11948607",
+          "price": 40.53
+        },
+        {
+          "name": "Wicked Hardware Inline Y multitool",
+          "sku": "11998180",
+          "price": 16.36
+        },
+        {
+          "name": "Undercover Wheels CL Slogan short sleeve T-shirt",
+          "sku": "16307976",
+          "price": 27.29
+        },
+        {
+          "name": "Undercover Wheels Vortex Wheel 4 units",
+          "sku": "151409018",
+          "price": 57.68
+        },
+        {
+          "name": "Undercover Wheels Team pro Wheel 3 units",
+          "sku": "151419713",
+          "price": 85.75
+        },
+        {
+          "name": "Undercover Wheels Team pro Wheel 4 units",
+          "sku": "151419715",
+          "price": 92.78
+        },
+        {
+          "name": "Undercover Wheels Lauric picard skates wheels 4 units",
+          "sku": "150398122",
+          "price": 61.58
+        },
+        {
+          "name": "Undercover Wheels Bobi spassov skates wheels 4 units",
+          "sku": "150398120",
+          "price": 61.58
+        },
+        {
+          "name": "Undercover Wheels Team pro skates wheels 3 units",
+          "sku": "150398126",
+          "price": 74.85
+        },
+        {
+          "name": "Undercover Wheels Team pro skates wheels 4 units",
+          "sku": "150398134",
+          "price": 87.33
+        },
+        {
+          "name": "Undercover Wheels Vortex skates wheels 3 units",
+          "sku": "150398135",
+          "price": 53.78
+        },
+        {
+          "name": "Undercover Wheels Vortex skates wheels 4 units",
+          "sku": "150398138",
+          "price": 46.77
+        },
+        {
+          "name": "Undercover Wheels Uc movies miriam fatmi skateboard wheels 4 units",
+          "sku": "144706313",
+          "price": 88.1
+        },
+        {
+          "name": "Undercover Wheels Uc movies joey lunger skateboard wheels 4 units",
+          "sku": "144706312",
+          "price": 74.06
+        },
+        {
+          "name": "Undercover Wheels Uc movies nick lomax skateboard wheels 4 units",
+          "sku": "144706314",
+          "price": 76.4
+        },
+        {
+          "name": "Undercover Wheels Earth skates wheels 4 units",
+          "sku": "141314603",
+          "price": 95.12
+        },
+        {
+          "name": "Undercover Wheels Antirocker skates wheels",
+          "sku": "141314600",
+          "price": 35.85
+        },
+        {
+          "name": "Undercover Wheels Antirocker skates wheels",
+          "sku": "141314601",
+          "price": 37.41
+        },
+        {
+          "name": "Undercover Wheels Antirocker skates wheels",
+          "sku": "141314602",
+          "price": 35.85
+        },
+        {
+          "name": "Undercover Wheels King of Slides skates wheels 4 units",
+          "sku": "141314604",
+          "price": 41.32
+        },
+        {
+          "name": "Undercover Wheels Team 86A Wheel 4 units",
+          "sku": "12116181",
+          "price": 66.26
+        },
+        {
+          "name": "Undercover Wheels Team 90A Wheel 4 units",
+          "sku": "12116198",
+          "price": 60.81
+        },
+        {
+          "name": "Undercover Wheels UC IT 90A skates wheels",
+          "sku": "17516577",
+          "price": 40.53
+        },
+        {
+          "name": "Undercover Wheels Team 92A Wheel 4 units",
+          "sku": "12116195",
+          "price": 56.13
+        },
+        {
+          "name": "Undercover Wheels Team skates wheels 3 units",
+          "sku": "141314606",
+          "price": 85.75
+        },
+        {
+          "name": "Undercover Wheels Team skates wheels 3 units",
+          "sku": "141314607",
+          "price": 99.79
+        },
+        {
+          "name": "Undercover Wheels Team 86A skates wheels 4 units",
+          "sku": "17516573",
+          "price": 88.88
+        },
+        {
+          "name": "Undercover Wheels Nick Lomax TV 88A skates wheels 4 units",
+          "sku": "17516561",
+          "price": 77.96
         }
       ]
     }

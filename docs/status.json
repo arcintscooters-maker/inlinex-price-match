@@ -1,8 +1,8 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-12T00:38:09.153Z",
+    "timestamp": "2026-04-12T00:42:30.528Z",
     "mode": "DRY RUN",
-    "durationMinutes": 0.7,
+    "durationMinutes": 1.2,
     "totalMatches": 0,
     "usUpdates": 0,
     "auUpdates": 0,
@@ -12,13 +12,6 @@
   },
   "priceChanges": [],
   "history": [
-    {
-      "timestamp": "2026-04-10T04:02:03.573Z",
-      "mode": "DRY RUN",
-      "usUpdates": 15,
-      "auUpdates": 0,
-      "status": "success"
-    },
     {
       "timestamp": "2026-04-10T04:07:04.333Z",
       "mode": "DRY RUN",
@@ -147,6 +140,13 @@
     },
     {
       "timestamp": "2026-04-12T00:38:09.153Z",
+      "mode": "DRY RUN",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "status": "success"
+    },
+    {
+      "timestamp": "2026-04-12T00:42:30.528Z",
       "mode": "DRY RUN",
       "usUpdates": 0,
       "auUpdates": 0,
