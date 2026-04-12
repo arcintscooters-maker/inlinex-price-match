@@ -22,7 +22,7 @@ const path = require('path');
 const IW_DISCOUNT = 0.95;         // 5% cheaper than IW
 const XT_DISCOUNT = 0.95;         // 5% cheaper than xtremeinn + shipping
 const XT_SHIPPING_USD = 40;       // Estimated xtremeinn shipping to US (midpoint of $30-50)
-const XT_SHIPPING_AUD = 40;       // Estimated xtremeinn shipping to AU (midpoint of $30-50)
+const XT_SHIPPING_AUD = 80;       // xtremeinn shipping to AU
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
 
@@ -172,7 +172,8 @@ async function main() {
       const auComp = xtAuMatch || null;
 
       if (auComp && auComp.currency === 'AUD') {
-        const auNewPrice = Math.round(auComp.price * XT_DISCOUNT * 100) / 100;
+        const totalXtPrice = auComp.price + XT_SHIPPING_AUD;
+        const auNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
 
         const currentAuPrice = auFixedPrices[variantGid] || (currentPrice * AU_DEFAULT_MARKUP);
 
@@ -185,7 +186,7 @@ async function main() {
           oldPrice: Math.round(currentAuPrice * 100) / 100,
           newPrice: auNewPrice,
           competitorPrice: auComp.price,
-          competitorSource: 'xtremeinn (free AU ship)',
+          competitorSource: `xtremeinn (+A$${XT_SHIPPING_AUD} ship)`,
           competitorUrl: auComp.url,
           matchMethod: xtAuMethod || 'name',
           variantGid,
