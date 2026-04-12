@@ -108,7 +108,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const matches = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
+  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
 
   // ==========================================
   // 5. Calculate new prices
@@ -269,7 +269,7 @@ async function main() {
   log('MAIN', `Report: ${reportPath}`);
 
   // Save dashboard status
-  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, null);
+  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, null, unmatched);
 
   // Set output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
@@ -303,7 +303,7 @@ function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
   log('MAIN', `Price history saved (${history.runs.length} runs)`);
 }
 
-function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, error) {
+function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, error, unmatched) {
   const docsDir = path.join(__dirname, 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
 
@@ -347,6 +347,14 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
       matchMethod: c.matchMethod,
       skipped: c.skipped,
       applied: c.applied,
+    })),
+    unmatched: (unmatched || []).map(u => ({
+      source: u.source,
+      name: u.name,
+      sku: u.sku,
+      price: u.price,
+      currency: u.currency,
+      url: u.url,
     })),
     history: existing.history,
   };

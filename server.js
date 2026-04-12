@@ -93,6 +93,43 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Save a manual mapping
+  if (url.pathname === '/api/mapping' && req.method === 'POST') {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try {
+        const { source, sku, shopifyMatch } = JSON.parse(body);
+        if (!source || !sku || !shopifyMatch) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Missing source, sku, or shopifyMatch' }));
+          return;
+        }
+
+        const mappingFile = path.join(__dirname, 'manual-mappings.json');
+        const data = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
+
+        // Check if mapping already exists
+        const exists = data.mappings.find(m => (m.source || 'iw') === source && (m.sku || m.iwSku) === sku);
+        if (exists) {
+          exists.shopifyMatch = shopifyMatch;
+        } else {
+          data.mappings.push({ source, sku, shopifyMatch, note: `Added from dashboard` });
+        }
+
+        fs.writeFileSync(mappingFile, JSON.stringify(data, null, 2));
+        console.log(`[SERVER] Mapping saved: ${source}:${sku} -> "${shopifyMatch}"`);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   // Get run logs
   if (url.pathname === '/api/logs') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });

@@ -48,6 +48,12 @@
   .badge.skipped { background: #fef3c7; color: #92400e; }
   .badge.pending { background: #e0e7ff; color: #3730a3; }
   .badge.error { background: #fee2e2; color: #991b1b; }
+  .badge.iw { background: #dbeafe; color: #1e40af; }
+  .badge.xt { background: #fce7f3; color: #9d174d; }
+  .map-input { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.8rem; width: 200px; }
+  .btn-map { padding: 5px 12px; background: #059669; color: #fff; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+  .btn-map:hover { opacity: 0.85; }
+  .btn-map.saved { background: #d1d5db; color: #666; cursor: default; }
   .badge.success-badge { background: #dcfce7; color: #166534; }
 
   /* Trigger panel */
@@ -132,6 +138,17 @@
     </table>
     <div class="empty" id="changesEmpty">No price changes yet. Run a price match to see results.</div>
   </div>
+
+  <!-- Unmatched Products -->
+  <h2>Unmatched Competitor Products</h2>
+  <div class="table-wrap" id="unmatchedWrap" style="display:none;">
+    <p style="font-size:0.85rem; color:#888; margin-bottom:10px;">These competitor products couldn't be matched to any Shopify product. Enter a Shopify product title keyword to create a manual mapping.</p>
+    <table>
+      <thead><tr><th>Source</th><th>Competitor Product</th><th>Price</th><th>Map to Shopify Product</th><th></th></tr></thead>
+      <tbody id="unmatchedBody"></tbody>
+    </table>
+  </div>
+  <div class="empty" id="unmatchedEmpty">No unmatched products.</div>
 
   <!-- Run History -->
   <h2>Run History</h2>
@@ -294,6 +311,31 @@ function render() {
         <td>${esc(c.competitor || '')}<br><small>${sym}${(c.competitorPrice||0).toFixed(2)}</small></td>
         <td>${esc(c.matchMethod || '')}</td>
         <td>${statusBadge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Unmatched products
+  const uBody = document.getElementById('unmatchedBody');
+  const uWrap = document.getElementById('unmatchedWrap');
+  const uEmpty = document.getElementById('unmatchedEmpty');
+  const unmatchedList = statusData.unmatched || [];
+
+  if (unmatchedList.length === 0) {
+    uWrap.style.display = 'none';
+    uEmpty.style.display = 'block';
+  } else {
+    uWrap.style.display = 'block';
+    uEmpty.style.display = 'none';
+    uBody.innerHTML = unmatchedList.map((u, i) => {
+      const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
+      const sym = u.currency === 'AUD' ? 'A$' : '$';
+      return `<tr>
+        <td>${srcBadge}</td>
+        <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}</small></td>
+        <td>${sym}${u.price.toFixed(2)}</td>
+        <td><input class="map-input" id="map-${i}" placeholder="e.g. Vortex 80mm"></td>
+        <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
       </tr>`;
     }).join('');
   }
@@ -529,6 +571,42 @@ function startProgressPolling() {
   showProgress(2, 'Queued...', 'running');
   if (progressTimer) clearInterval(progressTimer);
   progressTimer = setInterval(pollRunProgress, 5000);
+}
+
+// --- Manual mapping ---
+
+async function saveMapping(source, sku, idx) {
+  const input = document.getElementById(`map-${idx}`);
+  const btn = document.getElementById(`mapbtn-${idx}`);
+  const val = input.value.trim();
+  if (!val) { input.style.borderColor = '#ef4444'; return; }
+
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+
+  try {
+    if (isRailway) {
+      const res = await fetch(`${API_BASE}/api/mapping`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source, sku, shopifyMatch: val })
+      });
+      if (!res.ok) throw new Error('Server error');
+    } else {
+      // GitHub Pages — can't save server-side, show instructions
+      btn.textContent = 'Copy';
+      alert(`Add this to manual-mappings.json:\n\n{ "source": "${source}", "sku": "${sku}", "shopifyMatch": "${val}" }`);
+      return;
+    }
+    btn.textContent = 'Saved';
+    btn.className = 'btn-map saved';
+    input.disabled = true;
+    input.style.borderColor = '#22c55e';
+  } catch (e) {
+    btn.textContent = 'Error';
+    btn.disabled = false;
+    alert('Failed to save: ' + e.message);
+  }
 }
 
 // --- Source dropdown logic ---
