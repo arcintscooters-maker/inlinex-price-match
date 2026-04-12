@@ -1,16 +1,27 @@
 {
-  "_comment": "Manual product mappings for products where fuzzy matching fails. Only needed for single-variant IW products with ambiguous names.",
+  "_comment": "Manual mappings: source 'iw' or 'xt' + SKU -> Shopify product title substring",
   "mappings": [
-    { "iwSku": "904641", "shopifyMatch": "Accel Race Black Boot", "note": "PS Accel Race Black Boot $399.97" },
-    { "iwSku": "904643", "shopifyMatch": "Accel Race Reflective Boot", "note": "PS Accel Race Reflective Boot $349.95" },
-    { "iwSku": "904640", "shopifyMatch": "Accel Black 100 Racing", "note": "PS Accel Race 100 complete $549.95" },
-    { "iwSku": "904639", "shopifyMatch": "Accel Black 110 Racing", "note": "PS Accel 110/100 complete $549.95" },
-    { "iwSku": "904626", "shopifyMatch": "Accel Race 195 Boot", "note": "PS Accel 195 boot $479.95" },
+    { "source": "iw", "sku": "904641", "shopifyMatch": "Accel Race Black Boot", "note": "PS Accel Race Black Boot $399.97" },
+    { "source": "iw", "sku": "904643", "shopifyMatch": "Accel Race Reflective Boot", "note": "PS Accel Race Reflective Boot $349.95" },
+    { "source": "iw", "sku": "904640", "shopifyMatch": "Accel Black 100 Racing", "note": "PS Accel Race 100 complete $549.95" },
+    { "source": "iw", "sku": "904639", "shopifyMatch": "Accel Black 110 Racing", "note": "PS Accel 110/100 complete $549.95" },
+    { "source": "iw", "sku": "904626", "shopifyMatch": "Accel Race 195 Boot", "note": "PS Accel 195 boot $479.95" },
+    { "source": "iw", "sku": "406371", "shopifyMatch": "Eugen Enin 58/90A", "note": "UC Eugen Enin Pro 58mm $55" },
+    { "source": "iw", "sku": "406370", "shopifyMatch": "Lauric Picard 60/90A", "note": "UC Lauric Picard $48.99" },
+    { "source": "iw", "sku": "406369", "shopifyMatch": "Bobi Spassov 60/90A", "note": "UC Bobi Spassov $47.99" },
+    { "source": "iw", "sku": "406366", "shopifyMatch": "Jay Yoon 58/92A", "note": "UC Jay Yoon $55" },
+    { "source": "iw", "sku": "406403", "shopifyMatch": "Nick Lomax 80mm/88A", "note": "UC Nick Lomax Movie II $49.97" },
 
-    { "iwSku": "406371", "shopifyMatch": "Eugen Enin 58/90A", "note": "UC Eugen Enin Pro 58mm $55" },
-    { "iwSku": "406370", "shopifyMatch": "Lauric Picard 60/90A", "note": "UC Lauric Picard $48.99" },
-    { "iwSku": "406369", "shopifyMatch": "Bobi Spassov 60/90A", "note": "UC Bobi Spassov $47.99" },
-    { "iwSku": "406366", "shopifyMatch": "Jay Yoon 58/92A", "note": "UC Jay Yoon $55" },
-    { "iwSku": "406403", "shopifyMatch": "Nick Lomax 80mm/88A", "note": "UC Nick Lomax Movie II $49.97" }
+    { "source": "xt", "sku": "151419715", "shopifyMatch": "Team PRO 80 White", "note": "XT UC Team Pro Wheel 4 units" },
+    { "source": "xt", "sku": "150398134", "shopifyMatch": "Team PRO 80 White", "note": "XT UC Team Pro skates wheels 4 units" },
+    { "source": "xt", "sku": "151419713", "shopifyMatch": "Team PRO 100 White", "note": "XT UC Team Pro Wheel 3 units" },
+    { "source": "xt", "sku": "150398126", "shopifyMatch": "Team PRO 100 White", "note": "XT UC Team Pro skates wheels 3 units" },
+    { "source": "xt", "sku": "151409018", "shopifyMatch": "Vortex 80mm", "note": "XT UC Vortex Wheel 4 units" },
+    { "source": "xt", "sku": "150398138", "shopifyMatch": "Vortex 68mm", "note": "XT UC Vortex skates wheels 4 units" },
+    { "source": "xt", "sku": "150398135", "shopifyMatch": "Vortex 110mm", "note": "XT UC Vortex skates wheels 3 units" },
+    { "source": "xt", "sku": "150398122", "shopifyMatch": "Lauric Picard 60/90A", "note": "XT UC Lauric Picard wheels 4 units" },
+    { "source": "xt", "sku": "150398120", "shopifyMatch": "Bobi Spassov 60/90A", "note": "XT UC Bobi Spassov wheels 4 units" },
+    { "source": "xt", "sku": "144706314", "shopifyMatch": "Nick Lomax Movies 80mm", "note": "XT UC Movies Nick Lomax wheels 4 units" },
+    { "source": "xt", "sku": "144706313", "shopifyMatch": "Miriam Fatmi Movie", "note": "XT UC Movies Miriam Fatmi wheels 4 units" }
   ]
 }
