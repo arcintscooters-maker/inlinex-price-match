@@ -1,123 +1,6 @@
 {
   "runs": [
     {
-      "timestamp": "2026-04-10T08:39:31.978Z",
-      "iw": [],
-      "xt_us": [],
-      "xt_au": [
-        {
-          "name": "Powerslide Rutscherla II ice skates",
-          "sku": "12152991",
-          "price": 42.22
-        },
-        {
-          "name": "Powerslide Iceglider ice skates",
-          "sku": "11997631",
-          "price": 31.27
-        },
-        {
-          "name": "Powerslide Next Core 110 inline skates",
-          "sku": "141287731",
-          "price": 351.95
-        },
-        {
-          "name": "Powerslide Urban Brake",
-          "sku": "11948569",
-          "price": 25.02
-        },
-        {
-          "name": "Powerslide Phuzion Argon Syncro 110 inline skates",
-          "sku": "12513004",
-          "price": 372.28
-        },
-        {
-          "name": "Powerslide Torrent Rain Wheel 4 units",
-          "sku": "12116172",
-          "price": 64.12
-        },
-        {
-          "name": "Powerslide Hex Mounting Screw 17 mm",
-          "sku": "12009540",
-          "price": 3.11
-        },
-        {
-          "name": "Powerslide Spinner 4 Units Wheel",
-          "sku": "11998158",
-          "price": 39.88
-        },
-        {
-          "name": "Powerslide Hex mounting 13.5mm screw",
-          "sku": "145205309",
-          "price": 3.11
-        },
-        {
-          "name": "Powerslide Road Warrior Air Tire II",
-          "sku": "11998169",
-          "price": 15.63
-        },
-        {
-          "name": "Powerslide Infinity 85A Wheel 4 units",
-          "sku": "12116139",
-          "price": 54.74
-        },
-        {
-          "name": "Powerslide Classic Set+Receptor buckle",
-          "sku": "16089108",
-          "price": 10.93
-        },
-        {
-          "name": "Powerslide CST Jacket For Air Tire Cover",
-          "sku": "11998173",
-          "price": 23.44
-        },
-        {
-          "name": "Powerslide Spinner 85A Wheel 4 units",
-          "sku": "12116169",
-          "price": 48.48
-        },
-        {
-          "name": "Powerslide Next 110 inline skates",
-          "sku": "16089190",
-          "price": 297.98
-        },
-        {
-          "name": "Powerslide Phuzion Radon 90 inline skates",
-          "sku": "16089259",
-          "price": 206.46
-        },
-        {
-          "name": "Powerslide Zoom Renegade 125 inline skates",
-          "sku": "12513227",
-          "price": 574.05
-        },
-        {
-          "name": "Powerslide Ares inline skates",
-          "sku": "11998064",
-          "price": 164.22
-        },
-        {
-          "name": "Powerslide Skater Finger Bell",
-          "sku": "11997478",
-          "price": 17.18
-        },
-        {
-          "name": "Powerslide King of slides skates wheels 4 units",
-          "sku": "150398065",
-          "price": 39.09
-        },
-        {
-          "name": "Powerslide Zoom 80 2023 inline skates",
-          "sku": "140205752",
-          "price": 190.81
-        },
-        {
-          "name": "Powerslide Khaan NXT Adjustable junior inline skates",
-          "sku": "16089158",
-          "price": 128.25
-        }
-      ]
-    },
-    {
       "timestamp": "2026-04-10T09:52:02.763Z",
       "iw": [
         {
@@ -8143,6 +8026,128 @@
           "name": "Undercover Wheels Nick Lomax TV 88A skates wheels 4 units",
           "sku": "17516561",
           "price": 77.96
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-04-12T23:48:30.323Z",
+      "iw": [],
+      "xt_us": [],
+      "xt_au": [
+        {
+          "name": "Usd Skates Shadow team inline skates",
+          "sku": "151589316",
+          "price": 467.86
+        },
+        {
+          "name": "Usd Skates Aeon 80 sand inline skates",
+          "sku": "151589312",
+          "price": 438.23
+        },
+        {
+          "name": "Usd Skates Aeon Samoa crofts v inline skates",
+          "sku": "151409031",
+          "price": 561.43
+        },
+        {
+          "name": "Usd Skates Sway chess inline skates",
+          "sku": "151409050",
+          "price": 342.3
+        },
+        {
+          "name": "Usd Skates Core tri-pack protective set",
+          "sku": "151409034",
+          "price": 77.19
+        },
+        {
+          "name": "Usd Skates Sway carlos bernal ii inline skates",
+          "sku": "151409038",
+          "price": 390.65
+        },
+        {
+          "name": "Usd Skates Sway chess inline skates",
+          "sku": "151409067",
+          "price": 329.05
+        },
+        {
+          "name": "Usd Skates Sway witzemann ii inline skates",
+          "sku": "150398279",
+          "price": 486.58
+        },
+        {
+          "name": "Usd Skates Glitch vikings on skates adjustable junior inline skates",
+          "sku": "150398145",
+          "price": 290.07
+        },
+        {
+          "name": "Usd Skates Aeon 60 nicoly pro inline skates",
+          "sku": "150398142",
+          "price": 530.24
+        },
+        {
+          "name": "Usd Skates Aeon team 60 inline skates",
+          "sku": "145205467",
+          "price": 343.88
+        },
+        {
+          "name": "Usd Skates Shadow team inline skates",
+          "sku": "145935289",
+          "price": 467.86
+        },
+        {
+          "name": "Usd Skates Aeon bladies fabiola da silva inline skates",
+          "sku": "145205461",
+          "price": 489.69
+        },
+        {
+          "name": "Usd Skates Glitch adjustable inline skates",
+          "sku": "145205473",
+          "price": 241.72
+        },
+        {
+          "name": "Usd Skates Shadow Team 60 inline skates",
+          "sku": "141293035",
+          "price": 378.96
+        },
+        {
+          "name": "Usd Skates Aeon Richie Eisler 60 inline skates",
+          "sku": "141293001",
+          "price": 467.86
+        },
+        {
+          "name": "Usd Skates Aeon 60 Lomax Pro inline skates",
+          "sku": "141415566",
+          "price": 420.3
+        },
+        {
+          "name": "Usd Skates Sway 58 XXIV inline skates",
+          "sku": "141293042",
+          "price": 266.67
+        },
+        {
+          "name": "Usd Skates Transformer Adjustable junior inline skates",
+          "sku": "16156830",
+          "price": 243.28
+        },
+        {
+          "name": "Usd Skates Sway Sagona Allstar inline skates",
+          "sku": "16156811",
+          "price": 290.84
+        },
+        {
+          "name": "Usd Skates Aeon Samoa Crofts IV inline skates",
+          "sku": "141293006",
+          "price": 439.79
+        },
+        {
+          "name": "Usd Skates Sway Team 60 inline skates",
+          "sku": "140344620",
+          "price": 312.67
+        },
+        {
+          "name": "Usd Skates Aeon Team 60 inline skates",
+          "sku": "140344557",
+          "price": 325.15
         }
       ]
     }
