@@ -69,6 +69,14 @@
   .feedback.err { color: #dc2626; }
   .token-status { font-size: 0.8rem; color: #888; }
 
+  /* Progress bar */
+  .progress-wrap { margin-top: 12px; display: none; }
+  .progress-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; transition: width 0.5s ease; width: 0%; }
+  .progress-fill.done { background: #22c55e; }
+  .progress-fill.error { background: #ef4444; }
+  .progress-text { font-size: 0.8rem; color: #666; margin-top: 4px; display: flex; justify-content: space-between; }
+
   /* Empty state */
   .empty { text-align: center; padding: 40px; color: #999; }
 
@@ -190,6 +198,10 @@
       <button class="btn-live" onclick="triggerRun(false)">Live Run</button>
     </div>
     <div class="feedback" id="triggerFeedback"></div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text"><span id="progressLabel">Queued...</span><span id="progressPct">0%</span></div>
+    </div>
     <div id="tokenSetup" style="display:none; margin-top:10px;">
       <div class="panel-row">
         <input type="password" id="tokenInput" placeholder="GitHub PAT (repo scope) — one-time setup">
@@ -348,8 +360,9 @@ async function triggerRun(dryRun) {
     if (res.status === 204) {
       const label = brands || 'All Brands';
       const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : 'Both';
-      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}) vs ${srcLabel}. Check back in a few minutes.`;
+      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}) vs ${srcLabel}.`;
       fb.className = 'feedback ok';
+      startProgressPolling();
     } else {
       const data = await res.json().catch(() => ({}));
       if (res.status === 401) {
@@ -390,6 +403,90 @@ function timeAgo(iso) {
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+// --- Progress tracking ---
+
+let progressTimer = null;
+
+function showProgress(pct, label, state) {
+  const wrap = document.getElementById('progressWrap');
+  const fill = document.getElementById('progressFill');
+  const lbl = document.getElementById('progressLabel');
+  const pctEl = document.getElementById('progressPct');
+  wrap.style.display = 'block';
+  fill.style.width = pct + '%';
+  fill.className = 'progress-fill' + (state === 'done' ? ' done' : state === 'error' ? ' error' : '');
+  lbl.textContent = label;
+  pctEl.textContent = Math.round(pct) + '%';
+}
+
+async function pollRunProgress() {
+  const token = localStorage.getItem('ghToken');
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${REPO_API}/actions/runs?per_page=1&status=in_progress`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+
+    // Also check queued runs
+    const res2 = await fetch(`${REPO_API}/actions/runs?per_page=1&status=queued`, {
+      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    const data2 = await res2.json();
+
+    const run = data.workflow_runs?.[0] || data2.workflow_runs?.[0];
+
+    if (!run) {
+      // No active run — check the latest completed one
+      const res3 = await fetch(`${REPO_API}/actions/runs?per_page=1`, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      const data3 = await res3.json();
+      const latest = data3.workflow_runs?.[0];
+
+      if (latest && latest.conclusion) {
+        const ok = latest.conclusion === 'success';
+        showProgress(100, ok ? 'Complete!' : 'Failed', ok ? 'done' : 'error');
+        clearInterval(progressTimer);
+        progressTimer = null;
+        loadStatus(); // Refresh dashboard data
+      }
+      return;
+    }
+
+    // Run is active — estimate progress based on elapsed time
+    const started = new Date(run.run_started_at || run.created_at);
+    const elapsed = (Date.now() - started) / 1000;
+
+    // Estimate: IW only ~2min, XT ~10min, both ~12min
+    const source = document.getElementById('sourceSelect').value;
+    const estTotal = source === 'iw' ? 120 : source === 'xt' ? 600 : 720;
+    const pct = Math.min(95, (elapsed / estTotal) * 100);
+
+    // Determine step from elapsed time
+    let step = 'Fetching products...';
+    if (elapsed < 10) step = 'Setting up...';
+    else if (elapsed < 30) step = 'Fetching Shopify products...';
+    else if (elapsed < estTotal * 0.6) step = source === 'xt' ? 'Scraping xtremeinn (Puppeteer)...' : 'Scraping competitor prices...';
+    else if (elapsed < estTotal * 0.85) step = 'Matching products...';
+    else step = 'Calculating prices & generating report...';
+
+    if (run.status === 'queued') step = 'Queued, waiting for runner...';
+
+    showProgress(pct, step, 'running');
+  } catch (e) {
+    // Silently ignore polling errors
+  }
+}
+
+function startProgressPolling() {
+  showProgress(2, 'Queued...', 'running');
+  if (progressTimer) clearInterval(progressTimer);
+  progressTimer = setInterval(pollRunProgress, 5000);
+}
 
 // --- Source dropdown logic ---
 
