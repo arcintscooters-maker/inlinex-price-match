@@ -204,7 +204,7 @@
     </div>
     <div id="tokenSetup" style="display:none; margin-top:10px;">
       <div class="panel-row">
-        <input type="password" id="tokenInput" placeholder="GitHub PAT (repo scope) — one-time setup">
+        <input type="password" id="tokenInput" placeholder="API key or GitHub PAT — one-time setup">
         <button class="btn-save" onclick="saveToken()">Save</button>
       </div>
     </div>
@@ -215,6 +215,10 @@
 const REPO = 'arcintscooters-maker/inlinex-price-match';
 const WORKFLOW = 'price-match.yml';
 const REPO_API = `https://api.github.com/repos/${REPO}`;
+
+// Auto-detect: if served from Railway, use Railway API; otherwise use GitHub Actions
+const isRailway = !location.hostname.includes('github.io') && location.hostname !== '';
+const API_BASE = isRailway ? '' : null; // empty string = same origin on Railway
 
 let statusData = null;
 let sortCol = -1, sortAsc = true;
@@ -335,44 +339,62 @@ function sortTable(col) {
 
 async function triggerRun(dryRun) {
   const token = localStorage.getItem('ghToken');
-  if (!token) {
-    document.getElementById('tokenSetup').style.display = 'block';
-    document.getElementById('triggerFeedback').textContent = 'Enter your GitHub PAT first (one-time setup).';
-    document.getElementById('triggerFeedback').className = 'feedback err';
-    return;
-  }
-
   const fb = document.getElementById('triggerFeedback');
-  fb.textContent = 'Triggering...';
-  fb.className = 'feedback';
-
   const brands = document.getElementById('brandsSelect').value;
   const markets = document.getElementById('marketSelect').value;
   const source = document.getElementById('sourceSelect').value;
+  const label = brands || 'All Brands';
+  const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : 'Both';
+
+  fb.textContent = 'Triggering...';
+  fb.className = 'feedback';
 
   try {
-    const res = await fetch(`${REPO_API}/actions/workflows/${WORKFLOW}/dispatches`, {
-      method: 'POST',
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands, markets, source } })
-    });
-
-    if (res.status === 204) {
-      const label = brands || 'All Brands';
-      const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : 'Both';
-      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}) vs ${srcLabel}.`;
-      fb.className = 'feedback ok';
-      startProgressPolling();
-    } else {
-      const data = await res.json().catch(() => ({}));
-      if (res.status === 401) {
-        localStorage.removeItem('ghToken');
-        document.getElementById('tokenSetup').style.display = 'block';
-        fb.textContent = 'Token expired or invalid. Please enter a new one.';
+    if (isRailway) {
+      // Railway API — trigger directly on the server
+      const apiKey = token || 'inlinex-price-match-2026';
+      const res = await fetch(`${API_BASE}/api/run`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dry_run: dryRun, brands, markets, source })
+      });
+      const data = await res.json();
+      if (res.status === 202) {
+        fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} started for ${label} (${markets}) vs ${srcLabel}.`;
+        fb.className = 'feedback ok';
+        startProgressPolling();
       } else {
-        fb.textContent = `Failed: ${data.message || res.status}`;
+        fb.textContent = `Failed: ${data.error || res.status}`;
+        fb.className = 'feedback err';
       }
-      fb.className = 'feedback err';
+    } else {
+      // GitHub Actions API fallback
+      if (!token) {
+        document.getElementById('tokenSetup').style.display = 'block';
+        fb.textContent = 'Enter your GitHub PAT first (one-time setup).';
+        fb.className = 'feedback err';
+        return;
+      }
+      const res = await fetch(`${REPO_API}/actions/workflows/${WORKFLOW}/dispatches`, {
+        method: 'POST',
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+        body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands, markets, source } })
+      });
+      if (res.status === 204) {
+        fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}) vs ${srcLabel}.`;
+        fb.className = 'feedback ok';
+        startProgressPolling();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          localStorage.removeItem('ghToken');
+          document.getElementById('tokenSetup').style.display = 'block';
+          fb.textContent = 'Token expired or invalid. Please enter a new one.';
+        } else {
+          fb.textContent = `Failed: ${data.message || res.status}`;
+        }
+        fb.className = 'feedback err';
+      }
     }
   } catch (e) {
     fb.textContent = `Error: ${e.message}`;
@@ -421,62 +443,84 @@ function showProgress(pct, label, state) {
 }
 
 async function pollRunProgress() {
-  const token = localStorage.getItem('ghToken');
-  if (!token) return;
-
   try {
-    const res = await fetch(`${REPO_API}/actions/runs?per_page=1&status=in_progress`, {
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    if (!res.ok) return;
-    const data = await res.json();
+    if (isRailway) {
+      // Poll Railway server directly
+      const res = await fetch(`${API_BASE}/api/status`);
+      if (!res.ok) return;
+      const data = await res.json();
 
-    // Also check queued runs
-    const res2 = await fetch(`${REPO_API}/actions/runs?per_page=1&status=queued`, {
-      headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-    const data2 = await res2.json();
+      if (data.status === 'running') {
+        const source = document.getElementById('sourceSelect').value;
+        const estTotal = source === 'iw' ? 120 : source === 'xt' ? 600 : 720;
+        const pct = Math.min(95, (data.elapsed / estTotal) * 100);
 
-    const run = data.workflow_runs?.[0] || data2.workflow_runs?.[0];
+        let step = 'Running...';
+        if (data.elapsed < 10) step = 'Setting up...';
+        else if (data.elapsed < 30) step = 'Fetching Shopify products...';
+        else if (data.elapsed < estTotal * 0.6) step = source === 'xt' ? 'Scraping xtremeinn (Puppeteer)...' : 'Scraping competitor prices...';
+        else if (data.elapsed < estTotal * 0.85) step = 'Matching products...';
+        else step = 'Calculating prices & generating report...';
 
-    if (!run) {
-      // No active run — check the latest completed one
-      const res3 = await fetch(`${REPO_API}/actions/runs?per_page=1`, {
-        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-      });
-      const data3 = await res3.json();
-      const latest = data3.workflow_runs?.[0];
-
-      if (latest && latest.conclusion) {
-        const ok = latest.conclusion === 'success';
+        showProgress(pct, step, 'running');
+      } else if (data.status === 'success' || data.status === 'error') {
+        const ok = data.status === 'success';
         showProgress(100, ok ? 'Complete!' : 'Failed', ok ? 'done' : 'error');
         clearInterval(progressTimer);
         progressTimer = null;
-        loadStatus(); // Refresh dashboard data
+        loadStatus();
       }
-      return;
+    } else {
+      // GitHub Actions polling
+      const token = localStorage.getItem('ghToken');
+      if (!token) return;
+
+      const res = await fetch(`${REPO_API}/actions/runs?per_page=1&status=in_progress`, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+
+      const res2 = await fetch(`${REPO_API}/actions/runs?per_page=1&status=queued`, {
+        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      const data2 = await res2.json();
+
+      const run = data.workflow_runs?.[0] || data2.workflow_runs?.[0];
+
+      if (!run) {
+        const res3 = await fetch(`${REPO_API}/actions/runs?per_page=1`, {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        const data3 = await res3.json();
+        const latest = data3.workflow_runs?.[0];
+
+        if (latest && latest.conclusion) {
+          const ok = latest.conclusion === 'success';
+          showProgress(100, ok ? 'Complete!' : 'Failed', ok ? 'done' : 'error');
+          clearInterval(progressTimer);
+          progressTimer = null;
+          loadStatus();
+        }
+        return;
+      }
+
+      const started = new Date(run.run_started_at || run.created_at);
+      const elapsed = (Date.now() - started) / 1000;
+      const source = document.getElementById('sourceSelect').value;
+      const estTotal = source === 'iw' ? 120 : source === 'xt' ? 600 : 720;
+      const pct = Math.min(95, (elapsed / estTotal) * 100);
+
+      let step = 'Running...';
+      if (elapsed < 10) step = 'Setting up...';
+      else if (elapsed < 30) step = 'Fetching Shopify products...';
+      else if (elapsed < estTotal * 0.6) step = source === 'xt' ? 'Scraping xtremeinn (Puppeteer)...' : 'Scraping competitor prices...';
+      else if (elapsed < estTotal * 0.85) step = 'Matching products...';
+      else step = 'Calculating prices & generating report...';
+
+      if (run.status === 'queued') step = 'Queued, waiting for runner...';
+      showProgress(pct, step, 'running');
     }
-
-    // Run is active — estimate progress based on elapsed time
-    const started = new Date(run.run_started_at || run.created_at);
-    const elapsed = (Date.now() - started) / 1000;
-
-    // Estimate: IW only ~2min, XT ~10min, both ~12min
-    const source = document.getElementById('sourceSelect').value;
-    const estTotal = source === 'iw' ? 120 : source === 'xt' ? 600 : 720;
-    const pct = Math.min(95, (elapsed / estTotal) * 100);
-
-    // Determine step from elapsed time
-    let step = 'Fetching products...';
-    if (elapsed < 10) step = 'Setting up...';
-    else if (elapsed < 30) step = 'Fetching Shopify products...';
-    else if (elapsed < estTotal * 0.6) step = source === 'xt' ? 'Scraping xtremeinn (Puppeteer)...' : 'Scraping competitor prices...';
-    else if (elapsed < estTotal * 0.85) step = 'Matching products...';
-    else step = 'Calculating prices & generating report...';
-
-    if (run.status === 'queued') step = 'Queued, waiting for runner...';
-
-    showProgress(pct, step, 'running');
   } catch (e) {
     // Silently ignore polling errors
   }
