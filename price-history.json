@@ -1,213 +1,6 @@
 {
   "runs": [
     {
-      "timestamp": "2026-04-10T06:05:29.937Z",
-      "iw": [
-        {
-          "name": "UnderCover Team Pro 80mm",
-          "sku": "UCTPRO-80",
-          "price": 65
-        },
-        {
-          "name": "UnderCover Team Pro 84mm",
-          "sku": "UCTPRO-84",
-          "price": 65
-        },
-        {
-          "name": "UnderCover Team Pro 90mm",
-          "sku": "UCTPRO-90",
-          "price": 64.95
-        },
-        {
-          "name": "UnderCover Team Pro 100mm",
-          "sku": "UCTPRO-95",
-          "price": 72.99
-        },
-        {
-          "name": "UnderCover Team Pro 110mm",
-          "sku": "UCTPRO-97",
-          "price": 64.95
-        },
-        {
-          "name": "UnderCover Team Pro 110mm",
-          "sku": "UCTPRO-97",
-          "price": 64.95
-        },
-        {
-          "name": "UnderCover Team Pro 125mm",
-          "sku": "UCTPRO-98",
-          "price": 69.95
-        },
-        {
-          "name": "UnderCover Team Wheels",
-          "sku": "U406269",
-          "price": 49.95
-        },
-        {
-          "name": "UnderCover Team 90mm",
-          "sku": "406268",
-          "price": 59.99
-        },
-        {
-          "name": "UnderCover Vortex 110-125mm/Urban 110mm",
-          "sku": "406364-97",
-          "price": 55
-        },
-        {
-          "name": "UnderCover Vortex 110-125mm/Urban 125mm",
-          "sku": "406364-98",
-          "price": 55
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 68mm",
-          "sku": "406356-68",
-          "price": 38
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 72mm",
-          "sku": "406356-72",
-          "price": 38
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 76mm",
-          "sku": "406356-76",
-          "price": 38
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 80mm",
-          "sku": "406356-80",
-          "price": 42
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 84mm",
-          "sku": "406356-84",
-          "price": 45
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 90mm",
-          "sku": "406356-90",
-          "price": 48
-        },
-        {
-          "name": "UnderCover Vortex 68-100mm 100mm",
-          "sku": "406356-95",
-          "price": 50
-        },
-        {
-          "name": "UnderCover Team Wheels",
-          "sku": "U406267",
-          "price": 59.95
-        },
-        {
-          "name": "UnderCover Team Wheels",
-          "sku": "406265",
-          "price": 69.99
-        },
-        {
-          "name": "UnderCover Nick Lomax Movie II",
-          "sku": "406403",
-          "price": 49.97
-        },
-        {
-          "name": "UnderCover King of Slides 76mm",
-          "sku": "406294-76",
-          "price": 35
-        },
-        {
-          "name": "UnderCover King of Slides 80mm",
-          "sku": "406294-80",
-          "price": 35
-        },
-        {
-          "name": "UnderCover Team Wheels",
-          "sku": "U406185",
-          "price": 44.95
-        },
-        {
-          "name": "UnderCover Team 80mm",
-          "sku": "406179",
-          "price": 49.95
-        },
-        {
-          "name": "UnderCover Team 110mm",
-          "sku": "406266",
-          "price": 59.99
-        },
-        {
-          "name": "UnderCover Eugen Enin Pro 58mm",
-          "sku": "406371",
-          "price": 55
-        },
-        {
-          "name": "UnderCover Lauric Picard",
-          "sku": "406370",
-          "price": 48.99
-        },
-        {
-          "name": "UnderCover Bobi Spassov",
-          "sku": "406369",
-          "price": 47.99
-        },
-        {
-          "name": "UnderCover Jay Yoon",
-          "sku": "406366",
-          "price": 55
-        },
-        {
-          "name": "UnderCover Team 60mm",
-          "sku": "406182",
-          "price": 44.95
-        },
-        {
-          "name": "UnderCover Vortex 58-64mm 58mm",
-          "sku": "406354-58",
-          "price": 44
-        },
-        {
-          "name": "UnderCover Vortex 58-64mm 60mm",
-          "sku": "406354-60",
-          "price": 44
-        },
-        {
-          "name": "UnderCover Vortex 58-64mm 64mm",
-          "sku": "406354-64",
-          "price": 44
-        },
-        {
-          "name": "UnderCover Team Blank 55-60mm 55mm",
-          "sku": "U406184-55",
-          "price": 49.95
-        },
-        {
-          "name": "UnderCover Team Blank 55-60mm 58mm",
-          "sku": "U406184-58",
-          "price": 49.95
-        },
-        {
-          "name": "UnderCover Team 45-47mm 45mm",
-          "sku": "406349-45",
-          "price": 26.99
-        },
-        {
-          "name": "UnderCover Team 45-47mm 47mm",
-          "sku": "406349-47",
-          "price": 26.99
-        },
-        {
-          "name": "UnderCover Team 45-47mm 49mm",
-          "sku": "406349-49",
-          "price": 26.99
-        },
-        {
-          "name": "Flying Eagle Rampage",
-          "sku": "FERMP",
-          "price": 29.95
-        }
-      ],
-      "xt_us": [],
-      "xt_au": []
-    },
-    {
       "timestamp": "2026-04-10T07:43:34.677Z",
       "iw": [],
       "xt_us": [],
@@ -7686,6 +7479,143 @@
           "name": "Powerslide Swell Nite 125 3D Adapt Padding inline skates",
           "sku": "12513061",
           "price": 350.12
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-04-12T00:38:09.149Z",
+      "iw": [],
+      "xt_us": [],
+      "xt_au": [
+        {
+          "name": "Wicked Hardware Abec 7 fs bearing 8 units",
+          "sku": "151419720",
+          "price": 24.94
+        },
+        {
+          "name": "Wicked Hardware Caliber multitool",
+          "sku": "150398164",
+          "price": 155.93
+        },
+        {
+          "name": "Wicked Hardware Felix rijhnen ii bearing",
+          "sku": "145205498",
+          "price": 112.27
+        },
+        {
+          "name": "Wicked Hardware Wcd jason suttels 688 bearing",
+          "sku": "145205502",
+          "price": 170.76
+        },
+        {
+          "name": "Wicked Hardware Extreme pro bearing",
+          "sku": "145205497",
+          "price": 71.72
+        },
+        {
+          "name": "Wicked Hardware Wcd 688 adapter",
+          "sku": "145205500",
+          "price": 28.84
+        },
+        {
+          "name": "Wicked Hardware Wcd 688 mg skate bushings",
+          "sku": "145205501",
+          "price": 19.47
+        },
+        {
+          "name": "Wicked Hardware Fr ceramic bearing",
+          "sku": "145205499",
+          "price": 169.2
+        },
+        {
+          "name": "Wicked Hardware Aero racing team short sleeve suit",
+          "sku": "144708177",
+          "price": 279.94
+        },
+        {
+          "name": "Wicked Hardware Precision Kit Bushings",
+          "sku": "141319940",
+          "price": 99.02
+        },
+        {
+          "name": "Wicked Hardware Smart Bearing Remover multitool",
+          "sku": "17527033",
+          "price": 18.7
+        },
+        {
+          "name": "Wicked Hardware Felix Rijhnen bearing 16 units",
+          "sku": "17527028",
+          "price": 113.83
+        },
+        {
+          "name": "Wicked Hardware Nick Lomax bearing 16 units",
+          "sku": "17527029",
+          "price": 107.59
+        },
+        {
+          "name": "Wicked Hardware Nicola Torelli bearing 16 units",
+          "sku": "17527030",
+          "price": 82.64
+        },
+        {
+          "name": "Wicked Hardware Nicoly Machaddo bearing 16 units",
+          "sku": "17527031",
+          "price": 63.92
+        },
+        {
+          "name": "Wicked Hardware Pastel 9 bearing 16 units",
+          "sku": "17527032",
+          "price": 37.41
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002410",
+          "price": 3.11
+        },
+        {
+          "name": "Wicked Hardware SUV Rustproof bearing 4 units",
+          "sku": "14765765",
+          "price": 21.05
+        },
+        {
+          "name": "Wicked Hardware Twincam ILQ 9 CL bearing 16 units",
+          "sku": "17002416",
+          "price": 70.16
+        },
+        {
+          "name": "Wicked Hardware Abec 9 bearing 12 units",
+          "sku": "14765763",
+          "price": 276.04
+        },
+        {
+          "name": "Wicked Hardware Twincam ILQ 9 CL Bearing 12 units",
+          "sku": "17002415",
+          "price": 57.68
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002412",
+          "price": 2.32
+        },
+        {
+          "name": "Wicked Hardware Abec 9 bearing",
+          "sku": "11948606",
+          "price": 37.41
+        },
+        {
+          "name": "Wicked Hardware Precision AL Bushings",
+          "sku": "17002411",
+          "price": 3.11
+        },
+        {
+          "name": "Wicked Hardware Abec 7 Carbon Pro bearing",
+          "sku": "11948607",
+          "price": 40.53
+        },
+        {
+          "name": "Wicked Hardware Inline Y multitool",
+          "sku": "11998180",
+          "price": 16.36
         }
       ]
     }
