@@ -17,6 +17,10 @@ on:
         description: 'Markets to update: US, AU, or US,AU'
         type: string
         default: 'US'
+      source:
+        description: 'Competitor source: iw, xt, or both'
+        type: string
+        default: 'both'
 
 permissions:
   contents: write
@@ -52,6 +56,9 @@ jobs:
           fi
           if [ -n "${{ inputs.markets }}" ]; then
             ARGS="$ARGS --markets=${{ inputs.markets }}"
+          fi
+          if [ -n "${{ inputs.source }}" ]; then
+            ARGS="$ARGS --source=${{ inputs.source }}"
           fi
           node price-match.js $ARGS
 

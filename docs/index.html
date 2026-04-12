@@ -176,10 +176,15 @@
         <option value="Matter">Matter (3)</option>
         <option value="Bones">Bones (2)</option>
       </select>
-      <select id="marketSelect">
+      <select id="marketSelect" onchange="updateSourceOptions()">
         <option value="US">US Market</option>
         <option value="AU">AU Market</option>
         <option value="US,AU">Both Markets</option>
+      </select>
+      <select id="sourceSelect">
+        <option value="iw">Inline Warehouse</option>
+        <option value="xt">xtremeinn</option>
+        <option value="both">Both</option>
       </select>
       <button class="btn-dry" onclick="triggerRun(true)">Dry Run</button>
       <button class="btn-live" onclick="triggerRun(false)">Live Run</button>
@@ -331,17 +336,19 @@ async function triggerRun(dryRun) {
 
   const brands = document.getElementById('brandsSelect').value;
   const markets = document.getElementById('marketSelect').value;
+  const source = document.getElementById('sourceSelect').value;
 
   try {
     const res = await fetch(`${REPO_API}/actions/workflows/${WORKFLOW}/dispatches`, {
       method: 'POST',
       headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands, markets } })
+      body: JSON.stringify({ ref: 'master', inputs: { dry_run: String(dryRun), brands, markets, source } })
     });
 
     if (res.status === 204) {
       const label = brands || 'All Brands';
-      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}). Check back in a few minutes.`;
+      const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : 'Both';
+      fb.textContent = `${dryRun ? 'Dry run' : 'Live run'} triggered for ${label} (${markets}) vs ${srcLabel}. Check back in a few minutes.`;
       fb.className = 'feedback ok';
     } else {
       const data = await res.json().catch(() => ({}));
@@ -384,8 +391,28 @@ function timeAgo(iso) {
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
+// --- Source dropdown logic ---
+
+function updateSourceOptions() {
+  const market = document.getElementById('marketSelect').value;
+  const src = document.getElementById('sourceSelect');
+  const prev = src.value;
+
+  if (market === 'AU') {
+    src.innerHTML = '<option value="xt">xtremeinn</option>';
+  } else if (market === 'US') {
+    src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';
+  } else {
+    src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';
+  }
+
+  // Restore previous selection if still available
+  if (src.querySelector(`option[value="${prev}"]`)) src.value = prev;
+}
+
 // --- Init ---
 loadStatus();
+updateSourceOptions();
 setInterval(loadStatus, 60000);
 </script>
 </body>

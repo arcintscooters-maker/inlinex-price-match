@@ -35,10 +35,14 @@ async function main() {
   const markets = marketsArg ? marketsArg.split('=')[1].split(',') : ['US'];
   const enableUS = markets.includes('US');
   const enableAU = markets.includes('AU');
+  const sourceArg = process.argv.find(a => a.startsWith('--source='));
+  const source = sourceArg ? sourceArg.split('=')[1] : 'both';
+  const enableIW = source === 'iw' || source === 'both';
+  const enableXT = source === 'xt' || source === 'both';
 
   log('MAIN', `=== Price Match Run Started ===`);
   log('MAIN', `Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
-  log('MAIN', `Markets: ${markets.join(', ')}`);
+  log('MAIN', `Markets: ${markets.join(', ')} | Source: ${source}`);
   if (brands) log('MAIN', `Brands: ${brands.join(', ')}`);
 
   // Ensure reports directory exists
@@ -84,13 +88,21 @@ async function main() {
   // ==========================================
   // 3. Scrape competitor prices
   // ==========================================
-  log('MAIN', 'Step 3: Scraping Inline Warehouse...');
-  const iwProducts = await iwScraper.scrapeAll(brands);
+  let iwProducts = [];
+  if (enableIW) {
+    log('MAIN', 'Step 3: Scraping Inline Warehouse...');
+    iwProducts = await iwScraper.scrapeAll(brands);
+  } else {
+    log('MAIN', 'Step 3: Inline Warehouse SKIPPED (source=' + source + ')');
+  }
 
-  log('MAIN', 'Step 3b: Scraping xtremeinn...');
-  const { usProducts: xtUsProducts, auProducts: xtAuProducts } = enableAU
-    ? await xtScraper.scrapeAll(brands)
-    : { usProducts: [], auProducts: [] };
+  let xtUsProducts = [], xtAuProducts = [];
+  if (enableXT) {
+    log('MAIN', 'Step 3b: Scraping xtremeinn...');
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands));
+  } else {
+    log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
+  }
 
   // ==========================================
   // 4. Match products
