@@ -126,12 +126,6 @@
       "sku": "144706313",
       "shopifyMatch": "Miriam Fatmi Movie",
       "note": "XT UC Movies Miriam Fatmi wheels 4 units"
-    },
-    {
-      "source": "xt",
-      "sku": "test123",
-      "shopifyMatch": "Test Product",
-      "note": "Added from dashboard"
     }
   ]
 }
