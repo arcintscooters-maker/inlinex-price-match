@@ -177,6 +177,21 @@ const server = http.createServer((req, res) => {
         pendingMappingPush = false;
         console.log('[SERVER] Mappings pushed to GitHub');
 
+        // Also push brand-pages.json
+        try {
+          const bpFile = path.join(__dirname, 'brand-pages.json');
+          const bpContent = fs.readFileSync(bpFile, 'utf8');
+          const bpGh = await ghApi('GET', `/repos/${repo}/contents/brand-pages.json`);
+          await ghApi('PUT', `/repos/${repo}/contents/brand-pages.json`, JSON.stringify({
+            message: 'Update brand pages from dashboard [skip ci]',
+            content: Buffer.from(bpContent).toString('base64'),
+            sha: bpGh.sha
+          }));
+          console.log('[SERVER] Brand pages pushed to GitHub');
+        } catch (e2) {
+          console.log('[SERVER] Brand pages push failed:', e2.message || e2);
+        }
+
         // Also push shipping overrides if pending
         if (pendingShippingPush) {
           try {
@@ -233,6 +248,54 @@ const server = http.createServer((req, res) => {
         fs.writeFileSync(file, JSON.stringify(data, null, 2));
         pendingMappingPush = true;
         console.log(`[SERVER] Mapping deleted: ${source}:${sku}`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // --- Brand Pages ---
+
+  if (url.pathname === '/api/brand-pages' && req.method === 'GET') {
+    const file = path.join(__dirname, 'brand-pages.json');
+    try {
+      const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    } catch {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ brands: {} }));
+    }
+    return;
+  }
+
+  if (url.pathname === '/api/brand-page' && req.method === 'POST') {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try {
+        const { brand, url: pageUrl } = JSON.parse(body);
+        if (!brand) { res.writeHead(400); res.end('{"error":"Missing brand"}'); return; }
+
+        const file = path.join(__dirname, 'brand-pages.json');
+        let data;
+        try { data = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { data = { brands: {} }; }
+
+        if (pageUrl) {
+          data.brands[brand] = pageUrl;
+          console.log(`[SERVER] Brand page: ${brand} = ${pageUrl}`);
+        } else {
+          delete data.brands[brand];
+          console.log(`[SERVER] Brand page removed: ${brand}`);
+        }
+
+        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        pendingMappingPush = true; // piggyback on Push All
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true }));
       } catch (e) {

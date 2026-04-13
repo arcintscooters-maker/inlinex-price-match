@@ -1,0 +1,21 @@
+{
+  "_comment": "xtremeinn brand page URLs. Edit from dashboard or here.",
+  "brands": {
+    "Powerslide": "/xtremeinn/en/powerslide/6068/nm",
+    "Rollerblade": "/xtremeinn/en/rollerblade/4857/nm",
+    "K2": "/xtremeinn/en/k2/101/nm",
+    "FR": "/xtremeinn/en/fr-skates/23563/nm",
+    "Flying Eagle": "/xtremeinn/en/flying-eagle/23562/nm",
+    "USD": "/xtremeinn/en/usd-skates/6070/nm",
+    "Chaya": "/xtremeinn/en/chaya/6069/nm",
+    "Ennui": "/xtremeinn/en/ennui/6071/nm",
+    "Undercover": "/xtremeinn/en/undercover-wheels/6073/nm",
+    "Kizer": "/xtremeinn/en/kizer/6314/nm",
+    "Seba": "/xtremeinn/en/seba/6386/nm",
+    "PlayLife": "/xtremeinn/en/playlife/15809/nm",
+    "GAWDS": "/xtremeinn/en/gawds/15810/nm",
+    "Wicked": "/xtremeinn/en/wicked/15811/nm",
+    "Roces": "/xtremeinn/en/roces/6384/nm",
+    "Iqon": "/xtremeinn/en/iqon/15252/nm"
+  }
+}

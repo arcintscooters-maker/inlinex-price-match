@@ -158,6 +158,26 @@
     <div class="empty" id="changesEmpty">No price changes yet. Run a price match to see results.</div>
   </div>
 
+  <!-- Manage Brand Pages (xtremeinn) -->
+  <h2>xtremeinn Brand Pages <button class="btn-clear" onclick="toggleBrandPages()" style="font-size:0.75rem; padding:4px 10px;">Show/Hide</button></h2>
+  <div class="table-wrap" id="brandPagesWrap" style="display:none;">
+    <p style="font-size:0.85rem; color:#888; margin-bottom:10px;">Map your Shopify brand to an xtremeinn brand page URL. Find the URL at tradeinn.com/xtremeinn and paste the path (e.g. /xtremeinn/en/iqon/15252/nm).</p>
+    <table>
+      <thead><tr><th>Brand</th><th>xtremeinn Page URL</th><th></th></tr></thead>
+      <tbody id="brandPagesBody"></tbody>
+      <tfoot>
+        <tr style="background:#f0fdf4;">
+          <td><input class="map-input" id="newBpBrand" placeholder="Brand name" style="width:120px;"></td>
+          <td><input class="map-input" id="newBpUrl" placeholder="/xtremeinn/en/brand/ID/nm" style="width:300px;"></td>
+          <td><button class="btn-map" onclick="addBrandPage()">Add</button></td>
+        </tr>
+      </tfoot>
+    </table>
+    <div style="margin-top:10px;">
+      <button class="btn-save" onclick="pushMappings()">Push All to GitHub</button>
+    </div>
+  </div>
+
   <!-- Manage Mappings -->
   <h2>Manage Mappings <button class="btn-clear" onclick="toggleMappings()" style="font-size:0.75rem; padding:4px 10px;">Show/Hide</button></h2>
   <div class="table-wrap" id="mappingsWrap" style="display:none;">
@@ -848,6 +868,75 @@ async function pushMappings() {
     alert('Push error: ' + e.message);
     btn.disabled = false;
   }
+}
+
+// --- Brand Pages ---
+
+let brandPages = {};
+
+function toggleBrandPages() {
+  const wrap = document.getElementById('brandPagesWrap');
+  if (wrap.style.display === 'none') {
+    wrap.style.display = 'block';
+    loadBrandPages();
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+async function loadBrandPages() {
+  if (!isRailway) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/brand-pages`);
+    if (res.ok) {
+      const data = await res.json();
+      brandPages = data.brands || {};
+      renderBrandPages();
+    }
+  } catch {}
+}
+
+function renderBrandPages() {
+  const tbody = document.getElementById('brandPagesBody');
+  tbody.innerHTML = Object.entries(brandPages).map(([brand, url]) => `<tr>
+    <td><strong>${esc(brand)}</strong></td>
+    <td><input class="map-input" value="${esc(url)}" style="width:350px;" onchange="updateBrandPage('${esc(brand)}', this.value)"></td>
+    <td><button class="btn-map" style="background:#ef4444;" onclick="deleteBrandPage('${esc(brand)}')">Delete</button></td>
+  </tr>`).join('');
+}
+
+async function updateBrandPage(brand, url) {
+  try {
+    await fetch(`${API_BASE}/api/brand-page`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand, url })
+    });
+    brandPages[brand] = url;
+  } catch {}
+}
+
+async function deleteBrandPage(brand) {
+  if (!confirm(`Remove ${brand} brand page?`)) return;
+  try {
+    await fetch(`${API_BASE}/api/brand-page`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand, url: '' })
+    });
+    delete brandPages[brand];
+    renderBrandPages();
+  } catch {}
+}
+
+async function addBrandPage() {
+  const brand = document.getElementById('newBpBrand').value.trim();
+  const url = document.getElementById('newBpUrl').value.trim();
+  if (!brand || !url) { alert('Enter both brand name and URL'); return; }
+  await updateBrandPage(brand, url);
+  document.getElementById('newBpBrand').value = '';
+  document.getElementById('newBpUrl').value = '';
+  loadBrandPages();
 }
 
 // --- Remap / Block product ---
