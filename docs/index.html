@@ -360,7 +360,7 @@ function render() {
     const groups = {};
     for (const c of changes) {
       const key = `${c.product}|${c.market}|${c.competitor}`;
-      if (!groups[key]) groups[key] = { items: [], product: c.product, brand: c.brand, market: c.market, competitor: c.competitor, competitorPrice: c.competitorPrice };
+      if (!groups[key]) groups[key] = { items: [], product: c.product, brand: c.brand, market: c.market, competitor: c.competitor, competitorPrice: c.competitorPrice, competitorSku: c.competitorSku, matchMethod: c.matchMethod };
       groups[key].items.push(c);
     }
 
@@ -402,7 +402,19 @@ function render() {
         <td class="price-range">${newRange}</td>
         <td class="${diffClass}">${avgDiff > 0 ? '-' : '+'}${sym}${Math.abs(avgDiff).toFixed(2)} avg</td>
         <td>${esc(group.competitor || '')}<br><small>${sym}${(group.competitorPrice||0).toFixed(2)}</small></td>
-        <td>${aggStatus}</td>
+        <td>${aggStatus} <button class="btn-clear" style="font-size:0.65rem; padding:2px 6px; margin-left:4px;" onclick="event.stopPropagation(); remapProduct(${gIdx})" data-group="${gIdx}" data-comp-sku="${esc(group.competitorSku || '')}" data-source="${isXT ? 'xt' : 'iw'}" data-product="${esc(group.product)}">Remap</button></td>
+      </tr>`;
+
+      // Remap row (hidden, shown when Remap clicked)
+      html += `<tr class="variant-row" data-group="${gIdx}" id="remap-row-${gIdx}" style="background:#fffbeb;">
+        <td></td>
+        <td colspan="6" style="padding:8px 20px;">
+          <strong>Remap this competitor product to:</strong>
+          <input class="map-input" id="remap-input-${gIdx}" placeholder="Correct Shopify product title" style="width:300px; margin:0 8px;">
+          <button class="btn-map" onclick="saveRemap(${gIdx})">Save</button>
+          <button class="btn-clear" style="margin-left:4px;" onclick="blockProduct(${gIdx})">Block (skip always)</button>
+        </td>
+        <td colspan="2"></td>
       </tr>`;
 
       // Variant rows (hidden by default)
@@ -835,6 +847,59 @@ async function pushMappings() {
     btn.textContent = 'Error';
     alert('Push error: ' + e.message);
     btn.disabled = false;
+  }
+}
+
+// --- Remap / Block product ---
+
+function remapProduct(gIdx) {
+  const row = document.getElementById(`remap-row-${gIdx}`);
+  row.classList.toggle('visible');
+}
+
+async function saveRemap(gIdx) {
+  const input = document.getElementById(`remap-input-${gIdx}`);
+  const val = input.value.trim();
+  if (!val) { input.style.borderColor = '#ef4444'; return; }
+
+  const btn = document.querySelector(`[data-group="${gIdx}"][data-comp-sku]`);
+  const compSku = btn.dataset.compSku;
+  const source = btn.dataset.source;
+
+  if (!compSku) { alert('No competitor SKU found — run again with latest code'); return; }
+
+  try {
+    await fetch(`${API_BASE}/api/mapping`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source, sku: compSku, shopifyMatch: val })
+    });
+    input.style.borderColor = '#22c55e';
+    input.value = val + ' (saved - re-run to apply)';
+    input.disabled = true;
+  } catch (e) {
+    alert('Failed: ' + e.message);
+  }
+}
+
+async function blockProduct(gIdx) {
+  const btn = document.querySelector(`[data-group="${gIdx}"][data-comp-sku]`);
+  const compSku = btn.dataset.compSku;
+  const source = btn.dataset.source;
+  const product = btn.dataset.product;
+
+  if (!compSku) { alert('No competitor SKU found — run again with latest code'); return; }
+  if (!confirm(`Block "${product}" from matching? It will be skipped in all future runs.`)) return;
+
+  try {
+    await fetch(`${API_BASE}/api/mapping`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source, sku: compSku, shopifyMatch: '__BLOCKED__' })
+    });
+    alert('Blocked. Re-run to apply.');
+  } catch (e) {
+    alert('Failed: ' + e.message);
   }
 }
 
