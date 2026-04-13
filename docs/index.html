@@ -142,7 +142,7 @@
   <!-- Unmatched Products -->
   <h2>Unmatched Competitor Products</h2>
   <div class="table-wrap" id="unmatchedWrap" style="display:none;">
-    <p style="font-size:0.85rem; color:#888; margin-bottom:10px;">These competitor products couldn't be matched to any Shopify product. Enter a Shopify product title keyword to create a manual mapping.</p>
+    <p style="font-size:0.85rem; color:#888; margin-bottom:10px;">These competitor products couldn't be matched to any Shopify product. Enter a Shopify SKU number (or title keyword) to map it.</p>
     <table>
       <thead><tr><th>Source</th><th>Competitor Product</th><th>Price</th><th>Map to Shopify Product</th><th></th></tr></thead>
       <tbody id="unmatchedBody"></tbody>
@@ -334,7 +334,7 @@ function render() {
         <td>${srcBadge}</td>
         <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}</small></td>
         <td>${sym}${u.price.toFixed(2)}</td>
-        <td><input class="map-input" id="map-${i}" placeholder="e.g. Vortex 80mm"></td>
+        <td><input class="map-input" id="map-${i}" placeholder="Shopify SKU e.g. 4040333582145"></td>
         <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
       </tr>`;
     }).join('');
