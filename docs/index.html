@@ -315,16 +315,17 @@ function render() {
     }).join('');
   }
 
-  // Unmatched products
+  // Unmatched products — skip re-render if user is typing
   const uBody = document.getElementById('unmatchedBody');
   const uWrap = document.getElementById('unmatchedWrap');
   const uEmpty = document.getElementById('unmatchedEmpty');
   const unmatchedList = statusData.unmatched || [];
+  const isTyping = document.activeElement && document.activeElement.classList.contains('map-input');
 
   if (unmatchedList.length === 0) {
     uWrap.style.display = 'none';
     uEmpty.style.display = 'block';
-  } else {
+  } else if (!isTyping) {
     uWrap.style.display = 'block';
     uEmpty.style.display = 'none';
     uBody.innerHTML = unmatchedList.map((u, i) => {
