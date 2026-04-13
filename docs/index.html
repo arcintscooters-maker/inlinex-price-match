@@ -313,6 +313,18 @@ function render() {
   const changes = statusData.priceChanges || [];
   const isDryRun = r.mode === 'DRY RUN';
 
+  // Apply saved shipping overrides to recalculate prices
+  for (const c of changes) {
+    if ((c.competitor || '').includes('xtremeinn') && shippingOverrides[c.product] !== undefined) {
+      const savedShip = shippingOverrides[c.product];
+      if (savedShip !== c.shippingFee) {
+        c.shippingFee = savedShip;
+        c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95 * 100) / 100;
+        c.skipped = c.oldPrice <= c.newPrice;
+      }
+    }
+  }
+
   // Show/hide selection bar
   const selBar = document.getElementById('selectionBar');
   const hasActionable = changes.some(c => !c.skipped && !c.applied);
