@@ -21,10 +21,14 @@ const path = require('path');
 // Pricing constants
 const IW_DISCOUNT = 0.95;         // 5% cheaper than IW
 const XT_DISCOUNT = 0.95;         // 5% cheaper than xtremeinn + shipping
-const XT_SHIPPING_USD = 40;       // Estimated xtremeinn shipping to US (midpoint of $30-50)
-const XT_SHIPPING_AUD = 80;       // xtremeinn shipping to AU
+const XT_SHIPPING_USD = 40;       // Default xtremeinn shipping to US
+const XT_SHIPPING_AUD = 80;       // Default xtremeinn shipping to AU
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
+
+// Load per-product shipping overrides
+const shippingOverridesFile = path.join(__dirname, 'shipping-overrides.json');
+const shippingOverrides = loadJSON(shippingOverridesFile) || { overrides: {} };
 
 async function main() {
   const startTime = Date.now();
@@ -129,23 +133,28 @@ async function main() {
       let usCompSource = null;
       let usMatchMethod = null;
 
-      // Check IW first
+      let usShipFee = 0;
+
+      // Check IW first (no shipping)
       if (iwMatch) {
         usNewPrice = Math.round(iwMatch.price * IW_DISCOUNT * 100) / 100;
         usCompetitor = iwMatch;
         usCompPrice = iwMatch.price;
         usCompSource = 'Inline Warehouse';
         usMatchMethod = iwMethod;
+        usShipFee = 0;
       }
       // Check xtremeinn if no IW match (or if XT is cheaper)
       if (xtMatch && xtMatch.currency === 'USD') {
-        const xtUsPrice = Math.round((xtMatch.price + XT_SHIPPING_USD) * XT_DISCOUNT * 100) / 100;
+        const shipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_USD;
+        const xtUsPrice = Math.round((xtMatch.price + shipFee) * XT_DISCOUNT * 100) / 100;
         if (!usNewPrice || xtUsPrice < usNewPrice) {
           usNewPrice = xtUsPrice;
           usCompetitor = xtMatch;
           usCompPrice = xtMatch.price;
-          usCompSource = `xtremeinn (+$${XT_SHIPPING_USD} ship)`;
+          usCompSource = `xtremeinn (+$${shipFee} ship)`;
           usMatchMethod = xtMethod;
+          usShipFee = shipFee;
         }
       }
 
@@ -166,6 +175,7 @@ async function main() {
           competitorUrl: usCompetitor.url,
           matchMethod: usMatchMethod,
           variantGid,
+          shippingFee: usShipFee,
           skipped: false,
           applied: false,
         };
@@ -195,7 +205,8 @@ async function main() {
       const auComp = xtAuMatch || null;
 
       if (auComp && auComp.currency === 'AUD') {
-        const totalXtPrice = auComp.price + XT_SHIPPING_AUD;
+        const auShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_AUD;
+        const totalXtPrice = auComp.price + auShipFee;
         const auNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
 
         const currentAuPrice = auFixedPrices[variantGid] || (currentPrice * AU_DEFAULT_MARKUP);
@@ -209,8 +220,9 @@ async function main() {
           oldPrice: Math.round(currentAuPrice * 100) / 100,
           newPrice: auNewPrice,
           competitorPrice: auComp.price,
-          competitorSource: `xtremeinn (+A$${XT_SHIPPING_AUD} ship)`,
+          competitorSource: `xtremeinn (+A$${auShipFee} ship)`,
           competitorUrl: auComp.url,
+          shippingFee: auShipFee,
           matchMethod: xtAuMethod || 'name',
           variantGid,
           skipped: false,
@@ -356,6 +368,8 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
       competitor: c.competitorSource,
       competitorPrice: c.competitorPrice,
       matchMethod: c.matchMethod,
+      variantGid: c.variantGid,
+      shippingFee: c.shippingFee || 0,
       skipped: c.skipped,
       applied: c.applied,
     })),

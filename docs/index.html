@@ -50,6 +50,19 @@
   .badge.error { background: #fee2e2; color: #991b1b; }
   .badge.iw { background: #dbeafe; color: #1e40af; }
   .badge.xt { background: #fce7f3; color: #9d174d; }
+
+  /* Grouped rows */
+  .group-row { cursor: pointer; font-weight: 600; background: #fafafa; }
+  .group-row:hover { background: #f0f4ff; }
+  .group-row td:first-child { text-align: center; }
+  .arrow { display: inline-block; font-size: 0.7rem; margin-right: 4px; transition: transform 0.15s; }
+  .variant-row { display: none; font-size: 0.82rem; }
+  .variant-row.visible { display: table-row; }
+  .variant-row td { padding-left: 20px; color: #555; }
+  .variant-count { font-weight: 400; color: #888; font-size: 0.8rem; }
+  .shipping-input { width: 55px; padding: 3px 6px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.82rem; text-align: right; }
+  .shipping-input:focus { border-color: #3b82f6; outline: none; }
+  .price-range { font-size: 0.82rem; }
   .map-input { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.8rem; width: 200px; }
   .btn-map { padding: 5px 12px; background: #059669; color: #fff; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
   .btn-map:hover { opacity: 0.85; }
@@ -118,20 +131,26 @@
 
   <!-- Price Changes Table -->
   <h2>Price Changes</h2>
+  <div id="selectionBar" style="display:none; margin-bottom:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <button class="btn-dry" onclick="selectAll(true)">Select All</button>
+    <button class="btn-clear" onclick="selectAll(false)">Deselect All</button>
+    <span id="selectedCount" style="font-size:0.85rem; color:#666;">0 selected</span>
+    <button class="btn-live" onclick="applySelected()" id="btnApply">Apply Selected to Shopify</button>
+    <span class="feedback" id="applyFeedback"></span>
+  </div>
   <div class="table-wrap">
     <table id="changesTable">
       <thead>
         <tr>
-          <th onclick="sortTable(0)">Product</th>
-          <th onclick="sortTable(1)">SKU</th>
-          <th onclick="sortTable(2)">Brand</th>
-          <th onclick="sortTable(3)">Market</th>
-          <th onclick="sortTable(4)">Old Price</th>
-          <th onclick="sortTable(5)">New Price</th>
-          <th onclick="sortTable(6)">Change</th>
-          <th onclick="sortTable(7)">Competitor</th>
-          <th onclick="sortTable(8)">Match</th>
-          <th onclick="sortTable(9)">Status</th>
+          <th style="width:30px;"><input type="checkbox" id="checkAll" onchange="selectAll(this.checked)"></th>
+          <th>Product</th>
+          <th>Market</th>
+          <th>Old Price</th>
+          <th>Shipping</th>
+          <th>New Price</th>
+          <th>Change</th>
+          <th>Competitor</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody id="changesBody"></tbody>
@@ -288,38 +307,98 @@ function render() {
   document.getElementById('skipCount').textContent = r.skipped;
   document.getElementById('matchCount').textContent = r.totalMatches;
 
-  // Price changes table
+  // Price changes table — grouped by product
   const tbody = document.getElementById('changesBody');
   const empty = document.getElementById('changesEmpty');
   const changes = statusData.priceChanges || [];
+  const isDryRun = r.mode === 'DRY RUN';
+
+  // Show/hide selection bar
+  const selBar = document.getElementById('selectionBar');
+  const hasActionable = changes.some(c => !c.skipped && !c.applied);
+  selBar.style.display = (isDryRun && hasActionable) ? 'flex' : 'none';
 
   if (changes.length === 0) {
     tbody.innerHTML = '';
     empty.style.display = 'block';
   } else {
     empty.style.display = 'none';
-    tbody.innerHTML = changes.map(c => {
-      const diff = c.oldPrice - c.newPrice;
-      const pct = c.oldPrice > 0 ? (diff / c.oldPrice * 100).toFixed(1) : '0';
-      const cls = c.skipped ? 'skip-row' : '';
-      const diffClass = diff > 0 ? 'pos' : diff < 0 ? 'neg' : '';
-      const statusBadge = c.skipped ? '<span class="badge skipped">Skipped</span>'
-        : c.applied ? '<span class="badge applied">Applied</span>'
+
+    // Group by product+market+competitor
+    const groups = {};
+    for (const c of changes) {
+      const key = `${c.product}|${c.market}|${c.competitor}`;
+      if (!groups[key]) groups[key] = { items: [], product: c.product, brand: c.brand, market: c.market, competitor: c.competitor, competitorPrice: c.competitorPrice };
+      groups[key].items.push(c);
+    }
+
+    let html = '';
+    let gIdx = 0;
+    for (const [key, group] of Object.entries(groups)) {
+      const items = group.items;
+      const sym = group.market === 'AU' ? 'A$' : '$';
+      const isXT = (group.competitor || '').includes('xtremeinn');
+      const shipFee = items[0].shippingFee || 0;
+      const shipOverride = shippingOverrides[group.product];
+      const displayShip = shipOverride !== undefined ? shipOverride : shipFee;
+
+      // Aggregate stats
+      const oldMin = Math.min(...items.map(i => i.oldPrice));
+      const oldMax = Math.max(...items.map(i => i.oldPrice));
+      const newMin = Math.min(...items.map(i => i.newPrice));
+      const newMax = Math.max(...items.map(i => i.newPrice));
+      const allSkipped = items.every(i => i.skipped);
+      const allApplied = items.every(i => i.applied);
+      const anyPending = items.some(i => !i.skipped && !i.applied);
+      const aggStatus = allApplied ? '<span class="badge applied">Applied</span>'
+        : allSkipped ? '<span class="badge skipped">Skipped</span>'
         : '<span class="badge pending">Pending</span>';
-      const sym = c.market === 'AU' ? 'A$' : '$';
-      return `<tr class="${cls}">
-        <td>${esc(c.product)}${c.variant && c.variant !== 'Default Title' ? `<br><small>${esc(c.variant)}</small>` : ''}</td>
-        <td>${esc(c.sku)}</td>
-        <td>${esc(c.brand)}</td>
-        <td>${c.market}</td>
-        <td>${sym}${c.oldPrice.toFixed(2)}</td>
-        <td>${sym}${c.newPrice.toFixed(2)}</td>
-        <td class="${diffClass}">${diff > 0 ? '-' : '+'}${sym}${Math.abs(diff).toFixed(2)} (${pct}%)</td>
-        <td>${esc(c.competitor || '')}<br><small>${sym}${(c.competitorPrice||0).toFixed(2)}</small></td>
-        <td>${esc(c.matchMethod || '')}</td>
-        <td>${statusBadge}</td>
+      const oldRange = oldMin === oldMax ? `${sym}${oldMin.toFixed(2)}` : `${sym}${oldMin.toFixed(2)} - ${sym}${oldMax.toFixed(2)}`;
+      const newRange = newMin === newMax ? `${sym}${newMin.toFixed(2)}` : `${sym}${newMin.toFixed(2)} - ${sym}${newMax.toFixed(2)}`;
+      const avgDiff = items.reduce((s, i) => s + (i.oldPrice - i.newPrice), 0) / items.length;
+      const diffClass = avgDiff > 0 ? 'pos' : avgDiff < 0 ? 'neg' : '';
+      const groupCls = allSkipped ? 'skip-row' : '';
+      const checkDisabled = allSkipped || allApplied ? 'disabled' : '';
+
+      // Group header row
+      html += `<tr class="group-row ${groupCls}" onclick="toggleGroup(${gIdx})">
+        <td><input type="checkbox" class="group-check" data-group="${gIdx}" ${checkDisabled} onclick="event.stopPropagation(); toggleGroupCheck(${gIdx})"></td>
+        <td><span class="arrow" id="arrow-${gIdx}">\u25B6</span> ${esc(group.product)} <span class="variant-count">(${items.length} variant${items.length > 1 ? 's' : ''})</span><br><small>${esc(group.brand)}</small></td>
+        <td>${group.market}</td>
+        <td class="price-range">${oldRange}</td>
+        <td>${isXT ? `<input type="number" class="shipping-input" value="${displayShip}" data-product="${esc(group.product)}" data-group="${gIdx}" onclick="event.stopPropagation()" onchange="updateShipping(this)">` : '-'}</td>
+        <td class="price-range">${newRange}</td>
+        <td class="${diffClass}">${avgDiff > 0 ? '-' : '+'}${sym}${Math.abs(avgDiff).toFixed(2)} avg</td>
+        <td>${esc(group.competitor || '')}<br><small>${sym}${(group.competitorPrice||0).toFixed(2)}</small></td>
+        <td>${aggStatus}</td>
       </tr>`;
-    }).join('');
+
+      // Variant rows (hidden by default)
+      for (const c of items) {
+        const diff = c.oldPrice - c.newPrice;
+        const pct = c.oldPrice > 0 ? (diff / c.oldPrice * 100).toFixed(1) : '0';
+        const vDiffClass = diff > 0 ? 'pos' : diff < 0 ? 'neg' : '';
+        const vStatus = c.skipped ? '<span class="badge skipped">Skipped</span>'
+          : c.applied ? '<span class="badge applied">Applied</span>'
+          : '<span class="badge pending">Pending</span>';
+        const vCheckDisabled = c.skipped || c.applied ? 'disabled' : '';
+        const variantLabel = c.variant && c.variant !== 'Default Title' ? c.variant : c.sku;
+
+        html += `<tr class="variant-row" data-group="${gIdx}">
+          <td><input type="checkbox" class="variant-check" data-group="${gIdx}" data-gid="${esc(c.variantGid || '')}" data-price="${c.newPrice}" data-market="${c.market}" ${vCheckDisabled} onchange="updateSelectedCount()"></td>
+          <td style="padding-left:30px;">${esc(variantLabel)}<br><small>SKU: ${esc(c.sku)}</small></td>
+          <td>${c.market}</td>
+          <td>${sym}${c.oldPrice.toFixed(2)}</td>
+          <td></td>
+          <td>${sym}${c.newPrice.toFixed(2)}</td>
+          <td class="${vDiffClass}">${diff > 0 ? '-' : '+'}${sym}${Math.abs(diff).toFixed(2)} (${pct}%)</td>
+          <td>${esc(c.matchMethod || '')}</td>
+          <td>${vStatus}</td>
+        </tr>`;
+      }
+      gIdx++;
+    }
+    tbody.innerHTML = html;
   }
 
   // Unmatched products — skip re-render if user is typing
@@ -380,21 +459,131 @@ function render() {
   }
 }
 
-// --- Sort ---
+// --- Group toggle ---
 
-function sortTable(col) {
-  if (!statusData || !statusData.priceChanges) return;
-  if (sortCol === col) sortAsc = !sortAsc;
-  else { sortCol = col; sortAsc = true; }
-  const keys = ['product','sku','brand','market','oldPrice','newPrice','oldPrice','competitor','matchMethod','skipped'];
-  const key = keys[col];
-  statusData.priceChanges.sort((a, b) => {
-    let va = a[key], vb = b[key];
-    if (col === 6) { va = a.oldPrice - a.newPrice; vb = b.oldPrice - b.newPrice; }
-    if (typeof va === 'string') return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
-    return sortAsc ? va - vb : vb - va;
-  });
+function toggleGroup(gIdx) {
+  const rows = document.querySelectorAll(`.variant-row[data-group="${gIdx}"]`);
+  const arrow = document.getElementById(`arrow-${gIdx}`);
+  const isOpen = rows[0] && rows[0].classList.contains('visible');
+  rows.forEach(r => r.classList.toggle('visible', !isOpen));
+  if (arrow) arrow.textContent = isOpen ? '\u25B6' : '\u25BC';
+}
+
+// --- Shipping ---
+
+let shippingOverrides = {};
+
+async function loadShippingOverrides() {
+  if (!isRailway) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/shipping-overrides`);
+    if (res.ok) {
+      const data = await res.json();
+      shippingOverrides = data.overrides || {};
+    }
+  } catch {}
+}
+
+async function updateShipping(el) {
+  const product = el.dataset.product;
+  const newShip = parseFloat(el.value) || 0;
+  shippingOverrides[product] = newShip;
+
+  // Recalculate prices in UI for this group
+  const gIdx = el.dataset.group;
+  const changes = statusData.priceChanges.filter(c => c.product === product);
+  for (const c of changes) {
+    if ((c.competitor || '').includes('xtremeinn')) {
+      c.shippingFee = newShip;
+      c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95 * 100) / 100;
+      c.skipped = c.oldPrice <= c.newPrice;
+    }
+  }
   render();
+
+  // Save to server
+  if (isRailway) {
+    try {
+      await fetch(`${API_BASE}/api/shipping-override`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productTitle: product, shippingFee: newShip })
+      });
+    } catch {}
+  }
+}
+
+// --- Selection & Apply ---
+
+function selectAll(checked) {
+  document.querySelectorAll('.group-check:not(:disabled), .variant-check:not(:disabled)').forEach(cb => cb.checked = checked);
+  updateSelectedCount();
+}
+
+function toggleGroupCheck(gIdx) {
+  const groupCb = document.querySelector(`.group-check[data-group="${gIdx}"]`);
+  const variantCbs = document.querySelectorAll(`.variant-check[data-group="${gIdx}"]:not(:disabled)`);
+  variantCbs.forEach(cb => cb.checked = groupCb.checked);
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const checked = document.querySelectorAll('.variant-check:checked');
+  const el = document.getElementById('selectedCount');
+  // Also count group-checked variants that are hidden
+  let count = 0;
+  document.querySelectorAll('.group-check:checked').forEach(gcb => {
+    const gIdx = gcb.dataset.group;
+    const variants = document.querySelectorAll(`.variant-check[data-group="${gIdx}"]:not(:disabled)`);
+    variants.forEach(v => { if (!v.checked) v.checked = true; });
+  });
+  count = document.querySelectorAll('.variant-check:checked').length;
+  el.textContent = `${count} selected`;
+}
+
+async function applySelected() {
+  const checked = document.querySelectorAll('.variant-check:checked');
+  if (checked.length === 0) { alert('No items selected'); return; }
+
+  const selections = [];
+  checked.forEach(cb => {
+    if (cb.dataset.gid) {
+      selections.push({
+        variantGid: cb.dataset.gid,
+        newPrice: parseFloat(cb.dataset.price),
+        market: cb.dataset.market
+      });
+    }
+  });
+
+  if (selections.length === 0) { alert('No valid selections'); return; }
+
+  const fb = document.getElementById('applyFeedback');
+  const btn = document.getElementById('btnApply');
+  btn.disabled = true;
+  fb.textContent = `Applying ${selections.length} prices to Shopify...`;
+  fb.className = 'feedback';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/apply-selected`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selections })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      fb.textContent = `Applied ${data.applied} prices to Shopify!`;
+      fb.className = 'feedback ok';
+      setTimeout(() => loadStatus(), 2000);
+    } else {
+      fb.textContent = `Failed: ${data.error}`;
+      fb.className = 'feedback err';
+    }
+  } catch (e) {
+    fb.textContent = `Error: ${e.message}`;
+    fb.className = 'feedback err';
+  }
+  btn.disabled = false;
 }
 
 // --- Trigger ---
@@ -675,7 +864,7 @@ function updateSourceOptions() {
 }
 
 // --- Init ---
-loadStatus();
+loadShippingOverrides().then(() => loadStatus());
 updateSourceOptions();
 setInterval(loadStatus, 60000);
 </script>

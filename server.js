@@ -186,6 +186,124 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- Shipping Overrides ---
+
+  // Get shipping overrides
+  if (url.pathname === '/api/shipping-overrides' && req.method === 'GET') {
+    const file = path.join(__dirname, 'shipping-overrides.json');
+    try {
+      const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    } catch {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ overrides: {} }));
+    }
+    return;
+  }
+
+  // Save shipping override
+  if (url.pathname === '/api/shipping-override' && req.method === 'POST') {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try {
+        const { productTitle, shippingFee } = JSON.parse(body);
+        if (!productTitle || shippingFee === undefined) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Missing productTitle or shippingFee' }));
+          return;
+        }
+
+        const file = path.join(__dirname, 'shipping-overrides.json');
+        let data;
+        try { data = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { data = { overrides: {} }; }
+        data.overrides[productTitle] = parseFloat(shippingFee);
+        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        console.log(`[SERVER] Shipping override: "${productTitle}" = ${shippingFee}`);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // --- Apply Selected Prices ---
+
+  if (url.pathname === '/api/apply-selected' && req.method === 'POST') {
+    if (currentRun && currentRun.status === 'running') {
+      res.writeHead(409, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'A run is in progress' }));
+      return;
+    }
+
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const { selections } = JSON.parse(body);
+        if (!selections || !selections.length) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'No selections' }));
+          return;
+        }
+
+        const shopify = require('./lib/shopify');
+        const { log } = require('./lib/utils');
+
+        log('SERVER', `Applying ${selections.length} selected prices...`);
+        const { usPriceList, auPriceList } = await shopify.getMarketPriceLists();
+
+        // Group by market
+        const usItems = selections.filter(s => s.market === 'US').map(s => ({
+          variantId: s.variantGid, price: s.newPrice, currency: 'USD'
+        }));
+        const auItems = selections.filter(s => s.market === 'AU').map(s => ({
+          variantId: s.variantGid, price: s.newPrice, currency: 'AUD'
+        }));
+
+        let applied = 0;
+        if (usItems.length > 0 && usPriceList) {
+          await shopify.setFixedPrices(usPriceList.id, usItems);
+          applied += usItems.length;
+          log('SERVER', `Applied ${usItems.length} US prices`);
+        }
+        if (auItems.length > 0 && auPriceList) {
+          await shopify.setFixedPrices(auPriceList.id, auItems);
+          applied += auItems.length;
+          log('SERVER', `Applied ${auItems.length} AU prices`);
+        }
+
+        // Update status.json — mark selected items as applied
+        const statusFile = path.join(__dirname, 'docs', 'status.json');
+        try {
+          const status = JSON.parse(fs.readFileSync(statusFile, 'utf8'));
+          const gidSet = new Set(selections.map(s => s.variantGid));
+          for (const c of status.priceChanges) {
+            if (c.variantGid && gidSet.has(c.variantGid)) {
+              c.applied = true;
+              c.skipped = false;
+            }
+          }
+          fs.writeFileSync(statusFile, JSON.stringify(status, null, 2));
+        } catch (e) {
+          console.log('[SERVER] Failed to update status.json:', e.message);
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, applied }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   // Get run logs
   if (url.pathname === '/api/logs') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
