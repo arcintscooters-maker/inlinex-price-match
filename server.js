@@ -186,6 +186,43 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // --- Get all mappings ---
+  if (url.pathname === '/api/mappings' && req.method === 'GET') {
+    const file = path.join(__dirname, 'manual-mappings.json');
+    try {
+      const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    } catch {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ mappings: [] }));
+    }
+    return;
+  }
+
+  // Delete a mapping
+  if (url.pathname === '/api/mapping-delete' && req.method === 'POST') {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try {
+        const { source, sku } = JSON.parse(body);
+        const file = path.join(__dirname, 'manual-mappings.json');
+        const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+        data.mappings = data.mappings.filter(m => !((m.source || 'iw') === source && (m.sku || m.iwSku) === sku));
+        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        pendingMappingPush = true;
+        console.log(`[SERVER] Mapping deleted: ${source}:${sku}`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   // --- Shipping Overrides ---
 
   // Get shipping overrides

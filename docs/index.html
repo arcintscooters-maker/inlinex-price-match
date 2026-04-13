@@ -158,6 +158,18 @@
     <div class="empty" id="changesEmpty">No price changes yet. Run a price match to see results.</div>
   </div>
 
+  <!-- Manage Mappings -->
+  <h2>Manage Mappings <button class="btn-clear" onclick="toggleMappings()" style="font-size:0.75rem; padding:4px 10px;">Show/Hide</button></h2>
+  <div class="table-wrap" id="mappingsWrap" style="display:none;">
+    <table>
+      <thead><tr><th>Source</th><th>Competitor SKU</th><th>Mapped to Shopify</th><th></th></tr></thead>
+      <tbody id="mappingsBody"></tbody>
+    </table>
+    <div style="margin-top:10px;">
+      <button class="btn-save" onclick="pushMappings()">Push All to GitHub</button>
+    </div>
+  </div>
+
   <!-- Unmatched Products -->
   <h2>Unmatched Competitor Products</h2>
   <div class="table-wrap" id="unmatchedWrap" style="display:none;">
@@ -818,7 +830,83 @@ async function pushMappings() {
   }
 }
 
-// --- Manual mapping ---
+// --- Manage Mappings ---
+
+let allMappings = [];
+
+function toggleMappings() {
+  const wrap = document.getElementById('mappingsWrap');
+  if (wrap.style.display === 'none') {
+    wrap.style.display = 'block';
+    loadMappings();
+  } else {
+    wrap.style.display = 'none';
+  }
+}
+
+async function loadMappings() {
+  if (!isRailway) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/mappings`);
+    if (!res.ok) return;
+    const data = await res.json();
+    allMappings = data.mappings || [];
+    renderMappings();
+  } catch {}
+}
+
+function renderMappings() {
+  const tbody = document.getElementById('mappingsBody');
+  tbody.innerHTML = allMappings.map((m, i) => {
+    const src = m.source || 'iw';
+    const sku = m.sku || m.iwSku || '';
+    return `<tr>
+      <td><span class="badge ${src}">${src.toUpperCase()}</span></td>
+      <td>${esc(sku)}</td>
+      <td><input class="map-input" id="editmap-${i}" value="${esc(m.shopifyMatch)}" data-source="${src}" data-sku="${esc(sku)}" style="width:300px;" onchange="updateMapping(${i})"></td>
+      <td><button class="btn-map" style="background:#ef4444;" onclick="deleteMapping('${src}','${esc(sku)}',${i})">Delete</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateMapping(idx) {
+  const el = document.getElementById(`editmap-${idx}`);
+  const newVal = el.value.trim();
+  if (!newVal) return;
+
+  const source = el.dataset.source;
+  const sku = el.dataset.sku;
+
+  try {
+    await fetch(`${API_BASE}/api/mapping`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source, sku, shopifyMatch: newVal })
+    });
+    el.style.borderColor = '#22c55e';
+    allMappings[idx].shopifyMatch = newVal;
+    setTimeout(() => el.style.borderColor = '#d1d5db', 2000);
+  } catch {
+    el.style.borderColor = '#ef4444';
+  }
+}
+
+async function deleteMapping(source, sku, idx) {
+  if (!confirm(`Delete mapping ${source.toUpperCase()}:${sku}?`)) return;
+  try {
+    await fetch(`${API_BASE}/api/mapping-delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source, sku })
+    });
+    allMappings.splice(idx, 1);
+    renderMappings();
+  } catch (e) {
+    alert('Failed: ' + e.message);
+  }
+}
+
+// --- Manual mapping (unmatched section) ---
 
 async function saveMapping(source, sku, idx) {
   const input = document.getElementById(`map-${idx}`);
