@@ -274,7 +274,6 @@
         <option value="both">Both</option>
       </select>
       <button class="btn-dry" onclick="triggerRun(true)">Dry Run</button>
-      <button class="btn-live" onclick="triggerRun(false)">Live Run</button>
     </div>
     <div class="feedback" id="triggerFeedback"></div>
     <div class="progress-wrap" id="progressWrap">
@@ -308,6 +307,10 @@ const savedSkus = new Set(); // Track which mappings have been saved this sessio
 async function loadStatus() {
   // Don't refresh if user is typing in a mapping input
   if (document.activeElement && document.activeElement.classList.contains('map-input')) return;
+  // Don't refresh if user is interacting with shipping inputs
+  if (document.activeElement && document.activeElement.classList.contains('shipping-input')) return;
+  // Don't refresh if any checkboxes are checked (user is selecting items)
+  if (document.querySelectorAll('.variant-check:checked, .group-check:checked').length > 0) return;
 
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
