@@ -12,6 +12,7 @@ const { spawn } = require('child_process');
 const PORT = process.env.PORT || 3000;
 
 let currentRun = null; // { status, startedAt, logs, pid }
+let pendingMappingPush = false;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -118,41 +119,8 @@ const server = http.createServer((req, res) => {
 
         const newContent = JSON.stringify(data, null, 2);
         fs.writeFileSync(mappingFile, newContent);
-        console.log(`[SERVER] Mapping saved: ${source}:${sku} -> "${shopifyMatch}"`);
-
-        // Push to GitHub so it persists across Railway deploys
-        const ghToken = process.env.GITHUB_TOKEN;
-        if (ghToken) {
-          try {
-            const ghApi = (method, apiPath, body2) => new Promise((resolve, reject) => {
-              const opts = {
-                hostname: 'api.github.com',
-                path: apiPath,
-                method,
-                headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' }
-              };
-              if (body2) opts.headers['Content-Length'] = Buffer.byteLength(body2);
-              const r = require('https').request(opts, r2 => {
-                let d = ''; r2.on('data', c => d += c);
-                r2.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
-              });
-              r.on('error', reject);
-              if (body2) r.write(body2);
-              r.end();
-            });
-
-            const repo = 'arcintscooters-maker/inlinex-price-match';
-            const file = await ghApi('GET', `/repos/${repo}/contents/manual-mappings.json`);
-            await ghApi('PUT', `/repos/${repo}/contents/manual-mappings.json`, JSON.stringify({
-              message: `Add mapping: ${source}:${sku} -> "${shopifyMatch}" [skip ci]`,
-              content: Buffer.from(newContent).toString('base64'),
-              sha: file.sha
-            }));
-            console.log('[SERVER] Mapping pushed to GitHub');
-          } catch (e) {
-            console.log('[SERVER] GitHub push failed:', e.message || e);
-          }
-        }
+        console.log(`[SERVER] Mapping saved locally: ${source}:${sku} -> "${shopifyMatch}"`);
+        pendingMappingPush = true;
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true }));
@@ -161,6 +129,60 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: e.message }));
       }
     });
+    return;
+  }
+
+  // Push all pending mappings to GitHub (batch — won't trigger redeploy until user clicks)
+  if (url.pathname === '/api/push-mappings' && req.method === 'POST') {
+    const ghToken = process.env.GITHUB_TOKEN;
+    if (!ghToken) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'GITHUB_TOKEN not set' }));
+      return;
+    }
+    if (!pendingMappingPush) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, message: 'No pending changes' }));
+      return;
+    }
+
+    (async () => {
+      try {
+        const mappingFile = path.join(__dirname, 'manual-mappings.json');
+        const newContent = fs.readFileSync(mappingFile, 'utf8');
+
+        const ghApi = (method, apiPath, body2) => new Promise((resolve, reject) => {
+          const opts = {
+            hostname: 'api.github.com', path: apiPath, method,
+            headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' }
+          };
+          if (body2) opts.headers['Content-Length'] = Buffer.byteLength(body2);
+          const r = require('https').request(opts, r2 => {
+            let d = ''; r2.on('data', c => d += c);
+            r2.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
+          });
+          r.on('error', reject);
+          if (body2) r.write(body2);
+          r.end();
+        });
+
+        const repo = 'arcintscooters-maker/inlinex-price-match';
+        const file = await ghApi('GET', `/repos/${repo}/contents/manual-mappings.json`);
+        await ghApi('PUT', `/repos/${repo}/contents/manual-mappings.json`, JSON.stringify({
+          message: 'Update manual mappings from dashboard [skip ci]',
+          content: Buffer.from(newContent).toString('base64'),
+          sha: file.sha
+        }));
+        pendingMappingPush = false;
+        console.log('[SERVER] Mappings pushed to GitHub');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, message: 'Pushed to GitHub' }));
+      } catch (e) {
+        console.log('[SERVER] GitHub push failed:', e.message || e);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message || 'Push failed' }));
+      }
+    })();
     return;
   }
 

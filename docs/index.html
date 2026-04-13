@@ -142,7 +142,10 @@
   <!-- Unmatched Products -->
   <h2>Unmatched Competitor Products</h2>
   <div class="table-wrap" id="unmatchedWrap" style="display:none;">
-    <p style="font-size:0.85rem; color:#888; margin-bottom:10px;">These competitor products couldn't be matched to any Shopify product. Enter a Shopify SKU number (or title keyword) to map it.</p>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <p style="font-size:0.85rem; color:#888; margin:0;">Enter a Shopify product title (or SKU) to map each competitor product. Click Save on each, then Push All when done.</p>
+      <button class="btn-save" onclick="pushMappings()" id="btnPush" style="white-space:nowrap;">Push All to GitHub</button>
+    </div>
     <table>
       <thead><tr><th>Source</th><th>Competitor Product</th><th>Price</th><th>Map to Shopify Product</th><th></th></tr></thead>
       <tbody id="unmatchedBody"></tbody>
@@ -587,6 +590,30 @@ function startProgressPolling() {
   showProgress(2, 'Queued...', 'running');
   if (progressTimer) clearInterval(progressTimer);
   progressTimer = setInterval(pollRunProgress, 5000);
+}
+
+// --- Push mappings to GitHub ---
+
+async function pushMappings() {
+  const btn = document.getElementById('btnPush');
+  btn.textContent = 'Pushing...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API_BASE}/api/push-mappings`, { method: 'POST' });
+    const data = await res.json();
+    if (res.ok) {
+      btn.textContent = 'Pushed!';
+      setTimeout(() => { btn.textContent = 'Push All to GitHub'; btn.disabled = false; }, 3000);
+    } else {
+      btn.textContent = 'Failed';
+      alert('Push failed: ' + (data.error || 'Unknown error'));
+      btn.disabled = false;
+    }
+  } catch (e) {
+    btn.textContent = 'Error';
+    alert('Push error: ' + e.message);
+    btn.disabled = false;
+  }
 }
 
 // --- Manual mapping ---
