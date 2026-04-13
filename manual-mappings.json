@@ -126,6 +126,12 @@
       "sku": "144706313",
       "shopifyMatch": "Miriam Fatmi Movie",
       "note": "XT UC Movies Miriam Fatmi wheels 4 units"
+    },
+    {
+      "source": "xt",
+      "sku": "151589312",
+      "shopifyMatch": "USD Aeon 80 Sand Aggressive Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
