@@ -332,10 +332,10 @@ function render() {
     uWrap.style.display = 'none';
     uEmpty.style.display = 'block';
   } else {
-    // Preserve any typed values before re-rendering
+    // Preserve typed values keyed by competitor SKU (not index)
     const savedInputs = {};
     uBody.querySelectorAll('.map-input').forEach(el => {
-      if (el.value) savedInputs[el.id] = el.value;
+      if (el.value) savedInputs[el.dataset.sku] = el.value;
     });
 
     uWrap.style.display = 'block';
@@ -347,14 +347,14 @@ function render() {
         <td>${srcBadge}</td>
         <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}</small></td>
         <td>${sym}${u.price.toFixed(2)}</td>
-        <td><input class="map-input" id="map-${i}" placeholder="Shopify SKU e.g. 4040333582145"></td>
+        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title"></td>
         <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
       </tr>`;
     }).join('');
 
-    // Restore any previously typed values
-    for (const [id, val] of Object.entries(savedInputs)) {
-      const el = document.getElementById(id);
+    // Restore typed values matching the same competitor SKU
+    for (const [sku, val] of Object.entries(savedInputs)) {
+      const el = uBody.querySelector(`.map-input[data-sku="${sku}"]`);
       if (el) el.value = val;
     }
   }
