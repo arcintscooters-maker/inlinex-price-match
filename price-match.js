@@ -129,13 +129,24 @@ async function main() {
       let usCompSource = null;
       let usMatchMethod = null;
 
-      // US market: IW only (xtremeinn disabled until scraper is tuned)
+      // Check IW first
       if (iwMatch) {
         usNewPrice = Math.round(iwMatch.price * IW_DISCOUNT * 100) / 100;
         usCompetitor = iwMatch;
         usCompPrice = iwMatch.price;
         usCompSource = 'Inline Warehouse';
         usMatchMethod = iwMethod;
+      }
+      // Check xtremeinn if no IW match (or if XT is cheaper)
+      if (xtMatch && xtMatch.currency === 'USD') {
+        const xtUsPrice = Math.round((xtMatch.price + XT_SHIPPING_USD) * XT_DISCOUNT * 100) / 100;
+        if (!usNewPrice || xtUsPrice < usNewPrice) {
+          usNewPrice = xtUsPrice;
+          usCompetitor = xtMatch;
+          usCompPrice = xtMatch.price;
+          usCompSource = `xtremeinn (+$${XT_SHIPPING_USD} ship)`;
+          usMatchMethod = xtMethod;
+        }
       }
 
       if (usNewPrice) {
