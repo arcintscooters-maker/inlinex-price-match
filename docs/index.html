@@ -243,6 +243,9 @@ let sortCol = -1, sortAsc = true;
 // --- Load & Render ---
 
 async function loadStatus() {
+  // Don't refresh if user is typing in a mapping input
+  if (document.activeElement && document.activeElement.classList.contains('map-input')) return;
+
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
     const res = await fetch('./status.json?' + Date.now());
@@ -325,7 +328,13 @@ function render() {
   if (unmatchedList.length === 0) {
     uWrap.style.display = 'none';
     uEmpty.style.display = 'block';
-  } else if (!isTyping) {
+  } else {
+    // Preserve any typed values before re-rendering
+    const savedInputs = {};
+    uBody.querySelectorAll('.map-input').forEach(el => {
+      if (el.value) savedInputs[el.id] = el.value;
+    });
+
     uWrap.style.display = 'block';
     uEmpty.style.display = 'none';
     uBody.innerHTML = unmatchedList.map((u, i) => {
@@ -339,6 +348,12 @@ function render() {
         <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
       </tr>`;
     }).join('');
+
+    // Restore any previously typed values
+    for (const [id, val] of Object.entries(savedInputs)) {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    }
   }
 
   // Run history
