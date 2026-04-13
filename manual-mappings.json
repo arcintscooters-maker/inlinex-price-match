@@ -246,6 +246,18 @@
       "sku": "13922186",
       "shopifyMatch": "USD Aeon 60 Mery Munoz Pro Aggressive Skates",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "149166547",
+      "shopifyMatch": "Rollerblade RB 80 Women Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "149166136",
+      "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
