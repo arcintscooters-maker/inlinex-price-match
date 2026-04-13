@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 let currentRun = null; // { status, startedAt, logs, pid }
 let pendingMappingPush = false;
+let pendingShippingPush = false;
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -175,6 +176,25 @@ const server = http.createServer((req, res) => {
         }));
         pendingMappingPush = false;
         console.log('[SERVER] Mappings pushed to GitHub');
+
+        // Also push shipping overrides if pending
+        if (pendingShippingPush) {
+          try {
+            const shipFile = path.join(__dirname, 'shipping-overrides.json');
+            const shipContent = fs.readFileSync(shipFile, 'utf8');
+            const shipGh = await ghApi('GET', `/repos/${repo}/contents/shipping-overrides.json`);
+            await ghApi('PUT', `/repos/${repo}/contents/shipping-overrides.json`, JSON.stringify({
+              message: 'Update shipping overrides from dashboard [skip ci]',
+              content: Buffer.from(shipContent).toString('base64'),
+              sha: shipGh.sha
+            }));
+            pendingShippingPush = false;
+            console.log('[SERVER] Shipping overrides pushed to GitHub');
+          } catch (e2) {
+            console.log('[SERVER] Shipping push failed:', e2.message || e2);
+          }
+        }
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, message: 'Pushed to GitHub' }));
       } catch (e) {
@@ -258,6 +278,7 @@ const server = http.createServer((req, res) => {
         data.overrides[productTitle] = parseFloat(shippingFee);
         fs.writeFileSync(file, JSON.stringify(data, null, 2));
         console.log(`[SERVER] Shipping override: "${productTitle}" = ${shippingFee}`);
+        pendingShippingPush = true;
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true }));
