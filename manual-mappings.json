@@ -258,6 +258,72 @@
       "sku": "149166136",
       "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "151419611",
+      "shopifyMatch": "Iqon ACT TRI Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "150398274",
+      "shopifyMatch": "Iqon ACT AG Chad Hornish Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "148111446",
+      "shopifyMatch": "Iqon ACT AG Team Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "148111453",
+      "shopifyMatch": "Iqon ACT CL Team Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "148111466",
+      "shopifyMatch": "Iqon ACT WZ Team Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141314553",
+      "shopifyMatch": "Iqon AG 15 Montre Livingston Pro Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141314535",
+      "shopifyMatch": "Iqon AG 15 Montre Livingston Pro WB Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140464143",
+      "shopifyMatch": "Iqon AG 30 Lite Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140464209",
+      "shopifyMatch": "Iqon CL 20 Lite Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140464136",
+      "shopifyMatch": "Iqon AG 30 Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140464203",
+      "shopifyMatch": "Iqon CL 20 Skate",
+      "note": "Added from dashboard"
     }
   ]
 }
