@@ -97,7 +97,7 @@ const server = http.createServer((req, res) => {
   if (url.pathname === '/api/mapping' && req.method === 'POST') {
     let body = '';
     req.on('data', c => body += c);
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const { source, sku, shopifyMatch } = JSON.parse(body);
         if (!source || !sku || !shopifyMatch) {
@@ -109,58 +109,45 @@ const server = http.createServer((req, res) => {
         const mappingFile = path.join(__dirname, 'manual-mappings.json');
         const data = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
 
-        // Check if mapping already exists
         const exists = data.mappings.find(m => (m.source || 'iw') === source && (m.sku || m.iwSku) === sku);
         if (exists) {
           exists.shopifyMatch = shopifyMatch;
         } else {
-          data.mappings.push({ source, sku, shopifyMatch, note: `Added from dashboard` });
+          data.mappings.push({ source, sku, shopifyMatch, note: 'Added from dashboard' });
         }
 
         const newContent = JSON.stringify(data, null, 2);
         fs.writeFileSync(mappingFile, newContent);
-        console.log(`[SERVER] Mapping saved locally: ${source}:${sku} -> "${shopifyMatch}"`);
+        console.log(`[SERVER] Mapping saved: ${source}:${sku} -> "${shopifyMatch}"`);
 
         // Push to GitHub so it persists across Railway deploys
         const ghToken = process.env.GITHUB_TOKEN;
         if (ghToken) {
-          const https = require('https');
-          const repo = 'arcintscooters-maker/inlinex-price-match';
-
-          // Get current file SHA
-          const getFile = (resolve, reject) => {
-            https.get({
-              hostname: 'api.github.com',
-              path: `/repos/${repo}/contents/manual-mappings.json`,
-              headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}` }
-            }, res2 => {
-              let d = ''; res2.on('data', c => d += c);
-              res2.on('end', () => { try { resolve(JSON.parse(d)); } catch { reject(d); } });
-            }).on('error', reject);
-          };
-
           try {
-            const file = await new Promise(getFile);
-            const updateBody = JSON.stringify({
+            const ghApi = (method, apiPath, body2) => new Promise((resolve, reject) => {
+              const opts = {
+                hostname: 'api.github.com',
+                path: apiPath,
+                method,
+                headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' }
+              };
+              if (body2) opts.headers['Content-Length'] = Buffer.byteLength(body2);
+              const r = require('https').request(opts, r2 => {
+                let d = ''; r2.on('data', c => d += c);
+                r2.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
+              });
+              r.on('error', reject);
+              if (body2) r.write(body2);
+              r.end();
+            });
+
+            const repo = 'arcintscooters-maker/inlinex-price-match';
+            const file = await ghApi('GET', `/repos/${repo}/contents/manual-mappings.json`);
+            await ghApi('PUT', `/repos/${repo}/contents/manual-mappings.json`, JSON.stringify({
               message: `Add mapping: ${source}:${sku} -> "${shopifyMatch}" [skip ci]`,
               content: Buffer.from(newContent).toString('base64'),
               sha: file.sha
-            });
-
-            await new Promise((resolve, reject) => {
-              const req = https.request({
-                hostname: 'api.github.com',
-                path: `/repos/${repo}/contents/manual-mappings.json`,
-                method: 'PUT',
-                headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(updateBody) }
-              }, res2 => {
-                let d = ''; res2.on('data', c => d += c);
-                res2.on('end', () => resolve(d));
-              });
-              req.on('error', reject);
-              req.write(updateBody);
-              req.end();
-            });
+            }));
             console.log('[SERVER] Mapping pushed to GitHub');
           } catch (e) {
             console.log('[SERVER] GitHub push failed:', e.message || e);
