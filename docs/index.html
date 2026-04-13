@@ -242,6 +242,7 @@ const API_BASE = isRailway ? '' : null; // empty string = same origin on Railway
 
 let statusData = null;
 let sortCol = -1, sortAsc = true;
+const savedSkus = new Set(); // Track which mappings have been saved this session
 
 // --- Load & Render ---
 
@@ -347,8 +348,8 @@ function render() {
         <td>${srcBadge}</td>
         <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}</small></td>
         <td>${sym}${u.price.toFixed(2)}</td>
-        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title"></td>
-        <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
+        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title" ${savedSkus.has(u.sku) ? 'disabled style="border-color:#22c55e"' : ''}></td>
+        <td><button class="btn-map ${savedSkus.has(u.sku) ? 'saved' : ''}" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})" ${savedSkus.has(u.sku) ? 'disabled' : ''}>${savedSkus.has(u.sku) ? 'Saved' : 'Save'}</button></td>
       </tr>`;
     }).join('');
 
@@ -643,8 +644,10 @@ async function saveMapping(source, sku, idx) {
     }
     btn.textContent = 'Saved';
     btn.className = 'btn-map saved';
+    btn.disabled = true;
     input.disabled = true;
     input.style.borderColor = '#22c55e';
+    savedSkus.add(sku);
   } catch (e) {
     btn.textContent = 'Error';
     btn.disabled = false;
