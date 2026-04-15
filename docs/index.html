@@ -346,6 +346,17 @@ function render() {
   const changes = statusData.priceChanges || [];
   const isDryRun = r.mode === 'DRY RUN';
 
+  // Save checked state by variantGid before re-render
+  const checkedGids = new Set();
+  document.querySelectorAll('.variant-check:checked').forEach(cb => {
+    if (cb.dataset.gid) checkedGids.add(cb.dataset.gid);
+  });
+  // Save which groups are expanded
+  const expandedGroups = new Set();
+  document.querySelectorAll('.variant-row.visible').forEach(r => {
+    if (r.dataset.group) expandedGroups.add(r.dataset.group);
+  });
+
   // Apply saved shipping overrides to recalculate prices
   for (const c of changes) {
     if ((c.competitor || '').includes('xtremeinn') && shippingOverrides[c.product] !== undefined) {
@@ -456,6 +467,19 @@ function render() {
       gIdx++;
     }
     tbody.innerHTML = html;
+
+    // Restore checked state and expanded groups
+    if (checkedGids.size > 0) {
+      document.querySelectorAll('.variant-check').forEach(cb => {
+        if (cb.dataset.gid && checkedGids.has(cb.dataset.gid)) cb.checked = true;
+      });
+      updateSelectedCount();
+    }
+    expandedGroups.forEach(gIdx => {
+      document.querySelectorAll(`.variant-row[data-group="${gIdx}"]`).forEach(r => r.classList.add('visible'));
+      const arrow = document.getElementById(`arrow-${gIdx}`);
+      if (arrow) arrow.textContent = '\u25BC';
+    });
   }
 
   // Unmatched products — skip re-render if user is typing
