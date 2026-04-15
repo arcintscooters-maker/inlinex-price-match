@@ -369,7 +369,8 @@ function render() {
       if (savedShip !== c.shippingFee) {
         c.shippingFee = savedShip;
         if (c.market === 'ID') {
-          c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95);
+          // Indonesia: +20% tax/duties after shipping
+          c.newPrice = Math.round((c.competitorPrice + savedShip) * 1.20 * 0.95);
         } else {
           c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95 * 100) / 100;
         }
@@ -566,7 +567,8 @@ async function updateShipping(el) {
     if ((c.competitor || '').includes('xtremeinn')) {
       c.shippingFee = newShip;
       if (c.market === 'ID') {
-        c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95);
+        // Indonesia: +20% tax/duties after shipping
+        c.newPrice = Math.round((c.competitorPrice + newShip) * 1.20 * 0.95);
       } else {
         c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95 * 100) / 100;
       }

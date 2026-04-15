@@ -292,7 +292,8 @@ async function main() {
 
       if (idComp && idComp.currency === 'IDR') {
         const idShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_IDR;
-        const totalXtPrice = idComp.price + idShipFee;
+        // Indonesia: add 20% for import tax/duties after shipping, then apply 5% discount
+        const totalXtPrice = (idComp.price + idShipFee) * 1.20;
         const idNewPrice = Math.round(totalXtPrice * XT_DISCOUNT);
 
         const currentIdPrice = idFixedPrices[variantGid] || (currentPrice * ID_DEFAULT_MARKUP);
@@ -306,7 +307,7 @@ async function main() {
           oldPrice: Math.round(currentIdPrice),
           newPrice: idNewPrice,
           competitorPrice: idComp.price,
-          competitorSource: `xtremeinn (+Rp${idShipFee.toLocaleString()} ship)`,
+          competitorSource: `xtremeinn (+Rp${idShipFee.toLocaleString()} ship +20% tax)`,
           competitorUrl: idComp.url,
           competitorSku: idComp.sku || '',
           shippingFee: idShipFee,
