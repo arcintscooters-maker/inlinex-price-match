@@ -162,7 +162,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts));
+  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts), isProducts);
 
   // ==========================================
   // 5. Calculate new prices
