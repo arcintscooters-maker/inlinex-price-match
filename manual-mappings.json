@@ -822,6 +822,66 @@
       "sku": "10110",
       "shopifyMatch": "Iqon ACT AG Chad Hornish Aggressive Skate",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710274",
+      "shopifyMatch": "USD Sway Witzemann II Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710263",
+      "shopifyMatch": "USD Sway Chess Black Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "700352",
+      "shopifyMatch": "USD Glitch Kids Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710255",
+      "shopifyMatch": "USD Sway Carlos Bernal II Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710270",
+      "shopifyMatch": "USD Aeon 60 Nicoly Pro Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710215",
+      "shopifyMatch": "USD Shadow Team 60 Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710236",
+      "shopifyMatch": "USD Aeon 60 White Shell",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710231",
+      "shopifyMatch": "USD Aeon Team 60 White Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710254",
+      "shopifyMatch": "USD Aeon 60 Black Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "710246",
+      "shopifyMatch": "USD Aeon Nick Lomax Pro II 60 Aggressive Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
