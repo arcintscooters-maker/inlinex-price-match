@@ -125,6 +125,7 @@
   <div class="stats" id="statsGrid">
     <div class="stat us"><div class="num" id="usCount">-</div><div class="label">US Price Updates</div></div>
     <div class="stat au"><div class="num" id="auCount">-</div><div class="label">AU Price Updates</div></div>
+    <div class="stat au"><div class="num" id="idCount">-</div><div class="label">ID Price Updates</div></div>
     <div class="stat skip"><div class="num" id="skipCount">-</div><div class="label">Already Cheaper</div></div>
     <div class="stat match"><div class="num" id="matchCount">-</div><div class="label">Total Matches</div></div>
   </div>
@@ -256,7 +257,7 @@
       <select id="marketSelect" onchange="updateSourceOptions()">
         <option value="US">US Market</option>
         <option value="AU">AU Market</option>
-        <option value="US,AU">Both Markets</option>
+        <option value="ID">ID Market</option>
       </select>
       <select id="sourceSelect">
         <option value="iw">Inline Warehouse</option>
@@ -345,6 +346,7 @@ function render() {
   // Stats
   document.getElementById('usCount').textContent = r.usUpdates;
   document.getElementById('auCount').textContent = r.auUpdates;
+  document.getElementById('idCount').textContent = r.idUpdates || 0;
   document.getElementById('skipCount').textContent = r.skipped;
   document.getElementById('matchCount').textContent = r.totalMatches;
 
@@ -366,7 +368,11 @@ function render() {
       const savedShip = shippingOverrides[c.product];
       if (savedShip !== c.shippingFee) {
         c.shippingFee = savedShip;
-        c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95 * 100) / 100;
+        if (c.market === 'ID') {
+          c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95);
+        } else {
+          c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95 * 100) / 100;
+        }
         c.skipped = c.oldPrice <= c.newPrice;
       }
     }
@@ -395,7 +401,9 @@ function render() {
     let gIdx = 0;
     for (const [key, group] of Object.entries(groups)) {
       const items = group.items;
-      const sym = group.market === 'AU' ? 'A$' : '$';
+      const sym = group.market === 'AU' ? 'A$' : group.market === 'ID' ? 'Rp ' : '$';
+      const isIDR = group.market === 'ID';
+      const fmtPrice = (p) => isIDR ? Math.round(p).toLocaleString() : p.toFixed(2);
       const isXT = (group.competitor || '').includes('xtremeinn');
       const shipFee = items[0].shippingFee || 0;
       const shipOverride = shippingOverrides[group.product];
@@ -412,8 +420,8 @@ function render() {
       const aggStatus = allApplied ? '<span class="badge applied">Applied</span>'
         : allSkipped ? '<span class="badge skipped">Skipped</span>'
         : '<span class="badge pending">Pending</span>';
-      const oldRange = oldMin === oldMax ? `${sym}${oldMin.toFixed(2)}` : `${sym}${oldMin.toFixed(2)} - ${sym}${oldMax.toFixed(2)}`;
-      const newRange = newMin === newMax ? `${sym}${newMin.toFixed(2)}` : `${sym}${newMin.toFixed(2)} - ${sym}${newMax.toFixed(2)}`;
+      const oldRange = oldMin === oldMax ? `${sym}${fmtPrice(oldMin)}` : `${sym}${fmtPrice(oldMin)} - ${sym}${fmtPrice(oldMax)}`;
+      const newRange = newMin === newMax ? `${sym}${fmtPrice(newMin)}` : `${sym}${fmtPrice(newMin)} - ${sym}${fmtPrice(newMax)}`;
       const avgDiff = items.reduce((s, i) => s + (i.oldPrice - i.newPrice), 0) / items.length;
       const diffClass = avgDiff > 0 ? 'pos' : avgDiff < 0 ? 'neg' : '';
       const groupCls = allSkipped ? 'skip-row' : '';
@@ -427,8 +435,8 @@ function render() {
         <td class="price-range">${oldRange}</td>
         <td>${isXT ? `<input type="number" class="shipping-input" value="${displayShip}" data-product="${esc(group.product)}" data-group="${gIdx}" onclick="event.stopPropagation()" onchange="updateShipping(this)">` : '-'}</td>
         <td class="price-range">${newRange}</td>
-        <td class="${diffClass}">${avgDiff > 0 ? '-' : '+'}${sym}${Math.abs(avgDiff).toFixed(2)} avg</td>
-        <td>${esc(group.competitor || '')}<br><small>${sym}${(group.competitorPrice||0).toFixed(2)}</small></td>
+        <td class="${diffClass}">${avgDiff > 0 ? '-' : '+'}${sym}${fmtPrice(Math.abs(avgDiff))} avg</td>
+        <td>${esc(group.competitor || '')}<br><small>${sym}${fmtPrice(group.competitorPrice||0)}</small></td>
         <td>${aggStatus} <button class="btn-clear" style="font-size:0.65rem; padding:2px 6px; margin-left:4px;" onclick="event.stopPropagation(); remapProduct(${gIdx})" data-group="${gIdx}" data-comp-sku="${esc(group.competitorSku || '')}" data-source="${isXT ? 'xt' : 'iw'}" data-product="${esc(group.product)}">Remap</button></td>
       </tr>`;
 
@@ -460,10 +468,10 @@ function render() {
           <td><input type="checkbox" class="variant-check" data-group="${gIdx}" data-gid="${esc(c.variantGid || '')}" data-price="${c.newPrice}" data-market="${c.market}" ${vCheckDisabled} ${isSelected} onchange="toggleVariantSelect(this)"></td>
           <td style="padding-left:30px;">${esc(variantLabel)}<br><small>SKU: ${esc(c.sku)}</small></td>
           <td>${c.market}</td>
-          <td>${sym}${c.oldPrice.toFixed(2)}</td>
+          <td>${sym}${fmtPrice(c.oldPrice)}</td>
           <td></td>
-          <td>${sym}${c.newPrice.toFixed(2)}</td>
-          <td class="${vDiffClass}">${diff > 0 ? '-' : '+'}${sym}${Math.abs(diff).toFixed(2)} (${pct}%)</td>
+          <td>${sym}${fmtPrice(c.newPrice)}</td>
+          <td class="${vDiffClass}">${diff > 0 ? '-' : '+'}${sym}${fmtPrice(Math.abs(diff))} (${pct}%)</td>
           <td>${esc(c.matchMethod || '')}</td>
           <td>${vStatus}</td>
         </tr>`;
@@ -557,7 +565,11 @@ async function updateShipping(el) {
   for (const c of changes) {
     if ((c.competitor || '').includes('xtremeinn')) {
       c.shippingFee = newShip;
-      c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95 * 100) / 100;
+      if (c.market === 'ID') {
+        c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95);
+      } else {
+        c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95 * 100) / 100;
+      }
       c.skipped = c.oldPrice <= c.newPrice;
     }
   }
@@ -1145,7 +1157,7 @@ function updateSourceOptions() {
   const src = document.getElementById('sourceSelect');
   const prev = src.value;
 
-  if (market === 'AU') {
+  if (market === 'AU' || market === 'ID') {
     src.innerHTML = '<option value="xt">xtremeinn</option>';
   } else if (market === 'US') {
     src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';

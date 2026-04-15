@@ -377,7 +377,7 @@ const server = http.createServer((req, res) => {
         const { log } = require('./lib/utils');
 
         log('SERVER', `Applying ${selections.length} selected prices...`);
-        const { usPriceList, auPriceList } = await shopify.getMarketPriceLists();
+        const { usPriceList, auPriceList, idPriceList } = await shopify.getMarketPriceLists();
 
         // Group by market
         const usItems = selections.filter(s => s.market === 'US').map(s => ({
@@ -385,6 +385,9 @@ const server = http.createServer((req, res) => {
         }));
         const auItems = selections.filter(s => s.market === 'AU').map(s => ({
           variantId: s.variantGid, price: s.newPrice, currency: 'AUD'
+        }));
+        const idItems = selections.filter(s => s.market === 'ID').map(s => ({
+          variantId: s.variantGid, price: s.newPrice, currency: 'IDR'
         }));
 
         let applied = 0;
@@ -397,6 +400,11 @@ const server = http.createServer((req, res) => {
           await shopify.setFixedPrices(auPriceList.id, auItems);
           applied += auItems.length;
           log('SERVER', `Applied ${auItems.length} AU prices`);
+        }
+        if (idItems.length > 0 && idPriceList) {
+          await shopify.setFixedPrices(idPriceList.id, idItems);
+          applied += idItems.length;
+          log('SERVER', `Applied ${idItems.length} ID prices`);
         }
 
         // Update status.json — mark selected items as applied

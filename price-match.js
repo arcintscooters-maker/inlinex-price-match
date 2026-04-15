@@ -23,8 +23,10 @@ const IW_DISCOUNT = 0.95;         // 5% cheaper than IW
 const XT_DISCOUNT = 0.95;         // 5% cheaper than xtremeinn + shipping
 const XT_SHIPPING_USD = 40;       // Default xtremeinn shipping to US
 const XT_SHIPPING_AUD = 80;       // Default xtremeinn shipping to AU
+const XT_SHIPPING_IDR = 900000;   // Default xtremeinn shipping to Indonesia
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
+const ID_DEFAULT_MARKUP = 1.15;   // 15% markup for ID market
 
 // Load per-product shipping overrides
 const shippingOverridesFile = path.join(__dirname, 'shipping-overrides.json');
@@ -39,6 +41,7 @@ async function main() {
   const markets = marketsArg ? marketsArg.split('=')[1].split(',') : ['US'];
   const enableUS = markets.includes('US');
   const enableAU = markets.includes('AU');
+  const enableID = markets.includes('ID');
   const sourceArg = process.argv.find(a => a.startsWith('--source='));
   const source = sourceArg ? sourceArg.split('=')[1] : 'both';
   const enableIW = source === 'iw' || source === 'both';
@@ -70,14 +73,16 @@ async function main() {
   // 2. Get Shopify market price lists
   // ==========================================
   log('MAIN', 'Step 2: Finding market price lists...');
-  const { usPriceList, auPriceList } = await shopify.getMarketPriceLists();
+  const { usPriceList, auPriceList, idPriceList } = await shopify.getMarketPriceLists();
 
   if (!usPriceList) log('MAIN', 'WARNING: US price list not found');
   if (!auPriceList) log('MAIN', 'WARNING: AU price list not found');
+  if (!idPriceList) log('MAIN', 'WARNING: ID price list not found');
 
   // Get current fixed prices (from price list — explicit FIXED origin)
   let usFixedPrices = {};
   let auFixedPrices = {};
+  let idFixedPrices = {};
   if (usPriceList) {
     log('MAIN', 'Fetching current US fixed prices...');
     usFixedPrices = await shopify.getFixedPrices(usPriceList.id);
@@ -88,14 +93,17 @@ async function main() {
     auFixedPrices = await shopify.getFixedPrices(auPriceList.id);
     log('MAIN', `AU fixed prices: ${Object.keys(auFixedPrices).length}`);
   }
+  if (idPriceList) {
+    log('MAIN', 'Fetching current ID fixed prices...');
+    idFixedPrices = await shopify.getFixedPrices(idPriceList.id);
+    log('MAIN', `ID fixed prices: ${Object.keys(idFixedPrices).length}`);
+  }
 
   // Get contextual prices — captures BOTH fixed prices and percentage markups
-  // This is what Shopify actually charges customers, regardless of pricing rule type
   const productIds = filteredProducts.map(p => p.id);
   if (enableUS && productIds.length > 0) {
     log('MAIN', 'Fetching US contextual prices (catalog-level)...');
     const usCtxPrices = await shopify.getContextualPrices(productIds, 'US');
-    // Merge — contextual takes precedence since it captures both fixed and rule-based prices
     for (const [gid, price] of Object.entries(usCtxPrices)) {
       usFixedPrices[gid] = price;
     }
@@ -109,6 +117,14 @@ async function main() {
     }
     log('MAIN', `AU effective prices: ${Object.keys(auFixedPrices).length}`);
   }
+  if (enableID && productIds.length > 0) {
+    log('MAIN', 'Fetching ID contextual prices (catalog-level)...');
+    const idCtxPrices = await shopify.getContextualPrices(productIds, 'ID');
+    for (const [gid, price] of Object.entries(idCtxPrices)) {
+      idFixedPrices[gid] = price;
+    }
+    log('MAIN', `ID effective prices: ${Object.keys(idFixedPrices).length}`);
+  }
 
   // ==========================================
   // 3. Scrape competitor prices
@@ -121,10 +137,11 @@ async function main() {
     log('MAIN', 'Step 3: Inline Warehouse SKIPPED (source=' + source + ')');
   }
 
-  let xtUsProducts = [], xtAuProducts = [];
+  let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [];
   if (enableXT) {
     log('MAIN', 'Step 3b: Scraping xtremeinn...');
-    ({ usProducts: xtUsProducts, auProducts: xtAuProducts } = await xtScraper.scrapeAll(brands, markets));
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts } = await xtScraper.scrapeAll(brands, markets));
+    xtIdProducts = xtIdProducts || [];
   } else {
     log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
   }
@@ -133,7 +150,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts));
+  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts));
 
   // ==========================================
   // 5. Calculate new prices
@@ -142,6 +159,7 @@ async function main() {
   const priceChanges = [];
   const usPriceUpdates = [];
   const auPriceUpdates = [];
+  const idPriceUpdates = [];
 
   for (const match of matches) {
     const { shopifyProduct, shopifyVariant, variantGid, currentPrice, iwMatch, iwMethod, xtMatch, xtMethod } = match;
@@ -266,11 +284,58 @@ async function main() {
         priceChanges.push(change);
       }
     }
+
+    // --- ID Market Pricing ---
+    if (idPriceList && enableID) {
+      // Find the xtremeinn ID match (IDR currency)
+      const idComp = xtIdProducts.find(p => match.xtMatch && p.sku === match.xtMatch.sku) || null;
+
+      if (idComp && idComp.currency === 'IDR') {
+        const idShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_IDR;
+        const totalXtPrice = idComp.price + idShipFee;
+        const idNewPrice = Math.round(totalXtPrice * XT_DISCOUNT);
+
+        const currentIdPrice = idFixedPrices[variantGid] || (currentPrice * ID_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'ID',
+          oldPrice: Math.round(currentIdPrice),
+          newPrice: idNewPrice,
+          competitorPrice: idComp.price,
+          competitorSource: `xtremeinn (+Rp${idShipFee.toLocaleString()} ship)`,
+          competitorUrl: idComp.url,
+          competitorSku: idComp.sku || '',
+          shippingFee: idShipFee,
+          matchMethod: 'name',
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        if (currentIdPrice <= idNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentIdPrice;
+        } else {
+          idPriceUpdates.push({
+            variantId: variantGid,
+            price: idNewPrice,
+            currency: 'IDR'
+          });
+        }
+
+        priceChanges.push(change);
+      }
+    }
   }
 
   log('MAIN', `Price changes calculated: ${priceChanges.length} total`);
   log('MAIN', `  US updates: ${usPriceUpdates.length}`);
   log('MAIN', `  AU updates: ${auPriceUpdates.length}`);
+  log('MAIN', `  ID updates: ${idPriceUpdates.length}`);
   log('MAIN', `  Skipped (already cheaper): ${priceChanges.filter(c => c.skipped).length}`);
 
   // ==========================================
@@ -291,6 +356,15 @@ async function main() {
       await shopify.setFixedPrices(auPriceList.id, auPriceUpdates);
       auPriceUpdates.forEach(u => {
         const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'AU');
+        if (change) change.applied = true;
+      });
+    }
+
+    if (idPriceUpdates.length > 0 && idPriceList) {
+      log('MAIN', `Step 7c: Applying ${idPriceUpdates.length} ID price updates...`);
+      await shopify.setFixedPrices(idPriceList.id, idPriceUpdates);
+      idPriceUpdates.forEach(u => {
+        const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'ID');
         if (change) change.applied = true;
       });
     }
@@ -315,7 +389,7 @@ async function main() {
   log('MAIN', `Report: ${reportPath}`);
 
   // Save dashboard status
-  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, null, unmatched);
+  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, dryRun, elapsed, null, unmatched);
 
   // Set output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
@@ -349,7 +423,7 @@ function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
   log('MAIN', `Price history saved (${history.runs.length} runs)`);
 }
 
-function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRun, elapsed, error, unmatched) {
+function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, dryRun, elapsed, error, unmatched) {
   const docsDir = path.join(__dirname, 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
 
@@ -363,6 +437,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
     totalMatches: matches ? matches.length : 0,
     usUpdates: usPriceUpdates ? usPriceUpdates.length : 0,
     auUpdates: auPriceUpdates ? auPriceUpdates.length : 0,
+    idUpdates: idPriceUpdates ? idPriceUpdates.length : 0,
     skipped: priceChanges ? priceChanges.filter(c => c.skipped).length : 0,
     totalChanges: priceChanges ? priceChanges.length : 0,
     status: error ? 'error' : 'success',
@@ -374,6 +449,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
     mode: run.mode,
     usUpdates: run.usUpdates,
     auUpdates: run.auUpdates,
+    idUpdates: run.idUpdates,
     status: run.status,
   });
   if (existing.history.length > 20) existing.history = existing.history.slice(-20);
@@ -416,6 +492,6 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
 main().catch(e => {
   log('MAIN', `FATAL ERROR: ${e.message}`);
   console.error(e.stack);
-  saveStatus(null, null, null, null, false, '0', e.message);
+  saveStatus(null, null, null, null, null, false, '0', e.message);
   process.exit(1);
 });
