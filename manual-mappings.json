@@ -696,6 +696,78 @@
       "sku": "CBTR-032",
       "shopifyMatch": "Powerslide Combat Rocker 3x110 Trinity Frame",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141596038",
+      "shopifyMatch": "Rollerblade Crossfire Boot Only",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "142388144",
+      "shopifyMatch": "Rollerblade RB 80 Women Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "139496569",
+      "shopifyMatch": "Rollerblade Blank Frame",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "139496585",
+      "shopifyMatch": "Rollerblade Hydrogen SE 90mm Wheels",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140583052",
+      "shopifyMatch": "Rollerblade Flow 5x80 Frame",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "138565109",
+      "shopifyMatch": "Rollerblade 243 Twister Frame",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "142388040",
+      "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "142388127",
+      "shopifyMatch": "Rollerblade Microblade SL Sky Blue Kids Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141596056",
+      "shopifyMatch": "Rollerblade Microblade Blue Kids Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141596064",
+      "shopifyMatch": "Rollerblade Microblade SL Sky Blue Kids Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141596062",
+      "shopifyMatch": "Rollerblade Microblade SL Black Lime Kids Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "140583054",
+      "shopifyMatch": "Rollerblade Hydrogen SE 80mm Wheels",
+      "note": "Added from dashboard"
     }
   ]
 }
