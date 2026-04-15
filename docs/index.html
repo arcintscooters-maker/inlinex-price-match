@@ -373,7 +373,7 @@ function render() {
     const groups = {};
     for (const c of changes) {
       const key = `${c.product}|${c.market}|${c.competitor}`;
-      if (!groups[key]) groups[key] = { items: [], product: c.product, brand: c.brand, market: c.market, competitor: c.competitor, competitorPrice: c.competitorPrice, competitorSku: c.competitorSku, matchMethod: c.matchMethod };
+      if (!groups[key]) groups[key] = { items: [], product: c.product, brand: c.brand, market: c.market, competitor: c.competitor, competitorPrice: c.competitorPrice, competitorSku: c.competitorSku, competitorUrl: c.competitorUrl, matchMethod: c.matchMethod };
       groups[key].items.push(c);
     }
 
@@ -408,7 +408,7 @@ function render() {
       // Group header row
       html += `<tr class="group-row ${groupCls}" onclick="toggleGroup(${gIdx})">
         <td><input type="checkbox" class="group-check" data-group="${gIdx}" ${checkDisabled} onclick="event.stopPropagation(); toggleGroupCheck(${gIdx})"></td>
-        <td><span class="arrow" id="arrow-${gIdx}">\u25B6</span> ${esc(group.product)} <span class="variant-count">(${items.length} variant${items.length > 1 ? 's' : ''})</span><br><small>${esc(group.brand)}</small></td>
+        <td><span class="arrow" id="arrow-${gIdx}">\u25B6</span> ${group.competitorUrl ? `<a href="${esc(group.competitorUrl)}" target="_blank" onclick="event.stopPropagation()">${esc(group.product)}</a>` : esc(group.product)} <span class="variant-count">(${items.length} variant${items.length > 1 ? 's' : ''})</span><br><small>${esc(group.brand)}</small></td>
         <td>${group.market}</td>
         <td class="price-range">${oldRange}</td>
         <td>${isXT ? `<input type="number" class="shipping-input" value="${displayShip}" data-product="${esc(group.product)}" data-group="${gIdx}" onclick="event.stopPropagation()" onchange="updateShipping(this)">` : '-'}</td>

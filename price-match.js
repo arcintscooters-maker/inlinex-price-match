@@ -369,6 +369,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, dryRu
       newPrice: c.newPrice,
       competitor: c.competitorSource,
       competitorPrice: c.competitorPrice,
+      competitorUrl: c.competitorUrl || '',
       matchMethod: c.matchMethod,
       competitorSku: c.competitorSku || '',
       variantGid: c.variantGid,
