@@ -75,7 +75,7 @@ async function main() {
   if (!usPriceList) log('MAIN', 'WARNING: US price list not found');
   if (!auPriceList) log('MAIN', 'WARNING: AU price list not found');
 
-  // Get current fixed prices
+  // Get current fixed prices (from price list — explicit FIXED origin)
   let usFixedPrices = {};
   let auFixedPrices = {};
   if (usPriceList) {
@@ -87,6 +87,27 @@ async function main() {
     log('MAIN', 'Fetching current AU fixed prices...');
     auFixedPrices = await shopify.getFixedPrices(auPriceList.id);
     log('MAIN', `AU fixed prices: ${Object.keys(auFixedPrices).length}`);
+  }
+
+  // Get contextual prices — captures BOTH fixed prices and percentage markups
+  // This is what Shopify actually charges customers, regardless of pricing rule type
+  const productIds = filteredProducts.map(p => p.id);
+  if (enableUS && productIds.length > 0) {
+    log('MAIN', 'Fetching US contextual prices (catalog-level)...');
+    const usCtxPrices = await shopify.getContextualPrices(productIds, 'US');
+    // Merge — contextual takes precedence since it captures both fixed and rule-based prices
+    for (const [gid, price] of Object.entries(usCtxPrices)) {
+      usFixedPrices[gid] = price;
+    }
+    log('MAIN', `US effective prices: ${Object.keys(usFixedPrices).length}`);
+  }
+  if (enableAU && productIds.length > 0) {
+    log('MAIN', 'Fetching AU contextual prices (catalog-level)...');
+    const auCtxPrices = await shopify.getContextualPrices(productIds, 'AU');
+    for (const [gid, price] of Object.entries(auCtxPrices)) {
+      auFixedPrices[gid] = price;
+    }
+    log('MAIN', `AU effective prices: ${Object.keys(auFixedPrices).length}`);
   }
 
   // ==========================================
