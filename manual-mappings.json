@@ -810,6 +810,18 @@
       "sku": "10104",
       "shopifyMatch": "Iqon AG 15 Montre Livingston Pro Aggressive Skate",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "IQTR10B",
+      "shopifyMatch": "Iqon TR 10 Boot Only",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "10110",
+      "shopifyMatch": "Iqon ACT AG Chad Hornish Aggressive Skate",
+      "note": "Added from dashboard"
     }
   ]
 }
