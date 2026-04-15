@@ -292,15 +292,22 @@ let statusData = null;
 let sortCol = -1, sortAsc = true;
 const savedSkus = new Set(); // Track which mappings have been saved this session
 
+// Global lock to prevent any refresh while user is working
+function isUserWorking() {
+  // Any checkbox checked means user is selecting
+  if (document.querySelectorAll('.variant-check:checked, .group-check:checked').length > 0) return true;
+  // Focused on any input
+  if (document.activeElement) {
+    const cls = document.activeElement.classList;
+    if (cls.contains('map-input') || cls.contains('shipping-input')) return true;
+  }
+  return false;
+}
+
 // --- Load & Render ---
 
 async function loadStatus() {
-  // Don't refresh if user is typing in a mapping input
-  if (document.activeElement && document.activeElement.classList.contains('map-input')) return;
-  // Don't refresh if user is interacting with shipping inputs
-  if (document.activeElement && document.activeElement.classList.contains('shipping-input')) return;
-  // Don't refresh if any checkboxes are checked (user is selecting items)
-  if (document.querySelectorAll('.variant-check:checked, .group-check:checked').length > 0) return;
+  if (isUserWorking()) return;
 
   document.getElementById('lastUpdated').textContent = 'Loading...';
   try {
