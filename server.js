@@ -111,10 +111,14 @@ const server = http.createServer((req, res) => {
         const mappingFile = path.join(__dirname, 'manual-mappings.json');
         const data = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
 
-        const exists = data.mappings.find(m => (m.source || 'iw') === source && (m.sku || m.iwSku) === sku);
-        if (exists) {
-          exists.shopifyMatch = shopifyMatch;
-        } else {
+        // Check if THIS EXACT mapping already exists (same source + sku + shopifyMatch)
+        const exactMatch = data.mappings.find(m =>
+          (m.source || 'iw') === source &&
+          (m.sku || m.iwSku) === sku &&
+          m.shopifyMatch === shopifyMatch
+        );
+        if (!exactMatch) {
+          // Append — one SKU can have multiple targets (e.g. IW 20118 -> AG60 and AG60 C)
           data.mappings.push({ source, sku, shopifyMatch, note: 'Added from dashboard' });
         }
 
@@ -241,13 +245,20 @@ const server = http.createServer((req, res) => {
     req.on('data', c => body += c);
     req.on('end', () => {
       try {
-        const { source, sku } = JSON.parse(body);
+        const { source, sku, shopifyMatch } = JSON.parse(body);
         const file = path.join(__dirname, 'manual-mappings.json');
         const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-        data.mappings = data.mappings.filter(m => !((m.source || 'iw') === source && (m.sku || m.iwSku) === sku));
+        // If shopifyMatch provided, delete only that specific target; otherwise delete ALL for that SKU
+        data.mappings = data.mappings.filter(m => {
+          const matchesSrc = (m.source || 'iw') === source;
+          const matchesSku = (m.sku || m.iwSku) === sku;
+          if (!matchesSrc || !matchesSku) return true;
+          if (shopifyMatch) return m.shopifyMatch !== shopifyMatch;
+          return false;
+        });
         fs.writeFileSync(file, JSON.stringify(data, null, 2));
         pendingMappingPush = true;
-        console.log(`[SERVER] Mapping deleted: ${source}:${sku}`);
+        console.log(`[SERVER] Mapping deleted: ${source}:${sku}${shopifyMatch ? ' -> ' + shopifyMatch : ' (all)'}`);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true }));
       } catch (e) {

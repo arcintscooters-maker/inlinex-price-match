@@ -1071,8 +1071,8 @@ function renderMappings() {
     return `<tr>
       <td><span class="badge ${src}">${src.toUpperCase()}</span></td>
       <td>${esc(sku)}</td>
-      <td><input class="map-input" id="editmap-${i}" value="${esc(m.shopifyMatch)}" data-source="${src}" data-sku="${esc(sku)}" style="width:300px;" onchange="updateMapping(${i})"></td>
-      <td><button class="btn-map" style="background:#ef4444;" onclick="deleteMapping('${src}','${esc(sku)}',${i})">Delete</button></td>
+      <td><input class="map-input" id="editmap-${i}" value="${esc(m.shopifyMatch)}" data-source="${src}" data-sku="${esc(sku)}" data-original="${esc(m.shopifyMatch)}" style="width:300px;" onchange="updateMapping(${i})"></td>
+      <td><button class="btn-map" style="background:#ef4444;" onclick="deleteMapping('${src}','${esc(sku)}','${esc(m.shopifyMatch)}',${i})">Delete</button></td>
     </tr>`;
   }).join('');
 }
@@ -1084,14 +1084,24 @@ async function updateMapping(idx) {
 
   const source = el.dataset.source;
   const sku = el.dataset.sku;
+  const original = el.dataset.original;
 
   try {
+    // Delete old mapping first, then add new (since a SKU can have multiple targets)
+    if (original && original !== newVal) {
+      await fetch(`${API_BASE}/api/mapping-delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source, sku, shopifyMatch: original })
+      });
+    }
     await fetch(`${API_BASE}/api/mapping`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ source, sku, shopifyMatch: newVal })
     });
     el.style.borderColor = '#22c55e';
+    el.dataset.original = newVal;
     allMappings[idx].shopifyMatch = newVal;
     setTimeout(() => el.style.borderColor = '#d1d5db', 2000);
   } catch {
@@ -1099,13 +1109,13 @@ async function updateMapping(idx) {
   }
 }
 
-async function deleteMapping(source, sku, idx) {
-  if (!confirm(`Delete mapping ${source.toUpperCase()}:${sku}?`)) return;
+async function deleteMapping(source, sku, shopifyMatch, idx) {
+  if (!confirm(`Delete mapping ${source.toUpperCase()}:${sku} -> "${shopifyMatch}"?`)) return;
   try {
     await fetch(`${API_BASE}/api/mapping-delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source, sku })
+      body: JSON.stringify({ source, sku, shopifyMatch })
     });
     allMappings.splice(idx, 1);
     renderMappings();
