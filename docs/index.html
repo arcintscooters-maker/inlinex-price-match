@@ -511,7 +511,7 @@ function render() {
     uEmpty.style.display = 'none';
     uBody.innerHTML = unmatchedList.map((u, i) => {
       const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
-      const sym = u.currency === 'AUD' ? 'A$' : '$';
+      const sym = u.currency === 'AUD' ? 'A$' : u.currency === 'IDR' ? 'Rp ' : '$';
       const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : 0;
       const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
       // If the listing name has a size (e.g. "80mm") it's a price-per-size row,
