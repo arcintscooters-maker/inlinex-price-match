@@ -512,14 +512,22 @@ function render() {
     uBody.innerHTML = unmatchedList.map((u, i) => {
       const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
       const sym = u.currency === 'AUD' ? 'A$' : '$';
-      const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : (savedSkus.has(u.sku) ? 1 : 0);
+      const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : 0;
       const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
       return `<tr>
         <td>${srcBadge}</td>
         <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}${countBadge}</small></td>
         <td>${sym}${u.price.toFixed(2)}</td>
-        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title"></td>
-        <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
+        <td>
+          <div id="variantList-${i}" data-source="${u.source}" data-sku="${esc(u.sku)}">
+            <div class="variant-line" style="display:flex; gap:6px; margin-bottom:4px;">
+              <input class="map-input" data-sku="${esc(u.sku)}" placeholder="Shopify product title" style="flex:1;">
+              <button class="btn-map" onclick="saveVariantMapping(this,'${u.source}','${esc(u.sku)}')">Save</button>
+            </div>
+          </div>
+          <button class="btn-add-variant" onclick="addVariantInput(${i})" style="font-size:0.8rem; padding:3px 10px; background:#eef2ff; color:#4f46e5; border:1px dashed #a5b4fc; border-radius:4px; cursor:pointer;">+ Add variant mapping</button>
+        </td>
+        <td></td>
       </tr>`;
     }).join('');
 
@@ -1128,9 +1136,29 @@ async function deleteMapping(source, sku, shopifyMatch, idx) {
 
 // --- Manual mapping (unmatched section) ---
 
-async function saveMapping(source, sku, idx) {
-  const input = document.getElementById(`map-${idx}`);
-  const btn = document.getElementById(`mapbtn-${idx}`);
+function addVariantInput(idx) {
+  const list = document.getElementById(`variantList-${idx}`);
+  if (!list) return;
+  const source = list.dataset.source;
+  const sku = list.dataset.sku;
+  // Inherit value from the first input so the user only needs to tweak the variant bit
+  const firstInput = list.querySelector('.map-input');
+  const inherited = firstInput ? firstInput.value : '';
+  const line = document.createElement('div');
+  line.className = 'variant-line';
+  line.style.cssText = 'display:flex; gap:6px; margin-bottom:4px;';
+  line.innerHTML = `
+    <input class="map-input" data-sku="${sku}" placeholder="Shopify product title" value="${inherited.replace(/"/g, '&quot;')}" style="flex:1;">
+    <button class="btn-map" onclick="saveVariantMapping(this,'${source}','${sku}')">Save</button>
+    <button onclick="this.parentElement.remove()" style="background:transparent; border:none; color:#999; font-size:1.1rem; cursor:pointer;" title="Remove">\u2715</button>
+  `;
+  list.appendChild(line);
+  line.querySelector('.map-input').focus();
+}
+
+async function saveVariantMapping(btn, source, sku) {
+  const line = btn.parentElement;
+  const input = line.querySelector('.map-input');
   const val = input.value.trim();
   if (!val) { input.style.borderColor = '#ef4444'; return; }
 
@@ -1146,39 +1174,43 @@ async function saveMapping(source, sku, idx) {
       });
       if (!res.ok) throw new Error('Server error');
     } else {
-      // GitHub Pages — can't save server-side, show instructions
       btn.textContent = 'Copy';
       alert(`Add this to manual-mappings.json:\n\n{ "source": "${source}", "sku": "${sku}", "shopifyMatch": "${val}" }`);
       return;
     }
-    // Flash green, clear input, keep enabled so user can add another mapping for same SKU
+
+    // Lock this line in place (but keep it visible as a record)
+    input.disabled = true;
     input.style.borderColor = '#22c55e';
+    input.style.background = '#f0fdf4';
     btn.textContent = 'Saved \u2713';
     btn.className = 'btn-map saved';
+    btn.disabled = true;
+
     savedSkus.set(sku, (savedSkus.get(sku) || 0) + 1);
-    setTimeout(() => {
-      input.value = '';
-      input.style.borderColor = '#d1d5db';
-      btn.textContent = 'Save';
-      btn.className = 'btn-map';
-      btn.disabled = false;
-      // Update the "(N mapped)" badge next to the SKU
-      const row = input.closest('tr');
-      if (row) {
-        const countEl = row.querySelector('.saved-count');
-        const n = savedSkus.get(sku) || 0;
-        if (countEl) countEl.textContent = `(${n} mapped)`;
-        else {
-          const smallEl = row.querySelector('small');
-          if (smallEl) smallEl.insertAdjacentHTML('beforeend', ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${n} mapped)</span>`);
-        }
+    const row = input.closest('tr');
+    if (row) {
+      const countEl = row.querySelector('.saved-count');
+      const n = savedSkus.get(sku) || 0;
+      if (countEl) countEl.textContent = `(${n} mapped)`;
+      else {
+        const smallEl = row.querySelector('small');
+        if (smallEl) smallEl.insertAdjacentHTML('beforeend', ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${n} mapped)</span>`);
       }
-    }, 900);
+    }
   } catch (e) {
     btn.textContent = 'Error';
     btn.disabled = false;
     alert('Failed to save: ' + e.message);
   }
+}
+
+// Legacy alias in case any callers still reference saveMapping
+async function saveMapping(source, sku, idx) {
+  const list = document.getElementById(`variantList-${idx}`);
+  if (!list) return;
+  const btn = list.querySelector('button.btn-map');
+  if (btn) return saveVariantMapping(btn, source, sku);
 }
 
 // --- Source dropdown logic ---
