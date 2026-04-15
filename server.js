@@ -66,8 +66,16 @@ const server = http.createServer((req, res) => {
         env: { ...process.env },
       });
 
-      proc.stdout.on('data', d => { currentRun.logs += d.toString(); });
-      proc.stderr.on('data', d => { currentRun.logs += d.toString(); });
+      proc.stdout.on('data', d => {
+        const s = d.toString();
+        currentRun.logs += s;
+        process.stdout.write(s); // mirror to Railway container logs
+      });
+      proc.stderr.on('data', d => {
+        const s = d.toString();
+        currentRun.logs += s;
+        process.stderr.write(s); // mirror to Railway container logs
+      });
 
       proc.on('close', code => {
         currentRun.status = code === 0 ? 'success' : 'error';
