@@ -291,11 +291,12 @@ const API_BASE = isRailway ? '' : null; // empty string = same origin on Railway
 let statusData = null;
 let sortCol = -1, sortAsc = true;
 const savedSkus = new Set(); // Track which mappings have been saved this session
+const selectedVariants = new Set(); // Track selected variantGids across renders (persistent)
 
 // Global lock to prevent any refresh while user is working
 function isUserWorking() {
-  // Any checkbox checked means user is selecting
-  if (document.querySelectorAll('.variant-check:checked, .group-check:checked').length > 0) return true;
+  // Any variant selected (tracked in persistent Set)
+  if (selectedVariants.size > 0) return true;
   // Focused on any input
   if (document.activeElement) {
     const cls = document.activeElement.classList;
@@ -353,12 +354,7 @@ function render() {
   const changes = statusData.priceChanges || [];
   const isDryRun = r.mode === 'DRY RUN';
 
-  // Save checked state by variantGid before re-render
-  const checkedGids = new Set();
-  document.querySelectorAll('.variant-check:checked').forEach(cb => {
-    if (cb.dataset.gid) checkedGids.add(cb.dataset.gid);
-  });
-  // Save which groups are expanded
+  // Save which groups are expanded (checkboxes use persistent selectedVariants Set)
   const expandedGroups = new Set();
   document.querySelectorAll('.variant-row.visible').forEach(r => {
     if (r.dataset.group) expandedGroups.add(r.dataset.group);
@@ -456,11 +452,12 @@ function render() {
         const vStatus = c.skipped ? '<span class="badge skipped">Skipped</span>'
           : c.applied ? '<span class="badge applied">Applied</span>'
           : '<span class="badge pending">Pending</span>';
-        const vCheckDisabled = c.skipped || c.applied ? 'disabled' : '';
+        const vCheckDisabled = c.applied ? 'disabled' : '';
         const variantLabel = c.variant && c.variant !== 'Default Title' ? c.variant : c.sku;
+        const isSelected = selectedVariants.has(c.variantGid) ? 'checked' : '';
 
         html += `<tr class="variant-row" data-group="${gIdx}">
-          <td><input type="checkbox" class="variant-check" data-group="${gIdx}" data-gid="${esc(c.variantGid || '')}" data-price="${c.newPrice}" data-market="${c.market}" ${vCheckDisabled} onchange="updateSelectedCount()"></td>
+          <td><input type="checkbox" class="variant-check" data-group="${gIdx}" data-gid="${esc(c.variantGid || '')}" data-price="${c.newPrice}" data-market="${c.market}" ${vCheckDisabled} ${isSelected} onchange="toggleVariantSelect(this)"></td>
           <td style="padding-left:30px;">${esc(variantLabel)}<br><small>SKU: ${esc(c.sku)}</small></td>
           <td>${c.market}</td>
           <td>${sym}${c.oldPrice.toFixed(2)}</td>
@@ -475,18 +472,13 @@ function render() {
     }
     tbody.innerHTML = html;
 
-    // Restore checked state and expanded groups
-    if (checkedGids.size > 0) {
-      document.querySelectorAll('.variant-check').forEach(cb => {
-        if (cb.dataset.gid && checkedGids.has(cb.dataset.gid)) cb.checked = true;
-      });
-      updateSelectedCount();
-    }
+    // Restore expanded groups (checkboxes are already set via `checked` attribute from selectedVariants)
     expandedGroups.forEach(gIdx => {
       document.querySelectorAll(`.variant-row[data-group="${gIdx}"]`).forEach(r => r.classList.add('visible'));
       const arrow = document.getElementById(`arrow-${gIdx}`);
       if (arrow) arrow.textContent = '\u25BC';
     });
+    updateSelectedCount();
   }
 
   // Unmatched products — skip re-render if user is typing
@@ -585,46 +577,56 @@ async function updateShipping(el) {
 
 // --- Selection & Apply ---
 
+function toggleVariantSelect(cb) {
+  if (cb.checked && cb.dataset.gid) selectedVariants.add(cb.dataset.gid);
+  else selectedVariants.delete(cb.dataset.gid);
+  updateSelectedCount();
+}
+
 function selectAll(checked) {
-  document.querySelectorAll('.group-check:not(:disabled), .variant-check:not(:disabled)').forEach(cb => cb.checked = checked);
+  document.querySelectorAll('.variant-check:not(:disabled)').forEach(cb => {
+    cb.checked = checked;
+    if (cb.dataset.gid) {
+      if (checked) selectedVariants.add(cb.dataset.gid);
+      else selectedVariants.delete(cb.dataset.gid);
+    }
+  });
+  document.querySelectorAll('.group-check:not(:disabled)').forEach(cb => cb.checked = checked);
   updateSelectedCount();
 }
 
 function toggleGroupCheck(gIdx) {
   const groupCb = document.querySelector(`.group-check[data-group="${gIdx}"]`);
   const variantCbs = document.querySelectorAll(`.variant-check[data-group="${gIdx}"]:not(:disabled)`);
-  variantCbs.forEach(cb => cb.checked = groupCb.checked);
+  variantCbs.forEach(cb => {
+    cb.checked = groupCb.checked;
+    if (cb.dataset.gid) {
+      if (groupCb.checked) selectedVariants.add(cb.dataset.gid);
+      else selectedVariants.delete(cb.dataset.gid);
+    }
+  });
   updateSelectedCount();
 }
 
 function updateSelectedCount() {
-  const checked = document.querySelectorAll('.variant-check:checked');
   const el = document.getElementById('selectedCount');
-  // Also count group-checked variants that are hidden
-  let count = 0;
-  document.querySelectorAll('.group-check:checked').forEach(gcb => {
-    const gIdx = gcb.dataset.group;
-    const variants = document.querySelectorAll(`.variant-check[data-group="${gIdx}"]:not(:disabled)`);
-    variants.forEach(v => { if (!v.checked) v.checked = true; });
-  });
-  count = document.querySelectorAll('.variant-check:checked').length;
-  el.textContent = `${count} selected`;
+  el.textContent = `${selectedVariants.size} selected`;
 }
 
 async function applySelected() {
-  const checked = document.querySelectorAll('.variant-check:checked');
-  if (checked.length === 0) { alert('No items selected'); return; }
+  if (selectedVariants.size === 0) { alert('No items selected'); return; }
 
+  // Build selections from the persistent Set + current statusData
   const selections = [];
-  checked.forEach(cb => {
-    if (cb.dataset.gid) {
+  for (const c of (statusData?.priceChanges || [])) {
+    if (c.variantGid && selectedVariants.has(c.variantGid)) {
       selections.push({
-        variantGid: cb.dataset.gid,
-        newPrice: parseFloat(cb.dataset.price),
-        market: cb.dataset.market
+        variantGid: c.variantGid,
+        newPrice: c.newPrice,
+        market: c.market
       });
     }
-  });
+  }
 
   if (selections.length === 0) { alert('No valid selections'); return; }
 
@@ -644,6 +646,7 @@ async function applySelected() {
     if (res.ok) {
       fb.textContent = `Applied ${data.applied} prices to Shopify!`;
       fb.className = 'feedback ok';
+      selectedVariants.clear();
       setTimeout(() => loadStatus(), 2000);
     } else {
       fb.textContent = `Failed: ${data.error}`;
