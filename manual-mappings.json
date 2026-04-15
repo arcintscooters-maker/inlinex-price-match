@@ -768,6 +768,18 @@
       "sku": "140583054",
       "shopifyMatch": "Rollerblade Hydrogen SE 80mm Wheels",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "is",
+      "sku": "seba-cj-carbon-boot-only",
+      "shopifyMatch": "Seba CJ Carbon Black Boot Only",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "is",
+      "sku": "seba-cj-2",
+      "shopifyMatch": "Seba CJ2 Prime Black Boot Only",
+      "note": "Added from dashboard"
     }
   ]
 }
