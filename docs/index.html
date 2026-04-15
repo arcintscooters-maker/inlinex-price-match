@@ -291,7 +291,7 @@ const API_BASE = isRailway ? '' : null; // empty string = same origin on Railway
 
 let statusData = null;
 let sortCol = -1, sortAsc = true;
-const savedSkus = new Set(); // Track which mappings have been saved this session
+const savedSkus = new Map(); // Track how many mappings saved per SKU this session
 const selectedVariants = new Set(); // Track selected variantGids across renders (persistent)
 
 // Global lock to prevent any refresh while user is working
@@ -512,12 +512,14 @@ function render() {
     uBody.innerHTML = unmatchedList.map((u, i) => {
       const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
       const sym = u.currency === 'AUD' ? 'A$' : '$';
+      const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : (savedSkus.has(u.sku) ? 1 : 0);
+      const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
       return `<tr>
         <td>${srcBadge}</td>
-        <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}</small></td>
+        <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}${countBadge}</small></td>
         <td>${sym}${u.price.toFixed(2)}</td>
-        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title" ${savedSkus.has(u.sku) ? 'disabled style="border-color:#22c55e"' : ''}></td>
-        <td><button class="btn-map ${savedSkus.has(u.sku) ? 'saved' : ''}" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})" ${savedSkus.has(u.sku) ? 'disabled' : ''}>${savedSkus.has(u.sku) ? 'Saved' : 'Save'}</button></td>
+        <td><input class="map-input" id="map-${i}" data-sku="${esc(u.sku)}" placeholder="Shopify product title"></td>
+        <td><button class="btn-map" id="mapbtn-${i}" onclick="saveMapping('${u.source}','${esc(u.sku)}',${i})">Save</button></td>
       </tr>`;
     }).join('');
 
@@ -1149,12 +1151,29 @@ async function saveMapping(source, sku, idx) {
       alert(`Add this to manual-mappings.json:\n\n{ "source": "${source}", "sku": "${sku}", "shopifyMatch": "${val}" }`);
       return;
     }
-    btn.textContent = 'Saved';
-    btn.className = 'btn-map saved';
-    btn.disabled = true;
-    input.disabled = true;
+    // Flash green, clear input, keep enabled so user can add another mapping for same SKU
     input.style.borderColor = '#22c55e';
-    savedSkus.add(sku);
+    btn.textContent = 'Saved \u2713';
+    btn.className = 'btn-map saved';
+    savedSkus.set(sku, (savedSkus.get(sku) || 0) + 1);
+    setTimeout(() => {
+      input.value = '';
+      input.style.borderColor = '#d1d5db';
+      btn.textContent = 'Save';
+      btn.className = 'btn-map';
+      btn.disabled = false;
+      // Update the "(N mapped)" badge next to the SKU
+      const row = input.closest('tr');
+      if (row) {
+        const countEl = row.querySelector('.saved-count');
+        const n = savedSkus.get(sku) || 0;
+        if (countEl) countEl.textContent = `(${n} mapped)`;
+        else {
+          const smallEl = row.querySelector('small');
+          if (smallEl) smallEl.insertAdjacentHTML('beforeend', ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${n} mapped)</span>`);
+        }
+      }
+    }, 900);
   } catch (e) {
     btn.textContent = 'Error';
     btn.disabled = false;
