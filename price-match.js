@@ -13,6 +13,7 @@ const { log, loadJSON, saveJSON, sleep } = require('./lib/utils');
 const shopify = require('./lib/shopify');
 const iwScraper = require('./lib/inline-warehouse');
 const xtScraper = require('./lib/xtremeinn');
+const isScraper = require('./lib/indoskates');
 const matcher = require('./lib/matcher');
 const report = require('./lib/report');
 const fs = require('fs');
@@ -46,6 +47,7 @@ async function main() {
   const source = sourceArg ? sourceArg.split('=')[1] : 'both';
   const enableIW = source === 'iw' || source === 'both';
   const enableXT = source === 'xt' || source === 'both';
+  const enableIS = source === 'is';
 
   log('MAIN', `=== Price Match Run Started ===`);
   log('MAIN', `Mode: ${dryRun ? 'DRY RUN' : 'LIVE'}`);
@@ -144,6 +146,16 @@ async function main() {
     xtIdProducts = xtIdProducts || [];
   } else {
     log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
+  }
+
+  let isProducts = [];
+  if (enableIS) {
+    log('MAIN', 'Step 3c: Scraping IndoSkates...');
+    isProducts = await isScraper.scrapeAll(brands);
+  } else if (enableID && source === 'both') {
+    // When running ID market with "both" source, also scrape IndoSkates
+    log('MAIN', 'Step 3c: Scraping IndoSkates (auto for ID market)...');
+    isProducts = await isScraper.scrapeAll(brands);
   }
 
   // ==========================================
@@ -330,6 +342,48 @@ async function main() {
 
         priceChanges.push(change);
       }
+    }
+
+    // --- ID Market Pricing (IndoSkates - no shipping, no tax) ---
+    if (idPriceList && enableID && match.isMatch) {
+      const isComp = match.isMatch;
+
+      // IndoSkates is already in Indonesia — no shipping, no tax. Just 5% undercut.
+      const idNewPrice = Math.round(isComp.price * IW_DISCOUNT);
+
+      const currentIdPrice = idFixedPrices[variantGid] || (currentPrice * ID_DEFAULT_MARKUP);
+
+      const change = {
+        productTitle: shopifyProduct.title,
+        variantTitle: shopifyVariant.title,
+        sku: shopifyVariant.sku || '',
+        brand: shopifyProduct.vendor || '',
+        market: 'ID',
+        oldPrice: Math.round(currentIdPrice),
+        newPrice: idNewPrice,
+        competitorPrice: isComp.price,
+        competitorSource: 'IndoSkates',
+        competitorUrl: isComp.url,
+        competitorSku: isComp.sku || '',
+        shippingFee: 0,
+        matchMethod: match.isMethod || 'name',
+        variantGid,
+        skipped: false,
+        applied: false,
+      };
+
+      if (currentIdPrice <= idNewPrice) {
+        change.skipped = true;
+        change.newPrice = currentIdPrice;
+      } else {
+        idPriceUpdates.push({
+          variantId: variantGid,
+          price: idNewPrice,
+          currency: 'IDR'
+        });
+      }
+
+      priceChanges.push(change);
     }
   }
 

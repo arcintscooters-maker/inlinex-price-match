@@ -682,7 +682,7 @@ async function triggerRun(dryRun) {
   const markets = document.getElementById('marketSelect').value;
   const source = document.getElementById('sourceSelect').value;
   const label = brands || 'All Brands';
-  const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : 'Both';
+  const srcLabel = source === 'iw' ? 'Inline Warehouse' : source === 'xt' ? 'xtremeinn' : source === 'is' ? 'IndoSkates' : 'Both';
 
   fb.textContent = 'Triggering...';
   fb.className = 'feedback';
@@ -1159,7 +1159,9 @@ function updateSourceOptions() {
   const src = document.getElementById('sourceSelect');
   const prev = src.value;
 
-  if (market === 'AU' || market === 'ID') {
+  if (market === 'ID') {
+    src.innerHTML = '<option value="is">IndoSkates</option><option value="xt">xtremeinn</option><option value="both">Both</option>';
+  } else if (market === 'AU') {
     src.innerHTML = '<option value="xt">xtremeinn</option>';
   } else if (market === 'US') {
     src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';
