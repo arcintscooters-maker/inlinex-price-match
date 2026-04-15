@@ -212,16 +212,6 @@
   </div>
   <div class="empty" id="unmatchedEmpty">No unmatched products.</div>
 
-  <!-- Run History -->
-  <h2>Run History</h2>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Date</th><th>Mode</th><th>US Updates</th><th>AU Updates</th><th>Status</th></tr></thead>
-      <tbody id="historyBody"></tbody>
-    </table>
-    <div class="empty" id="historyEmpty">No runs yet.</div>
-  </div>
-
   <!-- Trigger Panel -->
   <h2>Trigger Run</h2>
   <div class="panel">
@@ -506,24 +496,6 @@ function render() {
     }
   }
 
-  // Run history
-  const hBody = document.getElementById('historyBody');
-  const hEmpty = document.getElementById('historyEmpty');
-  const history = (statusData.history || []).slice().reverse();
-
-  if (history.length === 0) {
-    hBody.innerHTML = '';
-    hEmpty.style.display = 'block';
-  } else {
-    hEmpty.style.display = 'none';
-    hBody.innerHTML = history.map(h => `<tr>
-      <td>${new Date(h.timestamp).toLocaleString()}</td>
-      <td>${h.mode}</td>
-      <td>${h.usUpdates}</td>
-      <td>${h.auUpdates}</td>
-      <td><span class="badge ${h.status === 'success' ? 'success-badge' : 'error'}">${h.status}</span></td>
-    </tr>`).join('');
-  }
 }
 
 // --- Group toggle ---
