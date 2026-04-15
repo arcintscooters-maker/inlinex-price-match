@@ -155,7 +155,8 @@
       "source": "xt",
       "sku": "140344557",
       "shopifyMatch": "USD Aeon Team 60 White Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
@@ -173,7 +174,8 @@
       "source": "xt",
       "sku": "145205467",
       "shopifyMatch": "USD Aeon 60 Black Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
@@ -695,7 +697,8 @@
       "source": "xt",
       "sku": "145924183",
       "shopifyMatch": "Rollerblade RB 80 Women Skates",
-      "note": "Auto-rebound from 142388144 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 142388144 (xtremeinn catalog rotation)",
+      "slug": "-"
     },
     {
       "source": "xt",
@@ -737,7 +740,8 @@
       "source": "xt",
       "sku": "145924258",
       "shopifyMatch": "Rollerblade Microblade Blue Kids Skates",
-      "note": "Auto-rebound from 141596056 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 141596056 (xtremeinn catalog rotation)",
+      "slug": "-"
     },
     {
       "source": "xt",
@@ -2315,79 +2319,92 @@
       "source": "xt",
       "sku": "141415566",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-nick-lomax-pro-ii-60-aggressive-skates?_pos=7&_sid=499de5958&_ss=r",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "151409050",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-chess-white-aggressive-skates?variant=41483855036462",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "150398145",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-vikings-on-skates-kids-aggressive-skates?_pos=2&_psq=glitch&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "151409038",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-carlos-bernal-ii-aggressive-skates?_pos=2&_psq=carlos+bernal&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "16156830",
       "shopifyMatch": "https://inlinex.com.sg/products/usdtransformerkidsaggressiveskates?_pos=1&_psq=Transformer&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "145924183",
       "shopifyMatch": "https://inlinex.com.sg/products/rollerblade-crossfire-boot-only?_pos=3&_sid=e8bde28cd&_ss=r",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "145924258",
       "shopifyMatch": "https://inlinex.com.sg/products/rollerblade-microblade-sl-black-lime-kids-skates?_pos=1&_psq=Microblade+SL&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "151589316",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-shadow-team-white-aggressive-skates?_pos=1&_psq=Usd+Skates+Shadow&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "151409067",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-chess-black-aggressive-skates?_pos=2&_psq=chess&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "151409031",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-sam-crofts-v-aggressive-skates?_pos=1&_psq=sam&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "140344557",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-team-60-white-aggressive-skate?_pos=1&_psq=Aeon+Team+60&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "140344611",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-carlos-bernal-aggressive-skates?_pos=1&_psq=Sway+Carlos+Bernal&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     },
     {
       "source": "xt",
       "sku": "145205473",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-kids-aggressive-skates-1?_pos=1&_psq=Glitch&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "-"
     }
   ]
 }
