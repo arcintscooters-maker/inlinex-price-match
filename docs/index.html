@@ -514,6 +514,11 @@ function render() {
       const sym = u.currency === 'AUD' ? 'A$' : '$';
       const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : 0;
       const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
+      // If the listing name has a size (e.g. "80mm") it's a price-per-size row,
+      // so the user needs to map to a specific Shopify variant SKU, not the
+      // product title.
+      const hasSize = /\d+\s*mm\b/i.test(u.name || '');
+      const placeholder = hasSize ? 'Shopify variant SKU (price applies to this variant only)' : 'Shopify product title or variant SKU';
       return `<tr>
         <td>${srcBadge}</td>
         <td><a href="${esc(u.url || '#')}" target="_blank">${esc(u.name)}</a><br><small>SKU: ${esc(u.sku)}${countBadge}</small></td>
@@ -521,7 +526,7 @@ function render() {
         <td>
           <div id="variantList-${i}" data-source="${u.source}" data-sku="${esc(u.sku)}">
             <div class="variant-line" style="display:flex; gap:6px; margin-bottom:4px;">
-              <input class="map-input" data-sku="${esc(u.sku)}" placeholder="Shopify product title" style="flex:1;">
+              <input class="map-input" data-sku="${esc(u.sku)}" placeholder="${placeholder}" style="flex:1;">
               <button class="btn-map" onclick="saveVariantMapping(this,'${u.source}','${esc(u.sku)}')">Save</button>
             </div>
           </div>
