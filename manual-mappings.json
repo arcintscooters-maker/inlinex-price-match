@@ -129,9 +129,9 @@
     },
     {
       "source": "xt",
-      "sku": "143016701",
+      "sku": "151589312",
       "shopifyMatch": "USD Aeon 80 Sand Aggressive Skates",
-      "note": "Auto-rebound from 151589312 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 143016701 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -141,9 +141,9 @@
     },
     {
       "source": "xt",
-      "sku": "142745968",
+      "sku": "150398279",
       "shopifyMatch": "USD Sway Witzemann II Aggressive Skates",
-      "note": "Auto-rebound from 150398279 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 142745968 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -165,9 +165,9 @@
     },
     {
       "source": "xt",
-      "sku": "142745923",
+      "sku": "150398142",
       "shopifyMatch": "USD Aeon 60 Nicoly Pro Aggressive Skate",
-      "note": "Auto-rebound from 150398142 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 142745923 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -177,9 +177,9 @@
     },
     {
       "source": "xt",
-      "sku": "141396780",
+      "sku": "145205461",
       "shopifyMatch": "USD Aeon Bladies Fabiola Da Silva Aggressive Skate",
-      "note": "Auto-rebound from 145205461 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 141396780 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -195,15 +195,15 @@
     },
     {
       "source": "xt",
-      "sku": "140375732",
+      "sku": "141293042",
       "shopifyMatch": "USD Sway 58 XXIV Aggressive Skates",
-      "note": "Auto-rebound from 141293042 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 140375732 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
-      "sku": "140112493",
+      "sku": "140344620",
       "shopifyMatch": "USD Sway Team 60 Aggressive Skates",
-      "note": "Auto-rebound from 140344620 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 140112493 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -213,9 +213,9 @@
     },
     {
       "source": "xt",
-      "sku": "138913433",
+      "sku": "16156811",
       "shopifyMatch": "USD Sway Sagona Allstar Aggressive Skates",
-      "note": "Auto-rebound from 16156811 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 138913433 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -231,9 +231,9 @@
     },
     {
       "source": "xt",
-      "sku": "138291775",
+      "sku": "13922186",
       "shopifyMatch": "USD Aeon 60 Mery Munoz Pro Aggressive Skates",
-      "note": "Auto-rebound from 13922186 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 138291775 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -879,9 +879,9 @@
     },
     {
       "source": "xt",
-      "sku": "140375730",
+      "sku": "141293035",
       "shopifyMatch": "USD Shadow Team 60 Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 140375730 (xtremeinn catalog rotation)"
     },
     {
       "source": "xt",
@@ -929,6 +929,60 @@
       "source": "xt",
       "sku": "140112491",
       "shopifyMatch": "USD Sway Carlos Bernal Aggressive Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137966388",
+      "shopifyMatch": "Powerslide Zoom One 100 Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137848300",
+      "shopifyMatch": "Powerslide Next 100 Core Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137966359",
+      "shopifyMatch": "🔥🔥🔥Powerslide Argon Rose 100 Women Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137869007",
+      "shopifyMatch": "🔥🔥🔥Powerslide Swell Electric Pink 100 - 3D Adapt Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137966387",
+      "shopifyMatch": "Powerslide Tau 90 Carbon Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "138604964",
+      "shopifyMatch": "🔥🔥🔥Powerslide Next Charcoal 90 Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "139283593",
+      "shopifyMatch": "Powerslide Swell Black Fire 110 Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "141396741",
+      "shopifyMatch": "🔥🔥🔥Powerslide Argon 80 Black Skates",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "xt",
+      "sku": "137966339",
+      "shopifyMatch": "🔥🔥🔥Powerslide Argon 80 Black Skates",
       "note": "Added from dashboard"
     }
   ]
