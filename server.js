@@ -55,6 +55,12 @@ const server = http.createServer((req, res) => {
         params,
       };
 
+      // Snapshot manual-mappings.json mtime so we can detect if the matcher
+      // rewrote it during the run (auto-rebind of rotated xtremeinn SKUs).
+      const mappingFileForWatch = path.join(__dirname, 'manual-mappings.json');
+      let mappingMtimeBefore = 0;
+      try { mappingMtimeBefore = fs.statSync(mappingFileForWatch).mtimeMs; } catch {}
+
       const proc = spawn('node', ['price-match.js', ...args], {
         cwd: __dirname,
         env: { ...process.env },
@@ -68,6 +74,16 @@ const server = http.createServer((req, res) => {
         currentRun.exitCode = code;
         currentRun.completedAt = new Date().toISOString();
         console.log(`[SERVER] Run completed: ${currentRun.status}`);
+
+        // If the matcher rebound rotated SKUs into manual-mappings.json,
+        // flag the push so the user's mappings stick across redeploys.
+        try {
+          const mtimeAfter = fs.statSync(mappingFileForWatch).mtimeMs;
+          if (mtimeAfter > mappingMtimeBefore) {
+            pendingMappingPush = true;
+            console.log('[SERVER] manual-mappings.json updated during run — push pending');
+          }
+        } catch {}
       });
 
       res.writeHead(202, { 'Content-Type': 'application/json' });
