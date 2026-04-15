@@ -780,6 +780,36 @@
       "sku": "seba-cj-2",
       "shopifyMatch": "Seba CJ2 Prime Black Boot Only",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "ACTWZ",
+      "shopifyMatch": "Iqon ACT WZ Team Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "P10106",
+      "shopifyMatch": "Iqon AG20 Tim Marsh Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "10105",
+      "shopifyMatch": "Iqon AG 15 Montre Livingston Pro WB Aggressive Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "IAG30L",
+      "shopifyMatch": "Iqon AG 30 Lite Skate",
+      "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "10104",
+      "shopifyMatch": "Iqon AG 15 Montre Livingston Pro Aggressive Skate",
+      "note": "Added from dashboard"
     }
   ]
 }
