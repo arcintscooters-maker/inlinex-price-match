@@ -147,12 +147,6 @@
     },
     {
       "source": "xt",
-      "sku": "142967875",
-      "shopifyMatch": "USD Sway Chess Black Aggressive Skates",
-      "note": "Auto-rebound from 151409067 (xtremeinn catalog rotation)"
-    },
-    {
-      "source": "xt",
       "sku": "142745924",
       "shopifyMatch": "USD Glitch Vikings on Skates Kids Aggressive Skates",
       "note": "Auto-rebound from 150398145 (xtremeinn catalog rotation)"
@@ -2280,13 +2274,6 @@
     },
     {
       "source": "xt",
-      "sku": "151409050",
-      "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-chess-white-aggressive-skates?variant=41483855036462",
-      "note": "Added from dashboard",
-      "slug": "usd-skates-sway-chess-inline-skates"
-    },
-    {
-      "source": "xt",
       "sku": "150398145",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-vikings-on-skates-kids-aggressive-skates?_pos=2&_psq=glitch&_ss=e&_v=1.0",
       "note": "Added from dashboard",
@@ -2326,13 +2313,6 @@
       "shopifyMatch": "https://inlinex.com.sg/products/usd-shadow-team-white-aggressive-skates?_pos=1&_psq=Usd+Skates+Shadow&_ss=e&_v=1.0",
       "note": "Added from dashboard",
       "slug": "usd-skates-shadow-team-inline-skates"
-    },
-    {
-      "source": "xt",
-      "sku": "151409067",
-      "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-chess-black-aggressive-skates?_pos=2&_psq=chess&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
-      "slug": "usd-skates-sway-chess-inline-skates"
     },
     {
       "source": "xt",
