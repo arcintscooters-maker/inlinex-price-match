@@ -1,0 +1,88 @@
+MAPPING PROBLEM REPORT
+Generated: 2026-04-16
+======================
+
+Total xt mappings: 335
+
+=====================================================
+CATEGORY 1: CONFLICTS — Same xt SKU mapped to 2 different Shopify products
+(One of the two is WRONG — delete the wrong one in Manage Mappings)
+=====================================================
+
+xt:142967875 — xtremeinn "Sway Chess" (one color)
+  -> USD Sway Chess White Aggressive Skates
+  -> USD Sway Chess Black Aggressive Skates
+  ACTION: Check which color this listing is. Delete the wrong one.
+          Map the other color to xt:142967874 (the other Chess listing).
+
+xt:18303898 — xtremeinn listing is DEAD
+  -> Rollerblade Blank Frame
+  -> Rollerblade Blank Canvas Aggressive Skates
+  ACTION: Both are dead. Leave as is — rebind will handle when you run Rollerblade.
+
+xt:145924183 — xtremeinn listing is DEAD
+  -> Rollerblade RB 80 Women Skates
+  -> https://inlinex.com.sg/products/rollerblade-crossfire-boot-only
+  ACTION: Both are dead. Delete the wrong one (RB 80 Women ≠ Crossfire).
+
+xt:145924258 — xtremeinn listing is DEAD
+  -> Rollerblade Microblade Blue Kids Skates
+  -> https://inlinex.com.sg/products/rollerblade-microblade-sl-black-lime-kids-skates
+  ACTION: These are different products. Delete the wrong one.
+
+
+=====================================================
+CATEGORY 2: MANGLED URLs — Handle has no dashes (34 total)
+(Likely pasted from search bar or auto-complete, not the real product URL)
+=====================================================
+
+These won't match your Shopify products because the handle format
+is wrong. Example: "powerslidephuziontrinityargonash100skates"
+should probably be "powerslide-phuzion-trinity-argon-ash-100-skates".
+
+Fix: Open each Shopify product, copy the real URL from the browser
+address bar, then update the mapping in Manage Mappings.
+
+  xt:137869012 -> powerslidephuziontrinityargonash100skates
+  xt:137966378 -> powerslideariseslskates
+  xt:137868656 -> powerslideuniversalflapstrapset
+  xt:137868598 -> poweslidephuzionkidsskateaxle
+  xt:137868718 -> powerslidetorrentrainwheels
+  xt:137868638 -> powerslideswellkazecuffscrew
+  xt:137868655 -> powerslidetrinitystridecontrol
+  xt:141396711 -> powerslidefitnessbackpack
+  xt:141248525 -> powerslidestandardhippads
+  xt:141224917 -> powerslideraceproglove
+  xt:139283634 -> powerslidestandardhippads
+  xt:138888238 -> powerslidestandardwristguard
+  xt:137848295 -> powerslideswelltripleblack110trinityskates
+  xt:137848302 -> powerslidezoom80skates
+  xt:143113060 -> powerslidezoomone100skates
+  xt:141396758 -> powerslideuniversalflapstrapset
+  xt:141248521 -> powerslideuniversalskatestand
+  xt:141224909 -> powerslidehabsbrakepads
+  xt:138888234 -> powerslidespinner90mmwheels
+  xt:138888230 -> powerslide100mmwheels
+  xt:140374168 -> powerslideswellgold110skates
+  xt:140108480 -> powerslide-next-megacruiser-150
+  xt:140374145 -> powerslidewaveboardwheels
+  xt:140374116 -> powerslideallroundadventurehelmet
+  xt:140374133 -> powerslide-hc-evo-pro-sk8-110-skates
+  xt:140108462 -> powerslidedefencewristguards
+  xt:140108458 -> powerslidedefenceewristguards
+  xt:140108468 -> powerslide-fothon-led-84mm-wheels
+  xt:138888236 -> powerslide100mmwheels
+  xt:138888231 -> powerslidematterf1lemans100mmwheels
+  xt:138888229 -> powerslide110mmwheels
+  xt:143104683 -> powerslidezoom80skates
+  xt:141396780 -> powerslidezoom80skates
+  xt:137868608 -> powerslide-rocker-spacer-half-set
+
+
+=====================================================
+CATEGORY 3: SUMMARY
+=====================================================
+
+4 conflicts — fix manually (see above)
+34 mangled URLs — re-paste correct Shopify URLs
+297 mappings look OK (titles or proper URLs)
