@@ -275,7 +275,7 @@ async function main() {
           competitorUrl: auComp.url,
           competitorSku: auComp.sku || '',
           shippingFee: auShipFee,
-          matchMethod: xtAuMethod || 'name',
+          matchMethod: match.xtMethod || 'name',
           variantGid,
           skipped: false,
           applied: false,
