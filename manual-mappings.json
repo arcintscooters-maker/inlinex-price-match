@@ -682,13 +682,6 @@
     },
     {
       "source": "xt",
-      "sku": "145924183",
-      "shopifyMatch": "Rollerblade RB 80 Women Skates",
-      "note": "Auto-rebound from 142388144 (xtremeinn catalog rotation)",
-      "slug": "rollerblade-crossfire-skates-boots"
-    },
-    {
-      "source": "xt",
       "sku": "18303898",
       "shopifyMatch": "Rollerblade Blank Frame",
       "note": "Auto-rebound from 139496569 (xtremeinn catalog rotation)"
@@ -716,13 +709,6 @@
       "sku": "142388127",
       "shopifyMatch": "Rollerblade Microblade SL Sky Blue Kids Skates",
       "note": "Added from dashboard"
-    },
-    {
-      "source": "xt",
-      "sku": "145924258",
-      "shopifyMatch": "Rollerblade Microblade Blue Kids Skates",
-      "note": "Auto-rebound from 141596056 (xtremeinn catalog rotation)",
-      "slug": "rollerblade-microblade-sl-junior-inline-skates"
     },
     {
       "source": "xt",
@@ -967,7 +953,7 @@
     {
       "source": "xt",
       "sku": "137869012",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidephuziontrinityargonash100skates?_pos=1&_sid=f67185a64&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-phuzion-trinity-argon-ash-100-skates?_pos=1&_sid=f67185a64&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1009,7 +995,7 @@
     {
       "source": "xt",
       "sku": "137966378",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideariseslskates?_pos=3&_sid=5e2529bdd&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-arise-sl-skates?_pos=3&_sid=5e2529bdd&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1027,7 +1013,7 @@
     {
       "source": "xt",
       "sku": "137868656",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideuniversalflapstrapset?_pos=1&_sid=ad660a3a2&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-universal-flap-strap-set?_pos=1&_sid=ad660a3a2&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1063,7 +1049,7 @@
     {
       "source": "xt",
       "sku": "137868598",
-      "shopifyMatch": "https://inlinex.com.sg/products/poweslidephuzionkidsskateaxle?_pos=2&_sid=399cb1d01&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-phuzion-kids-skate-axle?_pos=2&_sid=399cb1d01&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1081,7 +1067,7 @@
     {
       "source": "xt",
       "sku": "137868718",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidetorrentrainwheels?variant=16686283554862",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-torrent-rain-wheels?variant=16686283554862",
       "note": "Added from dashboard"
     },
     {
@@ -1099,7 +1085,7 @@
     {
       "source": "xt",
       "sku": "137868638",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideswellkazecuffscrew?variant=32461894025262",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-swell-kaze-cuff-screw?variant=32461894025262",
       "note": "Added from dashboard"
     },
     {
@@ -1123,7 +1109,7 @@
     {
       "source": "xt",
       "sku": "137868655",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidetrinitystridecontrol?_pos=4&_sid=0d2c6251f&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-trinity-stride-control?_pos=4&_sid=0d2c6251f&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1225,13 +1211,13 @@
     {
       "source": "xt",
       "sku": "141396711",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidefitnessbackpack?_pos=1&_psq=fitness+bag&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-fitness-backpack?_pos=1&_psq=fitness+bag&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
       "source": "xt",
       "sku": "141248525",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidestandardhippads?_pos=1&_psq=hip+pad&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-standard-hip-pads?_pos=1&_psq=hip+pad&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -1249,7 +1235,7 @@
     {
       "source": "xt",
       "sku": "141224917",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideraceproglove?_pos=1&_psq=race+pro&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-race-pro-glove?_pos=1&_psq=race+pro&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -1357,7 +1343,7 @@
     {
       "source": "xt",
       "sku": "139283634",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidestandardhippads?variant=7929127305262",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-standard-hip-pads?variant=7929127305262",
       "note": "Added from dashboard"
     },
     {
@@ -1369,7 +1355,7 @@
     {
       "source": "xt",
       "sku": "138888238",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidestandardwristguard?_pos=1&_psq=powerslide+wrist&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-standard-wrist-guard?_pos=1&_psq=powerslide+wrist&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -1435,7 +1421,7 @@
     {
       "source": "xt",
       "sku": "137848295",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideswelltripleblack110trinityskates?_pos=1&_psq=triple+110&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-swell-triple-black-110-trinity-skates?_pos=1&_psq=triple+110&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -1489,13 +1475,13 @@
     {
       "source": "xt",
       "sku": "137848302",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidezoom80skates?_pos=5&_sid=9d7d08cc6&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-zoom-80-skates?_pos=5&_sid=9d7d08cc6&_ss=r",
       "note": "Added from dashboard"
     },
     {
       "source": "xt",
       "sku": "143113060",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidezoomone100skates?_pos=2&_sid=b2c735eb0&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-zoom-one-100-skates?_pos=2&_sid=b2c735eb0&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1699,7 +1685,7 @@
     {
       "source": "xt",
       "sku": "141396758",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideuniversalflapstrapset?_pos=1&_sid=7c1f86c95&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-universal-flap-strap-set?_pos=1&_sid=7c1f86c95&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1711,7 +1697,7 @@
     {
       "source": "xt",
       "sku": "141248521",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideuniversalskatestand?_pos=2&_psq=skate+stand&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-universal-skate-stand?_pos=2&_psq=skate+stand&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -1753,7 +1739,7 @@
     {
       "source": "xt",
       "sku": "141224909",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidehabsbrakepads?_pos=2&_sid=e0bb4be2a&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-habs-brake-pads?_pos=2&_sid=e0bb4be2a&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1873,13 +1859,13 @@
     {
       "source": "xt",
       "sku": "138888234",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidespinner90mmwheels?variant=32190462230574",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-spinner-90mm-wheels?variant=32190462230574",
       "note": "Added from dashboard"
     },
     {
       "source": "xt",
       "sku": "138888230",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslide100mmwheels?variant=40320314671150",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-100mm-wheels?variant=40320314671150",
       "note": "Added from dashboard"
     },
     {
@@ -1897,7 +1883,7 @@
     {
       "source": "xt",
       "sku": "138888229",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslide100mmwheels?_pos=1&_sid=cfa1cd998&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-100mm-wheels?_pos=1&_sid=cfa1cd998&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1981,13 +1967,13 @@
     {
       "source": "xt",
       "sku": "139030909",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidewaxedlacesprowhite?_pos=10&_sid=e2515cd02&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-white?_pos=10&_sid=e2515cd02&_ss=r",
       "note": "Added from dashboard"
     },
     {
       "source": "xt",
       "sku": "139030907",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidewaxedlacespropink?_pos=6&_sid=e2515cd02&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-pink?_pos=6&_sid=e2515cd02&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -1999,13 +1985,13 @@
     {
       "source": "xt",
       "sku": "139030906",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidewaxedlacesprogrey?_pos=8&_sid=e2515cd02&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-grey?_pos=8&_sid=e2515cd02&_ss=r",
       "note": "Added from dashboard"
     },
     {
       "source": "xt",
       "sku": "139030908",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidewaxedlacesprored?_pos=4&_sid=e2515cd02&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-red?_pos=4&_sid=e2515cd02&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -2059,7 +2045,7 @@
     {
       "source": "xt",
       "sku": "138888192",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidenexttoeprotectors?variant=31428352180270",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-next-toe-protectors?variant=31428352180270",
       "note": "Added from dashboard"
     },
     {
@@ -2125,7 +2111,7 @@
     {
       "source": "xt",
       "sku": "137966392",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidetrinityframeseliteal4x90?variant=32656212131886",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-trinity-frames-elite-al-4x90?variant=32656212131886",
       "note": "Added from dashboard"
     },
     {
@@ -2143,7 +2129,7 @@
     {
       "source": "xt",
       "sku": "137896569",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidetorrentrainwheels?_pos=1&_psq=torrent&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-torrent-rain-wheels?_pos=1&_psq=torrent&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -2161,7 +2147,7 @@
     {
       "source": "xt",
       "sku": "137870627",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidetrinityframeseliteal4x90?_pos=4&_sid=241e17fd2&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-trinity-frames-elite-al-4x90?_pos=4&_sid=241e17fd2&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -2173,7 +2159,7 @@
     {
       "source": "xt",
       "sku": "137868705",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidecustomsconcepttrinityframeseliteal96tri4x80black?variant=39309921779758",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-customs-concept-trinity-frames-elite-al96-tri-4x80-black?variant=39309921779758",
       "note": "Added from dashboard"
     },
     {
@@ -2191,7 +2177,7 @@
     {
       "source": "xt",
       "sku": "137868741",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidespinner68mmwheels?_pos=1&_psq=spinner+68&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-spinner-68mm-wheels?_pos=1&_psq=spinner+68&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -2251,7 +2237,7 @@
     {
       "source": "xt",
       "sku": "137868657",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslideuniversalflapstrapset?_pos=1&_psq=flap&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-universal-flap-strap-set?_pos=1&_psq=flap&_ss=e&_v=1.0",
       "note": "Added from dashboard"
     },
     {
@@ -2275,7 +2261,7 @@
     {
       "source": "xt",
       "sku": "137868371",
-      "shopifyMatch": "https://inlinex.com.sg/products/powerslidefingerbells?_pos=3&_sid=a5a4b4b40&_ss=r",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-finger-bells?_pos=3&_sid=a5a4b4b40&_ss=r",
       "note": "Added from dashboard"
     },
     {
@@ -2315,7 +2301,7 @@
     {
       "source": "xt",
       "sku": "16156830",
-      "shopifyMatch": "https://inlinex.com.sg/products/usdtransformerkidsaggressiveskates?_pos=1&_psq=Transformer&_ss=e&_v=1.0",
+      "shopifyMatch": "https://inlinex.com.sg/products/usd-transformer-kids-aggressive-skates?_pos=1&_psq=Transformer&_ss=e&_v=1.0",
       "note": "Added from dashboard",
       "slug": "usd-skates-transformer-adjustable-junior-inline-skates"
     },
