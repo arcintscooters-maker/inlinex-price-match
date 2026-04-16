@@ -250,11 +250,10 @@ async function main() {
 
     // --- AU Market Pricing ---
     if (auPriceList && enableAU) {
-      // Match against xtremeinn AU products (already in AUD, shipping included)
-      const { iwMatch: _unused, iwMethod: _unused2, xtMatch: xtAuMatch, xtMethod: xtAuMethod } = match;
-      // xtMatch from the combined matcher might already have an AU match
-      // If not, we still use it since xtremeinn products are in AUD
-      const auComp = xtAuMatch || null;
+      // Look up the AU-specific product from xtAuProducts by matching SKU.
+      // Don't use match.xtMatch directly — it comes from the combined
+      // US+AU+ID list and might be a USD-priced product, not AUD.
+      const auComp = (match.xtMatch && xtAuProducts.find(p => p.sku === match.xtMatch.sku)) || null;
 
       if (auComp && auComp.currency === 'AUD') {
         const auShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_AUD;
@@ -345,45 +344,61 @@ async function main() {
     }
 
     // --- ID Market Pricing (IndoSkates - no shipping, no tax) ---
+    // If both xtremeinn AND IndoSkates matched, only use the cheaper one
+    // to avoid two conflicting price entries for the same variant.
     if (idPriceList && enableID && match.isMatch) {
       const isComp = match.isMatch;
-
-      // IndoSkates is already in Indonesia — no shipping, no tax. Just 5% undercut.
       const idNewPrice = Math.round(isComp.price * IW_DISCOUNT);
 
-      const currentIdPrice = idFixedPrices[variantGid] || (currentPrice * ID_DEFAULT_MARKUP);
-
-      const change = {
-        productTitle: shopifyProduct.title,
-        variantTitle: shopifyVariant.title,
-        sku: shopifyVariant.sku || '',
-        brand: shopifyProduct.vendor || '',
-        market: 'ID',
-        oldPrice: Math.round(currentIdPrice),
-        newPrice: idNewPrice,
-        competitorPrice: isComp.price,
-        competitorSource: 'IndoSkates',
-        competitorUrl: isComp.url,
-        competitorSku: isComp.sku || '',
-        shippingFee: 0,
-        matchMethod: match.isMethod || 'name',
-        variantGid,
-        skipped: false,
-        applied: false,
-      };
-
-      if (currentIdPrice <= idNewPrice) {
-        change.skipped = true;
-        change.newPrice = currentIdPrice;
+      // Check if xtremeinn already produced a cheaper ID price for this variant
+      const existingIdChange = priceChanges.find(c => c.variantGid === variantGid && c.market === 'ID');
+      if (existingIdChange && !existingIdChange.skipped && existingIdChange.newPrice <= idNewPrice) {
+        // xtremeinn was cheaper — skip IndoSkates
       } else {
-        idPriceUpdates.push({
-          variantId: variantGid,
-          price: idNewPrice,
-          currency: 'IDR'
-        });
-      }
+        // IndoSkates is cheaper (or xtremeinn didn't match/was skipped)
+        // Remove the xtremeinn ID entry if it exists
+        if (existingIdChange) {
+          const idx = priceChanges.indexOf(existingIdChange);
+          if (idx >= 0) priceChanges.splice(idx, 1);
+          // Also remove from idPriceUpdates
+          const upIdx = idPriceUpdates.findIndex(u => u.variantId === variantGid);
+          if (upIdx >= 0) idPriceUpdates.splice(upIdx, 1);
+        }
 
-      priceChanges.push(change);
+        const currentIdPrice = idFixedPrices[variantGid] || (currentPrice * ID_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'ID',
+          oldPrice: Math.round(currentIdPrice),
+          newPrice: idNewPrice,
+          competitorPrice: isComp.price,
+          competitorSource: 'IndoSkates',
+          competitorUrl: isComp.url,
+          competitorSku: isComp.sku || '',
+          shippingFee: 0,
+          matchMethod: match.isMethod || 'name',
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        if (currentIdPrice <= idNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentIdPrice;
+        } else {
+          idPriceUpdates.push({
+            variantId: variantGid,
+            price: idNewPrice,
+            currency: 'IDR'
+          });
+        }
+
+        priceChanges.push(change);
+      }
     }
   }
 

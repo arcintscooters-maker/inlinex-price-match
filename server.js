@@ -119,8 +119,14 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Save a manual mapping
+  // Save a manual mapping (block while a run is in progress to prevent
+  // the matcher's rebind writes from racing with dashboard edits)
   if (url.pathname === '/api/mapping' && req.method === 'POST') {
+    if (currentRun && currentRun.status === 'running') {
+      res.writeHead(409, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Cannot edit mappings while a run is in progress' }));
+      return;
+    }
     let body = '';
     req.on('data', c => body += c);
     req.on('end', async () => {
