@@ -190,9 +190,10 @@
     },
     {
       "source": "xt",
-      "sku": "140344620",
+      "sku": "140112493",
       "shopifyMatch": "USD Sway Team 60 Aggressive Skates",
-      "note": "Auto-rebound from 140112493 (xtremeinn catalog rotation)"
+      "note": "Fixed: old SKU recycled to a t-shirt",
+      "slug": "usd-skates-sway-team-60-inline-skates"
     },
     {
       "source": "xt",
