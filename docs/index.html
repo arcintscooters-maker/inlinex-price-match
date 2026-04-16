@@ -258,6 +258,7 @@
         <option value="US">US Market</option>
         <option value="AU">AU Market</option>
         <option value="ID">ID Market</option>
+        <option value="PH">PH Market</option>
       </select>
       <select id="sourceSelect">
         <option value="iw">Inline Warehouse</option>
@@ -402,9 +403,9 @@ function render() {
     let gIdx = 0;
     for (const [key, group] of Object.entries(groups)) {
       const items = group.items;
-      const sym = group.market === 'AU' ? 'A$' : group.market === 'ID' ? 'Rp ' : '$';
-      const isIDR = group.market === 'ID';
-      const fmtPrice = (p) => isIDR ? Math.round(p).toLocaleString() : p.toFixed(2);
+      const sym = group.market === 'AU' ? 'A$' : group.market === 'ID' ? 'Rp ' : group.market === 'PH' ? '\u20b1' : '$';
+      const isLargeNum = group.market === 'ID' || group.market === 'PH';
+      const fmtPrice = (p) => isLargeNum ? Math.round(p).toLocaleString() : p.toFixed(2);
       const isXT = (group.competitor || '').includes('xtremeinn');
       const shipFee = items[0].shippingFee || 0;
       const shipOverride = shippingOverrides[group.product];
@@ -511,7 +512,7 @@ function render() {
     uEmpty.style.display = 'none';
     uBody.innerHTML = unmatchedList.map((u, i) => {
       const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
-      const sym = u.currency === 'AUD' ? 'A$' : u.currency === 'IDR' ? 'Rp ' : '$';
+      const sym = u.currency === 'AUD' ? 'A$' : u.currency === 'IDR' ? 'Rp ' : u.currency === 'PHP' ? '\u20b1' : '$';
       const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : 0;
       const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
       // If the listing name has a size (e.g. "80mm") it's a price-per-size row,
@@ -1252,6 +1253,8 @@ function updateSourceOptions() {
   if (market === 'ID') {
     src.innerHTML = '<option value="is">IndoSkates</option><option value="xt">xtremeinn</option><option value="both">Both</option>';
   } else if (market === 'AU') {
+    src.innerHTML = '<option value="xt">xtremeinn</option>';
+  } else if (market === 'PH') {
     src.innerHTML = '<option value="xt">xtremeinn</option>';
   } else if (market === 'US') {
     src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';

@@ -25,9 +25,12 @@ const XT_DISCOUNT = 0.95;         // 5% cheaper than xtremeinn + shipping
 const XT_SHIPPING_USD = 40;       // Default xtremeinn shipping to US
 const XT_SHIPPING_AUD = 80;       // Default xtremeinn shipping to AU
 const XT_SHIPPING_IDR = 900000;   // Default xtremeinn shipping to Indonesia
+const XT_SHIPPING_PHP = 4000;     // Default xtremeinn shipping to Philippines
+const PH_TAX_RATE = 1.15;         // Philippines import tax/duties (15%)
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
 const ID_DEFAULT_MARKUP = 1.15;   // 15% markup for ID market
+const PH_DEFAULT_MARKUP = 1.20;   // 20% markup for PH market
 
 // Load per-product shipping overrides
 const shippingOverridesFile = path.join(__dirname, 'shipping-overrides.json');
@@ -43,6 +46,7 @@ async function main() {
   const enableUS = markets.includes('US');
   const enableAU = markets.includes('AU');
   const enableID = markets.includes('ID');
+  const enablePH = markets.includes('PH');
   const sourceArg = process.argv.find(a => a.startsWith('--source='));
   const source = sourceArg ? sourceArg.split('=')[1] : 'both';
   const enableIW = source === 'iw' || source === 'both';
@@ -75,16 +79,18 @@ async function main() {
   // 2. Get Shopify market price lists
   // ==========================================
   log('MAIN', 'Step 2: Finding market price lists...');
-  const { usPriceList, auPriceList, idPriceList } = await shopify.getMarketPriceLists();
+  const { usPriceList, auPriceList, idPriceList, phPriceList } = await shopify.getMarketPriceLists();
 
   if (!usPriceList) log('MAIN', 'WARNING: US price list not found');
   if (!auPriceList) log('MAIN', 'WARNING: AU price list not found');
   if (!idPriceList) log('MAIN', 'WARNING: ID price list not found');
+  if (enablePH && !phPriceList) log('MAIN', 'WARNING: PH price list not found');
 
   // Get current fixed prices (from price list — explicit FIXED origin)
   let usFixedPrices = {};
   let auFixedPrices = {};
   let idFixedPrices = {};
+  let phFixedPrices = {};
   if (usPriceList) {
     log('MAIN', 'Fetching current US fixed prices...');
     usFixedPrices = await shopify.getFixedPrices(usPriceList.id);
@@ -99,6 +105,11 @@ async function main() {
     log('MAIN', 'Fetching current ID fixed prices...');
     idFixedPrices = await shopify.getFixedPrices(idPriceList.id);
     log('MAIN', `ID fixed prices: ${Object.keys(idFixedPrices).length}`);
+  }
+  if (phPriceList) {
+    log('MAIN', 'Fetching current PH fixed prices...');
+    phFixedPrices = await shopify.getFixedPrices(phPriceList.id);
+    log('MAIN', `PH fixed prices: ${Object.keys(phFixedPrices).length}`);
   }
 
   // Get contextual prices — captures BOTH fixed prices and percentage markups
@@ -127,6 +138,14 @@ async function main() {
     }
     log('MAIN', `ID effective prices: ${Object.keys(idFixedPrices).length}`);
   }
+  if (enablePH && productIds.length > 0) {
+    log('MAIN', 'Fetching PH contextual prices (catalog-level)...');
+    const phCtxPrices = await shopify.getContextualPrices(productIds, 'PH');
+    for (const [gid, price] of Object.entries(phCtxPrices)) {
+      phFixedPrices[gid] = price;
+    }
+    log('MAIN', `PH effective prices: ${Object.keys(phFixedPrices).length}`);
+  }
 
   // ==========================================
   // 3. Scrape competitor prices
@@ -139,11 +158,12 @@ async function main() {
     log('MAIN', 'Step 3: Inline Warehouse SKIPPED (source=' + source + ')');
   }
 
-  let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [];
+  let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [], xtPhProducts = [];
   if (enableXT) {
     log('MAIN', 'Step 3b: Scraping xtremeinn...');
-    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts } = await xtScraper.scrapeAll(brands, markets));
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts, phProducts: xtPhProducts } = await xtScraper.scrapeAll(brands, markets));
     xtIdProducts = xtIdProducts || [];
+    xtPhProducts = xtPhProducts || [];
   } else {
     log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
   }
@@ -162,7 +182,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts), isProducts);
+  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts).concat(xtPhProducts), isProducts);
 
   // ==========================================
   // 5. Calculate new prices
@@ -172,6 +192,7 @@ async function main() {
   const usPriceUpdates = [];
   const auPriceUpdates = [];
   const idPriceUpdates = [];
+  const phPriceUpdates = [];
 
   for (const match of matches) {
     const { shopifyProduct, shopifyVariant, variantGid, currentPrice, iwMatch, iwMethod, xtMatch, xtMethod } = match;
@@ -400,12 +421,59 @@ async function main() {
         priceChanges.push(change);
       }
     }
+
+    // --- PH Market Pricing (xtremeinn + shipping + 15% tax/duties) ---
+    if (phPriceList && enablePH) {
+      const phComp = (match.xtMatch && xtPhProducts.find(p => p.sku === match.xtMatch.sku)) || null;
+
+      if (phComp && phComp.currency === 'PHP') {
+        const phShipFee = shippingOverrides.overrides[shopifyProduct.title + ':PH'] ?? XT_SHIPPING_PHP;
+        // Philippines: add 15% for import tax/duties after shipping, then apply 5% discount
+        const totalXtPrice = (phComp.price + phShipFee) * PH_TAX_RATE;
+        const phNewPrice = Math.round(totalXtPrice * XT_DISCOUNT);
+
+        const currentPhPrice = phFixedPrices[variantGid] || (currentPrice * PH_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'PH',
+          oldPrice: Math.round(currentPhPrice),
+          newPrice: phNewPrice,
+          competitorPrice: phComp.price,
+          competitorSource: `xtremeinn (+PHP${phShipFee.toLocaleString()} ship +15% tax)`,
+          competitorUrl: phComp.url,
+          competitorSku: phComp.sku || '',
+          shippingFee: phShipFee,
+          matchMethod: match.xtMethod || 'name',
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        if (currentPhPrice <= phNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentPhPrice;
+        } else {
+          phPriceUpdates.push({
+            variantId: variantGid,
+            price: phNewPrice,
+            currency: 'PHP'
+          });
+        }
+
+        priceChanges.push(change);
+      }
+    }
   }
 
   log('MAIN', `Price changes calculated: ${priceChanges.length} total`);
   log('MAIN', `  US updates: ${usPriceUpdates.length}`);
   log('MAIN', `  AU updates: ${auPriceUpdates.length}`);
   log('MAIN', `  ID updates: ${idPriceUpdates.length}`);
+  log('MAIN', `  PH updates: ${phPriceUpdates.length}`);
   log('MAIN', `  Skipped (already cheaper): ${priceChanges.filter(c => c.skipped).length}`);
 
   // ==========================================
@@ -438,6 +506,15 @@ async function main() {
         if (change) change.applied = true;
       });
     }
+
+    if (phPriceUpdates.length > 0 && phPriceList) {
+      log('MAIN', `Step 7d: Applying ${phPriceUpdates.length} PH price updates...`);
+      await shopify.setFixedPrices(phPriceList.id, phPriceUpdates);
+      phPriceUpdates.forEach(u => {
+        const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'PH');
+        if (change) change.applied = true;
+      });
+    }
   } else {
     log('MAIN', 'Step 7: SKIPPED (dry run)');
   }
@@ -459,7 +536,7 @@ async function main() {
   log('MAIN', `Report: ${reportPath}`);
 
   // Save dashboard status
-  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, dryRun, elapsed, null, unmatched);
+  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, dryRun, elapsed, null, unmatched);
 
   // Set output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
@@ -493,7 +570,7 @@ function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
   log('MAIN', `Price history saved (${history.runs.length} runs)`);
 }
 
-function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, dryRun, elapsed, error, unmatched) {
+function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, dryRun, elapsed, error, unmatched) {
   const docsDir = path.join(__dirname, 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
 
@@ -508,6 +585,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
     usUpdates: usPriceUpdates ? usPriceUpdates.length : 0,
     auUpdates: auPriceUpdates ? auPriceUpdates.length : 0,
     idUpdates: idPriceUpdates ? idPriceUpdates.length : 0,
+    phUpdates: phPriceUpdates ? phPriceUpdates.length : 0,
     skipped: priceChanges ? priceChanges.filter(c => c.skipped).length : 0,
     totalChanges: priceChanges ? priceChanges.length : 0,
     status: error ? 'error' : 'success',
@@ -520,6 +598,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
     usUpdates: run.usUpdates,
     auUpdates: run.auUpdates,
     idUpdates: run.idUpdates,
+    phUpdates: run.phUpdates,
     status: run.status,
   });
   if (existing.history.length > 20) existing.history = existing.history.slice(-20);
@@ -562,6 +641,6 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
 main().catch(e => {
   log('MAIN', `FATAL ERROR: ${e.message}`);
   console.error(e.stack);
-  saveStatus(null, null, null, null, null, false, '0', e.message);
+  saveStatus(null, null, null, null, null, null, false, '0', e.message);
   process.exit(1);
 });
