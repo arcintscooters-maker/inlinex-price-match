@@ -183,7 +183,7 @@
   <h2>Manage Mappings <button class="btn-clear" onclick="toggleMappings()" style="font-size:0.75rem; padding:4px 10px;">Show/Hide</button></h2>
   <div class="table-wrap" id="mappingsWrap" style="display:none;">
     <table>
-      <thead><tr><th>Source</th><th>Competitor SKU</th><th>Mapped to Shopify</th><th></th></tr></thead>
+      <thead><tr><th>Source</th><th>Competitor Product</th><th>Mapped to Shopify</th><th></th></tr></thead>
       <tbody id="mappingsBody"></tbody>
       <tfoot>
         <tr style="background:#f0fdf4;">
@@ -1078,14 +1078,38 @@ async function loadMappings() {
   } catch {}
 }
 
+function competitorUrl(source, sku, slug) {
+  if (source === 'iw') return `https://www.inlinewarehouse.com/descpage-${sku}.html`;
+  if (source === 'xt') {
+    if (slug && slug !== '-') return `https://www.tradeinn.com/xtremeinn/en/${slug}/${sku}/p`;
+    return `https://www.tradeinn.com/xtremeinn/en/-/${sku}/p`;
+  }
+  if (source === 'is') return `https://indoskates.com/product/${sku}/`;
+  return '#';
+}
+
+function competitorLabel(source, slug) {
+  if (slug && slug !== '-') {
+    // Convert slug to readable: "powerslide-zoom-80-inline-skates" -> "Powerslide Zoom 80 Inline Skates"
+    return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+  return '';
+}
+
 function renderMappings() {
   const tbody = document.getElementById('mappingsBody');
   tbody.innerHTML = allMappings.map((m, i) => {
     const src = m.source || 'iw';
     const sku = m.sku || m.iwSku || '';
+    const slug = m.slug || '';
+    const compUrl = competitorUrl(src, sku, slug);
+    const compName = competitorLabel(src, slug);
+    const compDisplay = compName
+      ? `<a href="${esc(compUrl)}" target="_blank" style="color:#4f46e5; text-decoration:none;" title="Open on competitor site">${esc(compName)}</a><br><small style="color:#888;">SKU: ${esc(sku)}</small>`
+      : `<a href="${esc(compUrl)}" target="_blank" style="color:#4f46e5; text-decoration:none;" title="Open on competitor site">SKU: ${esc(sku)}</a>`;
     return `<tr>
       <td><span class="badge ${src}">${src.toUpperCase()}</span></td>
-      <td>${esc(sku)}</td>
+      <td style="max-width:300px;">${compDisplay}</td>
       <td><input class="map-input" id="editmap-${i}" value="${esc(m.shopifyMatch)}" data-source="${src}" data-sku="${esc(sku)}" data-original="${esc(m.shopifyMatch)}" style="width:300px;" onchange="updateMapping(${i})"></td>
       <td><button class="btn-map" style="background:#ef4444;" onclick="deleteMapping('${src}','${esc(sku)}','${esc(m.shopifyMatch)}',${i})">Delete</button></td>
     </tr>`;
