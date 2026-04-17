@@ -346,19 +346,66 @@ function isUserWorking() {
 
 // --- Load & Render ---
 
+// Cache status.json to localStorage so a Railway redeploy (which reverts
+// docs/status.json on disk to whatever is in git) doesn't wipe the
+// dashboard's view. If the server returns older data than we've already
+// seen, we keep showing the cached (newer) view until a fresh run catches up.
+const LS_STATUS = 'pm_lastStatus_v1';
+function loadCachedStatus() {
+  try { return JSON.parse(localStorage.getItem(LS_STATUS) || 'null'); } catch { return null; }
+}
+function saveCachedStatus(data) {
+  try { localStorage.setItem(LS_STATUS, JSON.stringify(data)); } catch {}
+}
+function statusTimestamp(s) {
+  if (!s || !s.lastRun || !s.lastRun.timestamp) return 0;
+  return new Date(s.lastRun.timestamp).getTime() || 0;
+}
+
 async function loadStatus() {
   if (isUserWorking()) return;
 
   document.getElementById('lastUpdated').textContent = 'Loading...';
+
+  // Hydrate from localStorage immediately so the UI feels instant after reload
+  // or redeploy — even if the server fetch hasn't returned yet.
+  if (!statusData) {
+    const cached = loadCachedStatus();
+    if (cached) { statusData = cached; render(); }
+  }
+
   try {
     const res = await fetch('./status.json?' + Date.now());
     if (!res.ok) throw new Error('No status.json found');
-    statusData = await res.json();
+    const fetched = await res.json();
+    const cached = loadCachedStatus();
+    // If the server's data is older than what we last saw, the server has
+    // been reverted (typically a Railway redeploy). Keep showing the cached
+    // view but flag it so the user knows.
+    if (cached && statusTimestamp(fetched) < statusTimestamp(cached)) {
+      statusData = cached;
+      const u = document.getElementById('lastUpdated');
+      if (u) u.innerHTML = u.innerHTML + ' <span style="color:#f59e0b;" title="Server has older data than your last session (likely from a redeploy). Run the matcher to refresh.">&#9888; showing cached view</span>';
+    } else {
+      statusData = fetched;
+      saveCachedStatus(fetched);
+    }
     render();
   } catch (e) {
-    document.getElementById('lastUpdated').textContent = 'No data yet. Run the price matcher to generate status.';
-    document.getElementById('statusDot').className = 'status-dot none';
-    document.getElementById('statusText').textContent = 'No runs yet';
+    // Server unreachable — fall back to cache if available
+    const cached = loadCachedStatus();
+    if (cached && !statusData) {
+      statusData = cached;
+      render();
+      const u = document.getElementById('lastUpdated');
+      if (u) u.innerHTML = u.innerHTML + ' <span style="color:#ef4444;">&#9888; offline — showing cached view</span>';
+      return;
+    }
+    if (!statusData) {
+      document.getElementById('lastUpdated').textContent = 'No data yet. Run the price matcher to generate status.';
+      document.getElementById('statusDot').className = 'status-dot none';
+      document.getElementById('statusText').textContent = 'No runs yet';
+    }
   }
 }
 
