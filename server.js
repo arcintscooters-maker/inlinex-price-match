@@ -685,4 +685,13 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`[SERVER] Inlinex Price Match running on port ${PORT}`);
+  // Startup env check — surface missing vars in Railway container logs instead
+  // of waiting for the next run to fail cryptically.
+  const required = ['SHOPIFY_ACCESS_TOKEN', 'SHOPIFY_STORE'];
+  const optional = ['GITHUB_TOKEN'];
+  const missing = required.filter(k => !process.env[k]);
+  const missingOptional = optional.filter(k => !process.env[k]);
+  if (missing.length) console.log(`[SERVER] WARNING: missing required env vars: ${missing.join(', ')} — runs will fail`);
+  if (missingOptional.length) console.log(`[SERVER] WARNING: missing optional env vars: ${missingOptional.join(', ')} — auto-push to GitHub disabled`);
+  if (!missing.length && !missingOptional.length) console.log(`[SERVER] All env vars present`);
 });
