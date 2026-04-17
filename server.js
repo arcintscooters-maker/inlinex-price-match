@@ -497,6 +497,52 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Reset all fixed prices for a market (fallback to shop default)
+  if (url.pathname === '/api/reset-market-prices' && req.method === 'POST') {
+    if (currentRun && currentRun.status === 'running') {
+      res.writeHead(409, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'A run is in progress' }));
+      return;
+    }
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const { market } = JSON.parse(body);
+        if (!['US', 'AU', 'ID', 'PH'].includes((market || '').toUpperCase())) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'market must be US, AU, ID or PH' }));
+          return;
+        }
+        const shopify = require('./lib/shopify');
+        const pl = await shopify.getMarketPriceLists();
+        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList' };
+        const priceList = pl[keyMap[market.toUpperCase()]];
+        if (!priceList) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `${market} price list not found in Shopify` }));
+          return;
+        }
+        const fixed = await shopify.getFixedPrices(priceList.id);
+        const variantIds = Object.keys(fixed);
+        if (variantIds.length === 0) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true, deleted: 0, message: 'price list was already empty' }));
+          return;
+        }
+        const deleted = await shopify.deleteFixedPrices(priceList.id, variantIds);
+        console.log(`[SERVER] Reset ${market}: deleted ${deleted.length} fixed prices`);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, deleted: deleted.length }));
+      } catch (e) {
+        console.log('[SERVER] Reset failed:', e.message);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
   // Get run logs
   if (url.pathname === '/api/logs') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });

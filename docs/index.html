@@ -266,6 +266,7 @@
         <option value="both">Both</option>
       </select>
       <button class="btn-dry" onclick="triggerRun(true)">Dry Run</button>
+      <button onclick="resetMarketPrices()" style="background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:0.85rem;" title="Delete all fixed prices in the selected market's price list — variants fall back to shop default">Reset All Prices</button>
     </div>
     <div class="feedback" id="triggerFeedback"></div>
     <div class="progress-wrap" id="progressWrap">
@@ -690,6 +691,33 @@ async function applySelected() {
 }
 
 // --- Trigger ---
+
+async function resetMarketPrices() {
+  const market = document.getElementById('marketSelect').value;
+  if (!confirm(`Reset ALL ${market} fixed prices?\n\nThis deletes every fixed price in the ${market} price list on Shopify. Variants will fall back to shop default pricing until you re-run price-match and apply.\n\nUse this to recover from a bad price run (e.g. wrong FX rate).`)) return;
+
+  const fb = document.getElementById('triggerFeedback');
+  fb.textContent = `Resetting ${market} prices...`;
+  fb.style.color = '#b45309';
+  try {
+    const res = await fetch(`${API_BASE}/api/reset-market-prices`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ market })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      fb.textContent = `Reset failed: ${data.error || 'unknown'}`;
+      fb.style.color = '#dc2626';
+      return;
+    }
+    fb.textContent = `Done: deleted ${data.deleted} fixed ${market} price(s). Variants now use shop default. Run a dry run and apply to set new prices.`;
+    fb.style.color = '#059669';
+  } catch (e) {
+    fb.textContent = `Reset failed: ${e.message}`;
+    fb.style.color = '#dc2626';
+  }
+}
 
 async function triggerRun(dryRun) {
   const token = localStorage.getItem('ghToken');
