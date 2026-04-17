@@ -2581,79 +2581,92 @@
       "source": "xt",
       "sku": "140371215",
       "shopifyMatch": "Chaya Kismet Barbiepatin Black Park Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-kismet-barbiepatin-roller-skates"
     },
     {
       "source": "xt",
       "sku": "140371214",
       "shopifyMatch": "Chaya Jump Off White Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-jump-off-white-roller-skates"
     },
     {
       "source": "xt",
       "sku": "142745884",
       "shopifyMatch": "Chaya Jump Brownie Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-jump-roller-skates"
     },
     {
       "source": "xt",
       "sku": "141394248",
       "shopifyMatch": "Chaya Nomade Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-nmd-roller-skates"
     },
     {
       "source": "xt",
       "sku": "140371216",
       "shopifyMatch": "Chaya Melrose Deluxe Turquoise Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-melrose-deluxe-woman-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138962046",
       "shopifyMatch": "Chaya Eclipse Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-eclipse-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138913046",
       "shopifyMatch": "Chaya Melrose Deluxe Latte Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-melrose-deluxe-latte-woman-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138758445",
       "shopifyMatch": "Chaya Karma Pro Black Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-karma-pro-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138758444",
       "shopifyMatch": "Chaya Melrose Elite Purple Evil Roller Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-elite-purple-woman-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138758446",
       "shopifyMatch": "Chaya Ragnaroll Park Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-ragnaroll-roller-skates"
     },
     {
       "source": "xt",
       "sku": "138291774",
       "shopifyMatch": "Chaya Kismet Barbiepatin Gold Park Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-kismet-barbiepatin-roller-skates"
     },
     {
       "source": "xt",
       "sku": "137850991",
       "shopifyMatch": "Chaya Airbrush Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-airbush-roller-skates"
     },
     {
       "source": "xt",
       "sku": "137850985",
       "shopifyMatch": "Chaya Voyager Roller Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "chaya-voyager-roller-skates"
     }
   ]
 }
