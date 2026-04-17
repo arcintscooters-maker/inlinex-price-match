@@ -418,7 +418,7 @@ const server = http.createServer((req, res) => {
         const { log } = require('./lib/utils');
 
         log('SERVER', `Applying ${selections.length} selected prices...`);
-        const { usPriceList, auPriceList, idPriceList } = await shopify.getMarketPriceLists();
+        const { usPriceList, auPriceList, idPriceList, phPriceList } = await shopify.getMarketPriceLists();
 
         // Group by market
         const usItems = selections.filter(s => s.market === 'US').map(s => ({
@@ -430,22 +430,45 @@ const server = http.createServer((req, res) => {
         const idItems = selections.filter(s => s.market === 'ID').map(s => ({
           variantId: s.variantGid, price: s.newPrice, currency: 'IDR'
         }));
+        const phItems = selections.filter(s => s.market === 'PH').map(s => ({
+          variantId: s.variantGid, price: s.newPrice, currency: 'PHP'
+        }));
+
+        // Log what was dropped so "Applied 0" is never a mystery
+        const known = usItems.length + auItems.length + idItems.length + phItems.length;
+        if (known < selections.length) {
+          const dropped = selections.filter(s => !['US','AU','ID','PH'].includes(s.market));
+          log('SERVER', `WARNING: dropped ${selections.length - known} selections with unknown markets: ${[...new Set(dropped.map(s => s.market))].join(', ')}`);
+        }
 
         let applied = 0;
         if (usItems.length > 0 && usPriceList) {
           await shopify.setFixedPrices(usPriceList.id, usItems);
           applied += usItems.length;
           log('SERVER', `Applied ${usItems.length} US prices`);
+        } else if (usItems.length > 0) {
+          log('SERVER', `SKIPPED ${usItems.length} US prices: US price list not found in Shopify`);
         }
         if (auItems.length > 0 && auPriceList) {
           await shopify.setFixedPrices(auPriceList.id, auItems);
           applied += auItems.length;
           log('SERVER', `Applied ${auItems.length} AU prices`);
+        } else if (auItems.length > 0) {
+          log('SERVER', `SKIPPED ${auItems.length} AU prices: AU price list not found in Shopify`);
         }
         if (idItems.length > 0 && idPriceList) {
           await shopify.setFixedPrices(idPriceList.id, idItems);
           applied += idItems.length;
           log('SERVER', `Applied ${idItems.length} ID prices`);
+        } else if (idItems.length > 0) {
+          log('SERVER', `SKIPPED ${idItems.length} ID prices: ID price list not found in Shopify`);
+        }
+        if (phItems.length > 0 && phPriceList) {
+          await shopify.setFixedPrices(phPriceList.id, phItems);
+          applied += phItems.length;
+          log('SERVER', `Applied ${phItems.length} PH prices`);
+        } else if (phItems.length > 0) {
+          log('SERVER', `SKIPPED ${phItems.length} PH prices: PH price list not found in Shopify (create a PHP price list in Shopify Markets settings)`);
         }
 
         // Update status.json — mark selected items as applied
