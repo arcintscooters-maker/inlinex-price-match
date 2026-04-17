@@ -129,58 +129,59 @@
     },
     {
       "source": "xt",
-      "sku": "151589312",
+      "sku": "143016701",
       "shopifyMatch": "USD Aeon 80 Sand Aggressive Skates",
-      "note": "Auto-rebound from 143016701 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 151589312 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-aeon-80-sand-inline-skates"
     },
     {
       "source": "xt",
       "sku": "142967875",
       "shopifyMatch": "USD Sway Chess White Aggressive Skates",
-      "note": "Auto-rebound from 151409050 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 151409050 (xtremeinn catalog rotation)",
+      "slug": "usd-skates-sway-chess-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "150398279",
+      "sku": "142745968",
       "shopifyMatch": "USD Sway Witzemann II Aggressive Skates",
-      "note": "Auto-rebound from 142745968 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 150398279 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-sway-witzemann-ii-inline-skates"
     },
     {
       "source": "xt",
       "sku": "142745924",
       "shopifyMatch": "USD Glitch Vikings on Skates Kids Aggressive Skates",
-      "note": "Auto-rebound from 150398145 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 150398145 (xtremeinn catalog rotation)",
+      "slug": "usd-skates-glitch-vikings-on-skates-adjustable-junior-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "150398142",
+      "sku": "142745923",
       "shopifyMatch": "USD Aeon 60 Nicoly Pro Aggressive Skate",
-      "note": "Auto-rebound from 142745923 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 150398142 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-aeon-60-nicoly-pro-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "145205467",
-      "shopifyMatch": "USD Aeon 60 Black Aggressive Skate",
-      "note": "Added from dashboard",
-      "slug": "usd-skates-aeon-team-60-inline-skates"
-    },
-    {
-      "source": "xt",
-      "sku": "145205461",
+      "sku": "141396780",
       "shopifyMatch": "USD Aeon Bladies Fabiola Da Silva Aggressive Skate",
-      "note": "Auto-rebound from 141396780 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 145205461 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-aeon-bladies-fabiola-da-silva-inline-skates"
     },
     {
       "source": "xt",
       "sku": "140411938",
       "shopifyMatch": "USD Aeon Nick Lomax Pro II 60 Aggressive Skates",
-      "note": "Auto-rebound from 141415566 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 141415566 (xtremeinn catalog rotation)",
+      "slug": "usd-skates-aeon-60-lomax-pro-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "141293042",
+      "sku": "140375732",
       "shopifyMatch": "USD Sway 58 XXIV Aggressive Skates",
-      "note": "Auto-rebound from 140375732 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 141293042 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-sway-58-xxiv-inline-skates"
     },
     {
       "source": "xt",
@@ -193,13 +194,15 @@
       "source": "xt",
       "sku": "142967873",
       "shopifyMatch": "USD Sway Carlos Bernal Aggressive Skates",
-      "note": "Auto-rebound from 140344611 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 140344611 (xtremeinn catalog rotation)",
+      "slug": "usd-skates-sway-carlos-bernal-ii-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "16156811",
+      "sku": "138913433",
       "shopifyMatch": "USD Sway Sagona Allstar Aggressive Skates",
-      "note": "Auto-rebound from 138913433 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 16156811 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-sway-sagona-allstar-inline-skates"
     },
     {
       "source": "xt",
@@ -211,13 +214,15 @@
       "source": "xt",
       "sku": "138913438",
       "shopifyMatch": "USD Transformer Kids Aggressive Skates",
-      "note": "Auto-rebound from 16156830 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 16156830 (xtremeinn catalog rotation)",
+      "slug": "usd-skates-transformer-adjustable-junior-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "13922186",
+      "sku": "138291775",
       "shopifyMatch": "USD Aeon 60 Mery Munoz Pro Aggressive Skates",
-      "note": "Auto-rebound from 138291775 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 13922186 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-aeon-60-mery-munoz-pro-woman-inline-skates"
     },
     {
       "source": "xt",
@@ -847,49 +852,57 @@
       "source": "xt",
       "sku": "143016703",
       "shopifyMatch": "USD Shadow Team White Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-shadow-team-inline-skates"
     },
     {
       "source": "xt",
       "sku": "142967870",
       "shopifyMatch": "USD Aeon Sam Crofts V Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-aeon-samoa-crofts-v-inline-skates"
     },
     {
       "source": "xt",
       "sku": "142967874",
       "shopifyMatch": "USD Sway Chess Black Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-sway-chess-inline-skates"
     },
     {
       "source": "xt",
       "sku": "141396781",
       "shopifyMatch": "USD Aeon 60 Black Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-aeon-team-60-inline-skates"
     },
     {
       "source": "xt",
       "sku": "141601255",
       "shopifyMatch": "USD Shadow Team White Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-shadow-team-inline-skates"
     },
     {
       "source": "xt",
       "sku": "141396783",
       "shopifyMatch": "USD Glitch Kids Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-glitch-adjustable-inline-skates"
     },
     {
       "source": "xt",
       "sku": "140112460",
       "shopifyMatch": "USD Aeon Team 60 White Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-aeon-team-60-inline-skates"
     },
     {
       "source": "xt",
       "sku": "140112491",
       "shopifyMatch": "USD Sway Carlos Bernal Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "usd-skates-sway-carlos-bernal-inline-skates"
     },
     {
       "source": "xt",
@@ -2489,30 +2502,30 @@
     },
     {
       "source": "xt",
-      "sku": "141415566",
+      "sku": "140411938",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-nick-lomax-pro-ii-60-aggressive-skates?_pos=7&_sid=499de5958&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 141415566 via slug (xtremeinn rotation)",
       "slug": "usd-skates-aeon-60-lomax-pro-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "150398145",
+      "sku": "142745924",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-vikings-on-skates-kids-aggressive-skates?_pos=2&_psq=glitch&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 150398145 via slug (xtremeinn rotation)",
       "slug": "usd-skates-glitch-vikings-on-skates-adjustable-junior-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "151409038",
+      "sku": "142967873",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-carlos-bernal-ii-aggressive-skates?_pos=2&_psq=carlos+bernal&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 151409038 via slug (xtremeinn rotation)",
       "slug": "usd-skates-sway-carlos-bernal-ii-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "16156830",
+      "sku": "138913438",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-transformer-kids-aggressive-skates?_pos=1&_psq=Transformer&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 16156830 via slug (xtremeinn rotation)",
       "slug": "usd-skates-transformer-adjustable-junior-inline-skates"
     },
     {
@@ -2531,37 +2544,37 @@
     },
     {
       "source": "xt",
-      "sku": "151589316",
+      "sku": "143016703",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-shadow-team-white-aggressive-skates?_pos=1&_psq=Usd+Skates+Shadow&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 151589316 via slug (xtremeinn rotation)",
       "slug": "usd-skates-shadow-team-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "151409031",
+      "sku": "142967870",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-sam-crofts-v-aggressive-skates?_pos=1&_psq=sam&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 151409031 via slug (xtremeinn rotation)",
       "slug": "usd-skates-aeon-samoa-crofts-v-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "140344557",
+      "sku": "141396781",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-aeon-team-60-white-aggressive-skate?_pos=1&_psq=Aeon+Team+60&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 140344557 via slug (xtremeinn rotation)",
       "slug": "usd-skates-aeon-team-60-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "140344611",
+      "sku": "140112491",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-sway-carlos-bernal-aggressive-skates?_pos=1&_psq=Sway+Carlos+Bernal&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 140344611 via slug (xtremeinn rotation)",
       "slug": "usd-skates-sway-carlos-bernal-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "145205473",
+      "sku": "141396783",
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-kids-aggressive-skates-1?_pos=1&_psq=Glitch&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 145205473 via slug (xtremeinn rotation)",
       "slug": "usd-skates-glitch-adjustable-inline-skates"
     }
   ]
