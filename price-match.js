@@ -160,7 +160,7 @@ async function main() {
   let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [], xtPhProducts = [];
   if (enableXT) {
     log('MAIN', 'Step 3b: Scraping xtremeinn...');
-    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts, phProducts: xtPhProducts } = await xtScraper.scrapeAll(brands, markets));
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts, phProducts: xtPhProducts } = await xtScraper.scrapeAll(brands, markets, filteredProducts));
     xtIdProducts = xtIdProducts || [];
     xtPhProducts = xtPhProducts || [];
   } else {
