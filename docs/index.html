@@ -295,7 +295,42 @@ const API_BASE = isRailway ? '' : null; // empty string = same origin on Railway
 let statusData = null;
 let sortCol = -1, sortAsc = true;
 const savedSkus = new Map(); // Track how many mappings saved per SKU this session
-const selectedVariants = new Set(); // Track selected variantGids across renders (persistent)
+
+// --- Persistent UI state (survives redeploys & reloads via localStorage) ---
+const LS_SELECTED = 'pm_selectedVariants_v1';
+const LS_EXPANDED = 'pm_expandedGroups_v1';
+const LS_UNMATCHED_DRAFTS = 'pm_unmatchedDrafts_v1';
+const LS_REMAP_DRAFTS = 'pm_remapDrafts_v1';
+
+function loadLSSet(key) {
+  try { return new Set(JSON.parse(localStorage.getItem(key) || '[]')); } catch { return new Set(); }
+}
+function saveLSSet(key, set) {
+  try { localStorage.setItem(key, JSON.stringify([...set])); } catch {}
+}
+function loadLSMap(key) {
+  try { return new Map(Object.entries(JSON.parse(localStorage.getItem(key) || '{}'))); } catch { return new Map(); }
+}
+function saveLSMap(key, map) {
+  try { localStorage.setItem(key, JSON.stringify(Object.fromEntries(map))); } catch {}
+}
+
+const selectedVariants = loadLSSet(LS_SELECTED); // Track selected variantGids — persistent across reloads
+const persistedExpandedGroups = loadLSSet(LS_EXPANDED); // expandedGroups keyed by product title (survives re-sort)
+const unmatchedDrafts = loadLSMap(LS_UNMATCHED_DRAFTS); // key: competitor SKU -> typed (unsaved) value
+const remapDrafts = loadLSMap(LS_REMAP_DRAFTS); // key: competitor SKU -> typed remap value
+
+function persistUnmatchedDraft(sku, val) {
+  if (val && val.trim()) unmatchedDrafts.set(sku, val);
+  else unmatchedDrafts.delete(sku);
+  saveLSMap(LS_UNMATCHED_DRAFTS, unmatchedDrafts);
+}
+function persistRemapDraft(compSku, val) {
+  if (!compSku) return;
+  if (val && val.trim()) remapDrafts.set(compSku, val);
+  else remapDrafts.delete(compSku);
+  saveLSMap(LS_REMAP_DRAFTS, remapDrafts);
+}
 
 // Global lock to prevent any refresh while user is working
 function isUserWorking() {
@@ -360,7 +395,8 @@ function render() {
   const isDryRun = r.mode === 'DRY RUN';
 
   // Save which groups are expanded (checkboxes use persistent selectedVariants Set)
-  const expandedGroups = new Set();
+  // Merge in-DOM state with localStorage-persisted state so expanded groups survive reloads
+  const expandedGroups = new Set(persistedExpandedGroups);
   document.querySelectorAll('.variant-row.visible').forEach(r => {
     if (r.dataset.group) expandedGroups.add(r.dataset.group);
   });
@@ -454,7 +490,7 @@ function render() {
           <div style="margin-bottom:6px;"><strong>Remap this competitor product to the correct Shopify product:</strong></div>
           <div style="font-size:0.8rem; color:#555; margin-bottom:8px;">Competitor: ${compLink} &nbsp;|&nbsp; ${sym}${fmtPrice(group.competitorPrice||0)} &nbsp;|&nbsp; currently matched to: <em>${esc(group.product)}</em></div>
           <div style="position:relative; display:inline-block;">
-            <input class="map-input remap-input" id="remap-input-${gIdx}" data-gidx="${gIdx}" placeholder="Type Shopify product title, handle, URL, or SKU..." style="width:420px; margin:0;" oninput="onRemapInput(${gIdx})" onblur="setTimeout(()=>hideSuggest(${gIdx}), 200)">
+            <input class="map-input remap-input" id="remap-input-${gIdx}" data-gidx="${gIdx}" data-compsku="${esc(group.competitorSku || '')}" placeholder="Type Shopify product title, handle, URL, or SKU..." style="width:420px; margin:0;" oninput="onRemapInput(${gIdx}); persistRemapDraft('${esc(group.competitorSku || '')}', this.value)" onblur="setTimeout(()=>hideSuggest(${gIdx}), 200)">
             <div class="suggest-box" id="suggest-${gIdx}" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #d1d5db; border-radius:4px; max-height:240px; overflow-y:auto; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
           </div>
           <button class="btn-map" onclick="saveRemap(${gIdx})" style="margin-left:6px;">Save</button>
@@ -497,6 +533,11 @@ function render() {
       const arrow = document.getElementById(`arrow-${gIdx}`);
       if (arrow) arrow.textContent = '\u25BC';
     });
+    // Restore remap drafts (typed-but-not-saved values survive redeploys)
+    document.querySelectorAll('.remap-input').forEach(el => {
+      const compSku = el.dataset.compsku;
+      if (compSku && remapDrafts.has(compSku)) el.value = remapDrafts.get(compSku);
+    });
     updateSelectedCount();
   }
 
@@ -511,11 +552,15 @@ function render() {
     uWrap.style.display = 'none';
     uEmpty.style.display = 'block';
   } else {
-    // Preserve typed values keyed by competitor SKU (not index)
+    // Preserve typed values keyed by competitor SKU (in DOM + localStorage)
     const savedInputs = {};
     uBody.querySelectorAll('.map-input').forEach(el => {
       if (el.value) savedInputs[el.dataset.sku] = el.value;
     });
+    // Merge in-DOM with persisted localStorage drafts (survives redeploys)
+    for (const [sku, val] of unmatchedDrafts.entries()) {
+      if (!savedInputs[sku]) savedInputs[sku] = val;
+    }
 
     uWrap.style.display = 'block';
     uEmpty.style.display = 'none';
@@ -536,7 +581,7 @@ function render() {
         <td>
           <div id="variantList-${i}" data-source="${u.source}" data-sku="${esc(u.sku)}">
             <div class="variant-line" style="display:flex; gap:6px; margin-bottom:4px;">
-              <input class="map-input" data-sku="${esc(u.sku)}" placeholder="${placeholder}" style="flex:1;">
+              <input class="map-input" data-sku="${esc(u.sku)}" placeholder="${placeholder}" style="flex:1;" oninput="persistUnmatchedDraft('${esc(u.sku)}', this.value)">
               <button class="btn-map" onclick="saveVariantMapping(this,'${u.source}','${esc(u.sku)}')">Save</button>
             </div>
           </div>
@@ -563,6 +608,9 @@ function toggleGroup(gIdx) {
   const isOpen = rows[0] && rows[0].classList.contains('visible');
   rows.forEach(r => r.classList.toggle('visible', !isOpen));
   if (arrow) arrow.textContent = isOpen ? '\u25B6' : '\u25BC';
+  if (isOpen) persistedExpandedGroups.delete(String(gIdx));
+  else persistedExpandedGroups.add(String(gIdx));
+  saveLSSet(LS_EXPANDED, persistedExpandedGroups);
 }
 
 // --- Shipping ---
@@ -619,6 +667,7 @@ async function updateShipping(el) {
 function toggleVariantSelect(cb) {
   if (cb.checked && cb.dataset.gid) selectedVariants.add(cb.dataset.gid);
   else selectedVariants.delete(cb.dataset.gid);
+  saveLSSet(LS_SELECTED, selectedVariants);
   updateSelectedCount();
 }
 
@@ -631,6 +680,7 @@ function selectAll(checked) {
     }
   });
   document.querySelectorAll('.group-check:not(:disabled)').forEach(cb => cb.checked = checked);
+  saveLSSet(LS_SELECTED, selectedVariants);
   updateSelectedCount();
 }
 
@@ -644,6 +694,7 @@ function toggleGroupCheck(gIdx) {
       else selectedVariants.delete(cb.dataset.gid);
     }
   });
+  saveLSSet(LS_SELECTED, selectedVariants);
   updateSelectedCount();
 }
 
@@ -686,6 +737,7 @@ async function applySelected() {
       fb.textContent = `Applied ${data.applied} prices to Shopify!`;
       fb.className = 'feedback ok';
       selectedVariants.clear();
+      saveLSSet(LS_SELECTED, selectedVariants);
       setTimeout(() => loadStatus(), 2000);
     } else {
       fb.textContent = `Failed: ${data.error}`;
@@ -1162,6 +1214,8 @@ async function saveRemap(gIdx) {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
     input.style.borderColor = '#22c55e';
+    // Clear the persisted draft — it's committed on the server now
+    persistRemapDraft(compSku, '');
     statusEl.innerHTML = data.autoPush
       ? '<span style="color:#22c55e;">Saved &amp; auto-pushing to GitHub...</span>'
       : '<span style="color:#22c55e;">Saved (click "Push All to GitHub" to persist)</span>';
@@ -1381,6 +1435,9 @@ async function saveVariantMapping(btn, source, sku) {
     btn.textContent = 'Saved \u2713';
     btn.className = 'btn-map saved';
     btn.disabled = true;
+
+    // Clear the localStorage draft — it's committed to the server now
+    persistUnmatchedDraft(sku, '');
 
     savedSkus.set(sku, (savedSkus.get(sku) || 0) + 1);
     const row = input.closest('tr');
