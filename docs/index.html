@@ -694,10 +694,48 @@ async function applySelected() {
 
 async function resetMarketPrices() {
   const market = document.getElementById('marketSelect').value;
-  if (!confirm(`Reset ALL ${market} fixed prices?\n\nThis deletes every fixed price in the ${market} price list on Shopify. Variants will fall back to shop default pricing until you re-run price-match and apply.\n\nUse this to recover from a bad price run (e.g. wrong FX rate).`)) return;
-
   const fb = document.getElementById('triggerFeedback');
-  fb.textContent = `Resetting ${market} prices...`;
+
+  // Step 1: preview (non-destructive)
+  fb.textContent = `Checking ${market} price list...`;
+  fb.style.color = '#6366f1';
+  let previewData;
+  try {
+    const res = await fetch(`${API_BASE}/api/preview-reset-prices/${market}`);
+    previewData = await res.json();
+    if (!res.ok) {
+      fb.textContent = `Preview failed: ${previewData.error || 'unknown'}`;
+      fb.style.color = '#dc2626';
+      return;
+    }
+  } catch (e) {
+    fb.textContent = `Preview failed: ${e.message}`;
+    fb.style.color = '#dc2626';
+    return;
+  }
+
+  const n = previewData.fixedPriceCount;
+  if (n === 0) {
+    fb.textContent = `${market} price list (${previewData.priceListName}) has 0 fixed prices. Nothing to reset.`;
+    fb.style.color = '#059669';
+    return;
+  }
+
+  // Step 2: confirm with specific count
+  const confirmMsg = `About to delete ${n} fixed ${market} prices from Shopify price list "${previewData.priceListName}".\n\n` +
+    `\u2705 Variants will fall back to Shopify's default ${market} pricing (your SGD base \u00d7 auto FX rate).\n` +
+    `\u2705 Products and SGD base prices are NOT touched.\n` +
+    `\u2705 US/AU/ID prices are NOT touched.\n\n` +
+    `You can re-run price-match and Apply afterwards to set correct prices.\n\n` +
+    `Click OK to DELETE all ${n} ${market} fixed prices.`;
+  if (!confirm(confirmMsg)) {
+    fb.textContent = `Reset cancelled. ${market} prices untouched.`;
+    fb.style.color = '#6b7280';
+    return;
+  }
+
+  // Step 3: actually delete
+  fb.textContent = `Deleting ${n} ${market} prices...`;
   fb.style.color = '#b45309';
   try {
     const res = await fetch(`${API_BASE}/api/reset-market-prices`, {

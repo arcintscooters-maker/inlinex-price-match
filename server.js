@@ -497,6 +497,42 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Preview what would be reset without deleting
+  if (url.pathname.startsWith('/api/preview-reset-prices/') && req.method === 'GET') {
+    const market = url.pathname.split('/').pop().toUpperCase();
+    if (!['US', 'AU', 'ID', 'PH'].includes(market)) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'market must be US, AU, ID or PH' }));
+      return;
+    }
+    (async () => {
+      try {
+        const shopify = require('./lib/shopify');
+        const pl = await shopify.getMarketPriceLists();
+        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList' };
+        const priceList = pl[keyMap[market]];
+        if (!priceList) {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `${market} price list not found` }));
+          return;
+        }
+        const fixed = await shopify.getFixedPrices(priceList.id);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          ok: true,
+          market,
+          priceListName: priceList.name,
+          fixedPriceCount: Object.keys(fixed).length,
+          message: `${Object.keys(fixed).length} fixed ${market} prices currently set. If you click Reset, they will all be deleted and variants will fall back to Shopify's default ${market} pricing.`
+        }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    })();
+    return;
+  }
+
   // Reset all fixed prices for a market (fallback to shop default)
   if (url.pathname === '/api/reset-market-prices' && req.method === 'POST') {
     if (currentRun && currentRun.status === 'running') {
