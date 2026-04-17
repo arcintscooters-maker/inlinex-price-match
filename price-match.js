@@ -26,7 +26,6 @@ const XT_SHIPPING_USD = 40;       // Default xtremeinn shipping to US
 const XT_SHIPPING_AUD = 80;       // Default xtremeinn shipping to AU
 const XT_SHIPPING_IDR = 900000;   // Default xtremeinn shipping to Indonesia
 const XT_SHIPPING_PHP = 4000;     // Default xtremeinn shipping to Philippines
-const PH_TAX_RATE = 1.15;         // Philippines import tax/duties (15%)
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
 const ID_DEFAULT_MARKUP = 1.15;   // 15% markup for ID market
@@ -428,9 +427,8 @@ async function main() {
 
       if (phComp && phComp.currency === 'PHP') {
         const phShipFee = shippingOverrides.overrides[shopifyProduct.title + ':PH'] ?? XT_SHIPPING_PHP;
-        // Philippines: add 15% for import tax/duties after shipping, then apply 5% discount
-        const totalXtPrice = (phComp.price + phShipFee) * PH_TAX_RATE;
-        const phNewPrice = Math.round(totalXtPrice * XT_DISCOUNT);
+        // Philippines: xt price + shipping, then 5% discount (no tax/duties)
+        const phNewPrice = Math.round((phComp.price + phShipFee) * XT_DISCOUNT);
 
         const currentPhPrice = phFixedPrices[variantGid] || (currentPrice * PH_DEFAULT_MARKUP);
 
@@ -443,7 +441,7 @@ async function main() {
           oldPrice: Math.round(currentPhPrice),
           newPrice: phNewPrice,
           competitorPrice: phComp.price,
-          competitorSource: `xtremeinn (+PHP${phShipFee.toLocaleString()} ship +15% tax)`,
+          competitorSource: `xtremeinn (+PHP${phShipFee.toLocaleString()} ship)`,
           competitorUrl: phComp.url,
           competitorSku: phComp.sku || '',
           shippingFee: phShipFee,
