@@ -2576,6 +2576,12 @@
       "shopifyMatch": "https://inlinex.com.sg/products/usd-glitch-kids-aggressive-skates-1?_pos=1&_psq=Glitch&_ss=e&_v=1.0",
       "note": "Auto-rebound from 145205473 via slug (xtremeinn rotation)",
       "slug": "usd-skates-glitch-adjustable-inline-skates"
+    },
+    {
+      "source": "xt",
+      "sku": "140371215",
+      "shopifyMatch": "Chaya Kismet Barbiepatin Black Park Roller Skate",
+      "note": "Added from dashboard"
     }
   ]
 }
