@@ -118,6 +118,7 @@
       <div class="value" id="statusText">No data</div>
       <div class="status-meta" id="statusMeta"></div>
     </div>
+    <div id="push-indicator" style="margin-right:12px; font-size:0.85rem;"></div>
     <button class="btn-refresh" onclick="loadStatus()">Refresh</button>
   </div>
 
@@ -444,15 +445,22 @@ function render() {
       </tr>`;
 
       // Remap row (hidden, shown when Remap clicked)
+      const compLink = group.competitorUrl
+        ? `<a href="${esc(group.competitorUrl)}" target="_blank" rel="noopener" style="color:#2563eb;">${esc(group.competitor || 'competitor page')} &#8599;</a>`
+        : esc(group.competitor || '');
       html += `<tr class="variant-row" data-group="${gIdx}" id="remap-row-${gIdx}" style="background:#fffbeb;">
         <td></td>
-        <td colspan="6" style="padding:8px 20px;">
-          <strong>Remap this competitor product to:</strong>
-          <input class="map-input" id="remap-input-${gIdx}" placeholder="Correct Shopify product title" style="width:300px; margin:0 8px;">
-          <button class="btn-map" onclick="saveRemap(${gIdx})">Save</button>
+        <td colspan="8" style="padding:10px 20px;">
+          <div style="margin-bottom:6px;"><strong>Remap this competitor product to the correct Shopify product:</strong></div>
+          <div style="font-size:0.8rem; color:#555; margin-bottom:8px;">Competitor: ${compLink} &nbsp;|&nbsp; ${sym}${fmtPrice(group.competitorPrice||0)} &nbsp;|&nbsp; currently matched to: <em>${esc(group.product)}</em></div>
+          <div style="position:relative; display:inline-block;">
+            <input class="map-input remap-input" id="remap-input-${gIdx}" data-gidx="${gIdx}" placeholder="Type Shopify product title, handle, URL, or SKU..." style="width:420px; margin:0;" oninput="onRemapInput(${gIdx})" onblur="setTimeout(()=>hideSuggest(${gIdx}), 200)">
+            <div class="suggest-box" id="suggest-${gIdx}" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #d1d5db; border-radius:4px; max-height:240px; overflow-y:auto; z-index:100; box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
+          </div>
+          <button class="btn-map" onclick="saveRemap(${gIdx})" style="margin-left:6px;">Save</button>
           <button class="btn-clear" style="margin-left:4px;" onclick="blockProduct(${gIdx})">Block (skip always)</button>
+          <span id="remap-status-${gIdx}" style="margin-left:10px; font-size:0.8rem;"></span>
         </td>
-        <td colspan="2"></td>
       </tr>`;
 
       // Variant rows (hidden by default)
@@ -1046,13 +1054,81 @@ async function addBrandPage() {
 
 // --- Remap / Block product ---
 
+// Cached Shopify titles for auto-suggest (loaded on dashboard init)
+let shopifyTitlesCache = [];
+let shopifyTitlesLoaded = false;
+async function loadShopifyTitles() {
+  try {
+    const r = await fetch(`${API_BASE}/api/shopify-titles`);
+    const data = await r.json();
+    shopifyTitlesCache = data.products || [];
+    shopifyTitlesLoaded = true;
+  } catch (e) { console.warn('Failed to load shopify titles', e); }
+}
+
 function remapProduct(gIdx) {
   const row = document.getElementById(`remap-row-${gIdx}`);
   row.classList.toggle('visible');
+  if (!shopifyTitlesLoaded) loadShopifyTitles();
+}
+
+// Fuzzy suggest — ranks Shopify products by how many query words appear in title/handle/SKU
+function suggestShopifyProducts(query, limit = 8) {
+  if (!query || query.length < 2) return [];
+  const q = query.toLowerCase().trim();
+  const words = q.split(/\s+/).filter(w => w.length >= 2);
+  const scored = [];
+  for (const p of shopifyTitlesCache) {
+    const haystack = ((p.title || '') + ' ' + (p.handle || '') + ' ' + (p.variants || []).map(v => v.sku).join(' ')).toLowerCase();
+    // Exact substring match = highest priority
+    let score = 0;
+    if (haystack.includes(q)) score += 100;
+    // Word matches
+    for (const w of words) if (haystack.includes(w)) score += 1;
+    // Title-start boost
+    if ((p.title || '').toLowerCase().startsWith(q)) score += 10;
+    if (score > 0) scored.push({ p, score });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map(s => s.p);
+}
+
+function onRemapInput(gIdx) {
+  const input = document.getElementById(`remap-input-${gIdx}`);
+  const box = document.getElementById(`suggest-${gIdx}`);
+  const val = input.value.trim();
+  if (!val || val.length < 2) { box.style.display = 'none'; return; }
+  const suggestions = suggestShopifyProducts(val);
+  if (suggestions.length === 0) {
+    box.innerHTML = `<div style="padding:8px; color:#6b7280; font-size:0.85rem;">No matches. Type the exact Shopify product title, handle, or SKU.</div>`;
+    box.style.display = 'block';
+    return;
+  }
+  box.innerHTML = suggestions.map(p => {
+    const safe = (s) => (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return `<div class="suggest-item" style="padding:8px 10px; cursor:pointer; border-bottom:1px solid #f3f4f6; font-size:0.85rem;" onmousedown="pickSuggest(${gIdx}, ${JSON.stringify(p.title).replace(/"/g,'&quot;')})" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+      <strong>${safe(p.title)}</strong>
+      <div style="color:#6b7280; font-size:0.75rem;">${safe(p.vendor || '')} &middot; ${(p.variants || []).length} variant${(p.variants || []).length === 1 ? '' : 's'}</div>
+    </div>`;
+  }).join('');
+  box.style.display = 'block';
+}
+
+function pickSuggest(gIdx, title) {
+  const input = document.getElementById(`remap-input-${gIdx}`);
+  input.value = title;
+  hideSuggest(gIdx);
+  input.focus();
+}
+
+function hideSuggest(gIdx) {
+  const box = document.getElementById(`suggest-${gIdx}`);
+  if (box) box.style.display = 'none';
 }
 
 async function saveRemap(gIdx) {
   const input = document.getElementById(`remap-input-${gIdx}`);
+  const statusEl = document.getElementById(`remap-status-${gIdx}`);
   const val = input.value.trim();
   if (!val) { input.style.borderColor = '#ef4444'; return; }
 
@@ -1062,17 +1138,36 @@ async function saveRemap(gIdx) {
 
   if (!compSku) { alert('No competitor SKU found — run again with latest code'); return; }
 
+  // Pre-flight: warn if no Shopify product contains this as a substring
+  if (shopifyTitlesLoaded && shopifyTitlesCache.length > 0) {
+    const lower = val.toLowerCase();
+    const hit = shopifyTitlesCache.some(p =>
+      (p.title || '').toLowerCase().includes(lower) ||
+      (p.handle || '').toLowerCase().includes(lower) ||
+      (p.variants || []).some(v => (v.sku || '').toLowerCase() === lower)
+    );
+    if (!hit) {
+      if (!confirm(`"${val}" does not match any Shopify product title/handle/SKU we know of. Save anyway?`)) return;
+    }
+  }
+
+  statusEl.textContent = 'Saving...';
+  statusEl.style.color = '#6b7280';
   try {
-    await fetch(`${API_BASE}/api/mapping`, {
+    const r = await fetch(`${API_BASE}/api/mapping`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ source, sku: compSku, shopifyMatch: val })
     });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
     input.style.borderColor = '#22c55e';
-    input.value = val + ' (saved - re-run to apply)';
-    input.disabled = true;
+    statusEl.innerHTML = data.autoPush
+      ? '<span style="color:#22c55e;">Saved &amp; auto-pushing to GitHub...</span>'
+      : '<span style="color:#22c55e;">Saved (click "Push All to GitHub" to persist)</span>';
   } catch (e) {
-    alert('Failed: ' + e.message);
+    input.style.borderColor = '#ef4444';
+    statusEl.innerHTML = `<span style="color:#ef4444;">Failed: ${e.message}</span>`;
   }
 }
 
@@ -1081,17 +1176,21 @@ async function blockProduct(gIdx) {
   const compSku = btn.dataset.compSku;
   const source = btn.dataset.source;
   const product = btn.dataset.product;
+  const statusEl = document.getElementById(`remap-status-${gIdx}`);
 
   if (!compSku) { alert('No competitor SKU found — run again with latest code'); return; }
   if (!confirm(`Block "${product}" from matching? It will be skipped in all future runs.`)) return;
 
   try {
-    await fetch(`${API_BASE}/api/mapping`, {
+    // lowercase sentinel — matches matcher.js check at lib/matcher.js
+    const r = await fetch(`${API_BASE}/api/mapping`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source, sku: compSku, shopifyMatch: '__BLOCKED__' })
+      body: JSON.stringify({ source, sku: compSku, shopifyMatch: '__blocked__' })
     });
-    alert('Blocked. Re-run to apply.');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">Blocked. Will be skipped on next run.</span>';
+    else alert('Blocked. Will be skipped on next run.');
   } catch (e) {
     alert('Failed: ' + e.message);
   }
@@ -1334,8 +1433,30 @@ function updateSourceOptions() {
 
 // --- Init ---
 loadShippingOverrides().then(() => loadStatus());
+loadShopifyTitles();
 updateSourceOptions();
 setInterval(loadStatus, 60000);
+// Periodically poll push status so the saving indicator updates even if user isn't saving
+setInterval(updatePushStatus, 5000);
+
+// --- Push status indicator ---
+async function updatePushStatus() {
+  const el = document.getElementById('push-indicator');
+  if (!el) return;
+  try {
+    const r = await fetch(`${API_BASE}/api/push-status`);
+    const s = await r.json();
+    if (!s.hasToken) {
+      el.innerHTML = '<span style="color:#9ca3af;" title="GITHUB_TOKEN not set — saves won\'t persist across redeploys">&#9888; Auto-push off</span>';
+    } else if (s.inFlight) {
+      el.innerHTML = '<span style="color:#2563eb;">&#8635; Pushing to GitHub...</span>';
+    } else if (s.scheduled || s.pending) {
+      el.innerHTML = '<span style="color:#f59e0b;">&#8987; Pending push</span>';
+    } else {
+      el.innerHTML = '<span style="color:#22c55e;">&check; All saved</span>';
+    }
+  } catch {}
+}
 </script>
 </body>
 </html>

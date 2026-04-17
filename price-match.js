@@ -74,6 +74,21 @@ async function main() {
     : products;
   log('MAIN', `Products to match: ${filteredProducts.length}`);
 
+  // Save product titles + handles for the dashboard's remap auto-suggest.
+  // Uses all (not filtered) so remaps can target any product regardless of brand filter.
+  try {
+    const docsDir = path.join(__dirname, 'docs');
+    if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
+    const titles = products.map(p => ({
+      title: p.title,
+      handle: p.handle || '',
+      vendor: p.vendor || '',
+      variants: (p.variants || []).map(v => ({ sku: v.sku || '', title: v.title || '' })),
+    }));
+    fs.writeFileSync(path.join(docsDir, 'shopify-titles.json'), JSON.stringify({ updatedAt: new Date().toISOString(), products: titles }));
+  } catch (e) { log('MAIN', `Warning: failed to save shopify-titles.json: ${e.message}`); }
+
+
   // ==========================================
   // 2. Get Shopify market price lists
   // ==========================================
@@ -112,38 +127,23 @@ async function main() {
   }
 
   // Get contextual prices — captures BOTH fixed prices and percentage markups
+  // Run all enabled markets in parallel to save time
   const productIds = filteredProducts.map(p => p.id);
-  if (enableUS && productIds.length > 0) {
-    log('MAIN', 'Fetching US contextual prices (catalog-level)...');
-    const usCtxPrices = await shopify.getContextualPrices(productIds, 'US');
-    for (const [gid, price] of Object.entries(usCtxPrices)) {
-      usFixedPrices[gid] = price;
+  if (productIds.length > 0) {
+    const ctxTasks = [];
+    if (enableUS) ctxTasks.push(shopify.getContextualPrices(productIds, 'US').then(p => ['US', p]));
+    if (enableAU) ctxTasks.push(shopify.getContextualPrices(productIds, 'AU').then(p => ['AU', p]));
+    if (enableID) ctxTasks.push(shopify.getContextualPrices(productIds, 'ID').then(p => ['ID', p]));
+    if (enablePH) ctxTasks.push(shopify.getContextualPrices(productIds, 'PH').then(p => ['PH', p]));
+    if (ctxTasks.length > 0) {
+      log('MAIN', `Fetching contextual prices for ${ctxTasks.length} market(s) in parallel...`);
+      const ctxResults = await Promise.all(ctxTasks);
+      for (const [market, prices] of ctxResults) {
+        const target = market === 'US' ? usFixedPrices : market === 'AU' ? auFixedPrices : market === 'ID' ? idFixedPrices : phFixedPrices;
+        for (const [gid, price] of Object.entries(prices)) target[gid] = price;
+        log('MAIN', `${market} effective prices: ${Object.keys(target).length}`);
+      }
     }
-    log('MAIN', `US effective prices: ${Object.keys(usFixedPrices).length}`);
-  }
-  if (enableAU && productIds.length > 0) {
-    log('MAIN', 'Fetching AU contextual prices (catalog-level)...');
-    const auCtxPrices = await shopify.getContextualPrices(productIds, 'AU');
-    for (const [gid, price] of Object.entries(auCtxPrices)) {
-      auFixedPrices[gid] = price;
-    }
-    log('MAIN', `AU effective prices: ${Object.keys(auFixedPrices).length}`);
-  }
-  if (enableID && productIds.length > 0) {
-    log('MAIN', 'Fetching ID contextual prices (catalog-level)...');
-    const idCtxPrices = await shopify.getContextualPrices(productIds, 'ID');
-    for (const [gid, price] of Object.entries(idCtxPrices)) {
-      idFixedPrices[gid] = price;
-    }
-    log('MAIN', `ID effective prices: ${Object.keys(idFixedPrices).length}`);
-  }
-  if (enablePH && productIds.length > 0) {
-    log('MAIN', 'Fetching PH contextual prices (catalog-level)...');
-    const phCtxPrices = await shopify.getContextualPrices(productIds, 'PH');
-    for (const [gid, price] of Object.entries(phCtxPrices)) {
-      phFixedPrices[gid] = price;
-    }
-    log('MAIN', `PH effective prices: ${Object.keys(phFixedPrices).length}`);
   }
 
   // ==========================================

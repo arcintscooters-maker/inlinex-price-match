@@ -1,32 +1,20 @@
 {
   "lastRun": {
-    "timestamp": "2026-04-13T06:26:09.307Z",
+    "timestamp": "2026-04-15T05:06:58.112Z",
     "mode": "LIVE",
-    "durationMinutes": 27.6,
+    "durationMinutes": 0,
     "totalMatches": 0,
     "usUpdates": 0,
     "auUpdates": 0,
+    "idUpdates": 0,
     "skipped": 0,
     "totalChanges": 0,
-    "status": "success"
+    "status": "error",
+    "error": "Invalid value \"undefined\" for header \"X-Shopify-Access-Token\""
   },
   "priceChanges": [],
   "unmatched": [],
   "history": [
-    {
-      "timestamp": "2026-04-10T05:04:32.416Z",
-      "mode": "LIVE",
-      "usUpdates": 113,
-      "auUpdates": 0,
-      "status": "success"
-    },
-    {
-      "timestamp": "2026-04-10T05:15:46.360Z",
-      "mode": "DRY RUN",
-      "usUpdates": 6,
-      "auUpdates": 0,
-      "status": "success"
-    },
     {
       "timestamp": "2026-04-10T05:20:41.155Z",
       "mode": "DRY RUN",
@@ -152,6 +140,21 @@
       "usUpdates": 0,
       "auUpdates": 0,
       "status": "success"
+    },
+    {
+      "timestamp": "2026-04-15T02:04:52.223Z",
+      "mode": "LIVE",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "status": "error"
+    },
+    {
+      "timestamp": "2026-04-15T05:06:58.112Z",
+      "mode": "LIVE",
+      "usUpdates": 0,
+      "auUpdates": 0,
+      "idUpdates": 0,
+      "status": "error"
     }
   ]
 }

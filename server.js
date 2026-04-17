@@ -15,6 +15,111 @@ let currentRun = null; // { status, startedAt, logs, pid }
 let pendingMappingPush = false;
 let pendingShippingPush = false;
 
+// --- Mapping write serialization + auto-push ---
+// All writes to manual-mappings.json go through mappingWriteQueue to prevent
+// concurrent writes from racing with each other. After each write we schedule
+// a debounced push to GitHub so the user never has to "remember to push".
+let mappingWriteQueue = Promise.resolve();
+let pushDebounceTimer = null;
+let pushInFlight = false;
+let pushQueuedAgain = false;
+
+function queueMappingWrite(fn) {
+  mappingWriteQueue = mappingWriteQueue.then(fn, fn); // run on both success+reject
+  return mappingWriteQueue;
+}
+
+// Atomic write: write to tempfile then rename. Protects against partial writes.
+function writeMappingsAtomic(data) {
+  const mappingFile = path.join(__dirname, 'manual-mappings.json');
+  const tmp = mappingFile + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
+  fs.renameSync(tmp, mappingFile);
+}
+
+// Schedule a debounced push to GitHub. Multiple rapid saves collapse into one push.
+function scheduleMappingPush(delay = 3000) {
+  if (!process.env.GITHUB_TOKEN) return; // no-op if GitHub token not configured
+  if (pushDebounceTimer) clearTimeout(pushDebounceTimer);
+  pushDebounceTimer = setTimeout(async () => {
+    pushDebounceTimer = null;
+    if (pushInFlight) { pushQueuedAgain = true; return; }
+    pushInFlight = true;
+    try {
+      await pushFilesToGitHub();
+    } catch (e) {
+      console.log('[SERVER] Auto-push failed:', e.message || e);
+    } finally {
+      pushInFlight = false;
+      if (pushQueuedAgain) { pushQueuedAgain = false; scheduleMappingPush(500); }
+    }
+  }, delay);
+}
+
+// Push the current manual-mappings.json (and brand-pages + shipping if pending) to GitHub.
+// Reads fresh from disk at push time so no racey in-memory snapshots.
+async function pushFilesToGitHub() {
+  const ghToken = process.env.GITHUB_TOKEN;
+  if (!ghToken) throw new Error('GITHUB_TOKEN not set');
+  const repo = 'arcintscooters-maker/inlinex-price-match';
+  const ghApi = (method, apiPath, body2) => new Promise((resolve, reject) => {
+    const opts = {
+      hostname: 'api.github.com', path: apiPath, method,
+      headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' }
+    };
+    if (body2) opts.headers['Content-Length'] = Buffer.byteLength(body2);
+    const r = require('https').request(opts, r2 => {
+      let d = ''; r2.on('data', c => d += c);
+      r2.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
+    });
+    r.on('error', reject);
+    if (body2) r.write(body2);
+    r.end();
+  });
+  // Mappings
+  if (pendingMappingPush) {
+    const mf = path.join(__dirname, 'manual-mappings.json');
+    const mfContent = fs.readFileSync(mf, 'utf8');
+    const mfGh = await ghApi('GET', `/repos/${repo}/contents/manual-mappings.json`);
+    await ghApi('PUT', `/repos/${repo}/contents/manual-mappings.json`, JSON.stringify({
+      message: 'Update manual mappings from dashboard [skip ci]',
+      content: Buffer.from(mfContent).toString('base64'),
+      sha: mfGh.sha
+    }));
+    pendingMappingPush = false;
+    console.log('[SERVER] Auto-pushed manual-mappings.json to GitHub');
+  }
+  // Brand pages
+  try {
+    const bpFile = path.join(__dirname, 'brand-pages.json');
+    const bpContent = fs.readFileSync(bpFile, 'utf8');
+    const bpGh = await ghApi('GET', `/repos/${repo}/contents/brand-pages.json`);
+    if (Buffer.from(bpGh.content || '', 'base64').toString('utf8') !== bpContent) {
+      await ghApi('PUT', `/repos/${repo}/contents/brand-pages.json`, JSON.stringify({
+        message: 'Update brand pages from dashboard [skip ci]',
+        content: Buffer.from(bpContent).toString('base64'),
+        sha: bpGh.sha
+      }));
+      console.log('[SERVER] Auto-pushed brand-pages.json to GitHub');
+    }
+  } catch (e) { console.log('[SERVER] Brand pages push skipped:', e.message); }
+  // Shipping overrides
+  if (pendingShippingPush) {
+    try {
+      const shipFile = path.join(__dirname, 'shipping-overrides.json');
+      const shipContent = fs.readFileSync(shipFile, 'utf8');
+      const shipGh = await ghApi('GET', `/repos/${repo}/contents/shipping-overrides.json`);
+      await ghApi('PUT', `/repos/${repo}/contents/shipping-overrides.json`, JSON.stringify({
+        message: 'Update shipping overrides from dashboard [skip ci]',
+        content: Buffer.from(shipContent).toString('base64'),
+        sha: shipGh.sha
+      }));
+      pendingShippingPush = false;
+      console.log('[SERVER] Auto-pushed shipping-overrides.json to GitHub');
+    } catch (e) { console.log('[SERVER] Shipping push failed:', e.message); }
+  }
+}
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
@@ -84,12 +189,13 @@ const server = http.createServer((req, res) => {
         console.log(`[SERVER] Run completed: ${currentRun.status}`);
 
         // If the matcher rebound rotated SKUs into manual-mappings.json,
-        // flag the push so the user's mappings stick across redeploys.
+        // flag push and auto-schedule so user never has to click "push".
         try {
           const mtimeAfter = fs.statSync(mappingFileForWatch).mtimeMs;
           if (mtimeAfter > mappingMtimeBefore) {
             pendingMappingPush = true;
-            console.log('[SERVER] manual-mappings.json updated during run — push pending');
+            console.log('[SERVER] manual-mappings.json updated during run — auto-push scheduled');
+            scheduleMappingPush(1000);
           }
         } catch {}
       });
@@ -138,27 +244,25 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        const mappingFile = path.join(__dirname, 'manual-mappings.json');
-        const data = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
-
-        // Check if THIS EXACT mapping already exists (same source + sku + shopifyMatch)
-        const exactMatch = data.mappings.find(m =>
-          (m.source || 'iw') === source &&
-          (m.sku || m.iwSku) === sku &&
-          m.shopifyMatch === shopifyMatch
-        );
-        if (!exactMatch) {
-          // Append — one SKU can have multiple targets (e.g. IW 20118 -> AG60 and AG60 C)
-          data.mappings.push({ source, sku, shopifyMatch, note: 'Added from dashboard' });
-        }
-
-        const newContent = JSON.stringify(data, null, 2);
-        fs.writeFileSync(mappingFile, newContent);
-        console.log(`[SERVER] Mapping saved locally: ${source}:${sku} -> "${shopifyMatch}"`);
-        pendingMappingPush = true;
+        await queueMappingWrite(() => {
+          const mappingFile = path.join(__dirname, 'manual-mappings.json');
+          const data = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
+          const exactMatch = data.mappings.find(m =>
+            (m.source || 'iw') === source &&
+            (m.sku || m.iwSku) === sku &&
+            m.shopifyMatch === shopifyMatch
+          );
+          if (!exactMatch) {
+            data.mappings.push({ source, sku, shopifyMatch, note: 'Added from dashboard' });
+          }
+          writeMappingsAtomic(data);
+          console.log(`[SERVER] Mapping saved: ${source}:${sku} -> "${shopifyMatch}"`);
+          pendingMappingPush = true;
+        });
+        scheduleMappingPush();
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: true }));
+        res.end(JSON.stringify({ ok: true, autoPush: !!process.env.GITHUB_TOKEN }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
@@ -167,91 +271,39 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Push all pending mappings to GitHub (batch — won't trigger redeploy until user clicks)
+  // Manual "Push All to GitHub" — rarely needed now that auto-push is on,
+  // but kept for explicit user-triggered pushes.
   if (url.pathname === '/api/push-mappings' && req.method === 'POST') {
-    const ghToken = process.env.GITHUB_TOKEN;
-    if (!ghToken) {
+    if (!process.env.GITHUB_TOKEN) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'GITHUB_TOKEN not set' }));
       return;
     }
-    if (!pendingMappingPush) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true, message: 'No pending changes' }));
-      return;
-    }
-
     (async () => {
       try {
-        const mappingFile = path.join(__dirname, 'manual-mappings.json');
-        const newContent = fs.readFileSync(mappingFile, 'utf8');
-
-        const ghApi = (method, apiPath, body2) => new Promise((resolve, reject) => {
-          const opts = {
-            hostname: 'api.github.com', path: apiPath, method,
-            headers: { 'User-Agent': 'price-match', 'Authorization': `token ${ghToken}`, 'Content-Type': 'application/json' }
-          };
-          if (body2) opts.headers['Content-Length'] = Buffer.byteLength(body2);
-          const r = require('https').request(opts, r2 => {
-            let d = ''; r2.on('data', c => d += c);
-            r2.on('end', () => { try { resolve(JSON.parse(d)); } catch { resolve(d); } });
-          });
-          r.on('error', reject);
-          if (body2) r.write(body2);
-          r.end();
-        });
-
-        const repo = 'arcintscooters-maker/inlinex-price-match';
-        const file = await ghApi('GET', `/repos/${repo}/contents/manual-mappings.json`);
-        await ghApi('PUT', `/repos/${repo}/contents/manual-mappings.json`, JSON.stringify({
-          message: 'Update manual mappings from dashboard [skip ci]',
-          content: Buffer.from(newContent).toString('base64'),
-          sha: file.sha
-        }));
-        pendingMappingPush = false;
-        console.log('[SERVER] Mappings pushed to GitHub');
-
-        // Also push brand-pages.json
-        try {
-          const bpFile = path.join(__dirname, 'brand-pages.json');
-          const bpContent = fs.readFileSync(bpFile, 'utf8');
-          const bpGh = await ghApi('GET', `/repos/${repo}/contents/brand-pages.json`);
-          await ghApi('PUT', `/repos/${repo}/contents/brand-pages.json`, JSON.stringify({
-            message: 'Update brand pages from dashboard [skip ci]',
-            content: Buffer.from(bpContent).toString('base64'),
-            sha: bpGh.sha
-          }));
-          console.log('[SERVER] Brand pages pushed to GitHub');
-        } catch (e2) {
-          console.log('[SERVER] Brand pages push failed:', e2.message || e2);
-        }
-
-        // Also push shipping overrides if pending
-        if (pendingShippingPush) {
-          try {
-            const shipFile = path.join(__dirname, 'shipping-overrides.json');
-            const shipContent = fs.readFileSync(shipFile, 'utf8');
-            const shipGh = await ghApi('GET', `/repos/${repo}/contents/shipping-overrides.json`);
-            await ghApi('PUT', `/repos/${repo}/contents/shipping-overrides.json`, JSON.stringify({
-              message: 'Update shipping overrides from dashboard [skip ci]',
-              content: Buffer.from(shipContent).toString('base64'),
-              sha: shipGh.sha
-            }));
-            pendingShippingPush = false;
-            console.log('[SERVER] Shipping overrides pushed to GitHub');
-          } catch (e2) {
-            console.log('[SERVER] Shipping push failed:', e2.message || e2);
-          }
-        }
-
+        // Force push even if flag isn't set (user clicked explicitly)
+        pendingMappingPush = true;
+        await pushFilesToGitHub();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true, message: 'Pushed to GitHub' }));
       } catch (e) {
-        console.log('[SERVER] GitHub push failed:', e.message || e);
+        console.log('[SERVER] Manual push failed:', e.message || e);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message || 'Push failed' }));
       }
     })();
+    return;
+  }
+
+  // Pending-push status (dashboard uses this to show "saving..." indicator)
+  if (url.pathname === '/api/push-status' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      pending: !!pendingMappingPush,
+      inFlight: pushInFlight,
+      scheduled: !!pushDebounceTimer,
+      hasToken: !!process.env.GITHUB_TOKEN,
+    }));
     return;
   }
 
@@ -273,22 +325,24 @@ const server = http.createServer((req, res) => {
   if (url.pathname === '/api/mapping-delete' && req.method === 'POST') {
     let body = '';
     req.on('data', c => body += c);
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
         const { source, sku, shopifyMatch } = JSON.parse(body);
-        const file = path.join(__dirname, 'manual-mappings.json');
-        const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-        // If shopifyMatch provided, delete only that specific target; otherwise delete ALL for that SKU
-        data.mappings = data.mappings.filter(m => {
-          const matchesSrc = (m.source || 'iw') === source;
-          const matchesSku = (m.sku || m.iwSku) === sku;
-          if (!matchesSrc || !matchesSku) return true;
-          if (shopifyMatch) return m.shopifyMatch !== shopifyMatch;
-          return false;
+        await queueMappingWrite(() => {
+          const file = path.join(__dirname, 'manual-mappings.json');
+          const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+          data.mappings = data.mappings.filter(m => {
+            const matchesSrc = (m.source || 'iw') === source;
+            const matchesSku = (m.sku || m.iwSku) === sku;
+            if (!matchesSrc || !matchesSku) return true;
+            if (shopifyMatch) return m.shopifyMatch !== shopifyMatch;
+            return false;
+          });
+          writeMappingsAtomic(data);
+          pendingMappingPush = true;
+          console.log(`[SERVER] Mapping deleted: ${source}:${sku}${shopifyMatch ? ' -> ' + shopifyMatch : ' (all)'}`);
         });
-        fs.writeFileSync(file, JSON.stringify(data, null, 2));
-        pendingMappingPush = true;
-        console.log(`[SERVER] Mapping deleted: ${source}:${sku}${shopifyMatch ? ' -> ' + shopifyMatch : ' (all)'}`);
+        scheduleMappingPush();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ ok: true }));
       } catch (e) {
@@ -296,6 +350,20 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: e.message }));
       }
     });
+    return;
+  }
+
+  // --- Shopify product titles (for remap auto-suggest) ---
+  if (url.pathname === '/api/shopify-titles' && req.method === 'GET') {
+    const file = path.join(__dirname, 'docs', 'shopify-titles.json');
+    try {
+      const content = fs.readFileSync(file, 'utf8');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(content);
+    } catch {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ products: [], message: 'No titles yet — run a dry run first' }));
+    }
     return;
   }
 
@@ -377,15 +445,18 @@ const server = http.createServer((req, res) => {
         }
 
         const file = path.join(__dirname, 'shipping-overrides.json');
+        const tmp = file + '.tmp';
         let data;
         try { data = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { data = { overrides: {} }; }
         data.overrides[productTitle] = parseFloat(shippingFee);
-        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
+        fs.renameSync(tmp, file);
         console.log(`[SERVER] Shipping override: "${productTitle}" = ${shippingFee}`);
         pendingShippingPush = true;
+        scheduleMappingPush();
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: true }));
+        res.end(JSON.stringify({ ok: true, autoPush: !!process.env.GITHUB_TOKEN }));
       } catch (e) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
