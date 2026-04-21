@@ -1253,6 +1253,32 @@ async function saveRemap(gIdx) {
 
   if (!compSku) { alert('No competitor SKU found — run again with latest code'); return; }
 
+  // Fetch existing mappings for this SKU so we can confirm before replacing.
+  // Remap REPLACES by default (deletes existing, adds new) — the previous
+  // "append" behaviour caused confusing duplicate matches when users just
+  // wanted to correct a wrong mapping.
+  let existing = [];
+  try {
+    const r = await fetch(`${API_BASE}/api/mappings`);
+    const data = await r.json();
+    existing = (data.mappings || []).filter(m =>
+      (m.source || 'iw') === source &&
+      (m.sku || m.iwSku) === compSku &&
+      m.shopifyMatch !== '__blocked__'
+    );
+  } catch {}
+
+  const alreadyMapped = existing.some(e => e.shopifyMatch === val);
+
+  // If there are existing mappings AND the new value isn't already one of them,
+  // confirm replace so the user sees what they're removing.
+  if (existing.length > 0 && !alreadyMapped) {
+    const existingList = existing.slice(0, 5).map(e => '• ' + (e.shopifyMatch || '').substring(0, 80)).join('\n');
+    const more = existing.length > 5 ? `\n...and ${existing.length - 5} more` : '';
+    const msg = `Replace ${existing.length} existing mapping(s) for this competitor SKU?\n\nRemoving:\n${existingList}${more}\n\nAdding:\n• ${val}\n\n(If you want to keep the old ones AND add this, click Cancel, then open Manage Mappings and add manually.)`;
+    if (!confirm(msg)) return;
+  }
+
   // Pre-flight: warn if no Shopify product contains this as a substring
   if (shopifyTitlesLoaded && shopifyTitlesCache.length > 0) {
     const lower = val.toLowerCase();
@@ -1269,6 +1295,19 @@ async function saveRemap(gIdx) {
   statusEl.textContent = 'Saving...';
   statusEl.style.color = '#6b7280';
   try {
+    // Delete all existing for this SKU first (clean replace). Skip if the
+    // new value is already in the set — no-op, don't churn the file.
+    let replacedCount = 0;
+    if (existing.length > 0 && !alreadyMapped) {
+      // No shopifyMatch in body = delete ALL mappings for this source+sku
+      await fetch(`${API_BASE}/api/mapping-delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source, sku: compSku })
+      });
+      replacedCount = existing.length;
+    }
+    // Add the new mapping
     const r = await fetch(`${API_BASE}/api/mapping`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1277,11 +1316,11 @@ async function saveRemap(gIdx) {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
     input.style.borderColor = '#22c55e';
-    // Clear the persisted draft — it's committed on the server now
     persistRemapDraft(compSku, '');
+    const savedText = replacedCount > 0 ? `Replaced ${replacedCount} old mapping${replacedCount > 1 ? 's' : ''}` : 'Saved';
     statusEl.innerHTML = data.autoPush
-      ? '<span style="color:#22c55e;">Saved &amp; auto-pushing to GitHub...</span>'
-      : '<span style="color:#22c55e;">Saved (click "Push All to GitHub" to persist)</span>';
+      ? `<span style="color:#22c55e;">${savedText} &amp; auto-pushing to GitHub...</span>`
+      : `<span style="color:#22c55e;">${savedText} (click "Push All to GitHub" to persist)</span>`;
   } catch (e) {
     input.style.borderColor = '#ef4444';
     statusEl.innerHTML = `<span style="color:#ef4444;">Failed: ${e.message}</span>`;
