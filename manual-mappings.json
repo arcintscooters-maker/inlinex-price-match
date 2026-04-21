@@ -671,13 +671,6 @@
     },
     {
       "source": "xt",
-      "sku": "141596038",
-      "shopifyMatch": "Rollerblade Crossfire Boot Only",
-      "note": "Added from dashboard",
-      "slug": "rollerblade-crossfire-skates-boots"
-    },
-    {
-      "source": "xt",
       "sku": "139496569",
       "shopifyMatch": "Rollerblade Blank Frame",
       "note": "Auto-rebound from 18303898 via similarity (xtremeinn rotation)",
@@ -2496,13 +2489,6 @@
       "shopifyMatch": "https://inlinex.com.sg/products/usd-transformer-kids-aggressive-skates?_pos=1&_psq=Transformer&_ss=e&_v=1.0",
       "note": "Auto-rebound from 16156830 via slug (xtremeinn rotation)",
       "slug": "usd-skates-transformer-adjustable-junior-inline-skates"
-    },
-    {
-      "source": "xt",
-      "sku": "141596038",
-      "shopifyMatch": "https://inlinex.com.sg/products/rollerblade-crossfire-boot-only?_pos=3&_sid=e8bde28cd&_ss=r",
-      "note": "Auto-rebound from 145924183 via slug (xtremeinn rotation)",
-      "slug": "rollerblade-crossfire-skates-boots"
     },
     {
       "source": "xt",
