@@ -226,12 +226,6 @@
     },
     {
       "source": "xt",
-      "sku": "149166547",
-      "shopifyMatch": "Rollerblade RB 80 Women Skates",
-      "note": "Added from dashboard"
-    },
-    {
-      "source": "xt",
       "sku": "142388040",
       "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
       "note": "Auto-rebound from 149166136 via similarity (xtremeinn rotation)",
@@ -2673,6 +2667,12 @@
       "shopifyMatch": "Rollerblade Crossfire Skates",
       "note": "Added from dashboard",
       "slug": "rollerblade-crossfire-skates-boots"
+    },
+    {
+      "source": "xt",
+      "sku": "142388144",
+      "shopifyMatch": "Rollerblade RB 80 Women Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
