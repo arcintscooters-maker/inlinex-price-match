@@ -456,15 +456,20 @@ function render() {
     if (r.dataset.group) expandedGroups.add(r.dataset.group);
   });
 
-  // Apply saved shipping overrides to recalculate prices
+  // Apply saved shipping overrides to recalculate prices.
+  // Strict per-market keys (`title:MARKET`) — no plain-title fallback —
+  // so JP's 9500 never leaks into CA, etc.
+  const lookupShip = (title, market) => shippingOverrides[title + ':' + market];
   for (const c of changes) {
-    if ((c.competitor || '').includes('xtremeinn') && shippingOverrides[c.product] !== undefined) {
-      const savedShip = shippingOverrides[c.product];
-      if (savedShip !== c.shippingFee) {
+    if ((c.competitor || '').includes('xtremeinn')) {
+      const savedShip = lookupShip(c.product, c.market);
+      if (savedShip !== undefined && savedShip !== c.shippingFee) {
         c.shippingFee = savedShip;
         if (c.market === 'ID') {
           // Indonesia: +20% tax/duties after shipping
           c.newPrice = Math.round((c.competitorPrice + savedShip) * 1.20 * 0.95);
+        } else if (c.market === 'JP') {
+          c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95);
         } else {
           c.newPrice = Math.round((c.competitorPrice + savedShip) * 0.95 * 100) / 100;
         }
@@ -501,7 +506,7 @@ function render() {
       const fmtPrice = (p) => isLargeNum ? Math.round(p).toLocaleString() : p.toFixed(2);
       const isXT = (group.competitor || '').includes('xtremeinn');
       const shipFee = items[0].shippingFee || 0;
-      const shipOverride = shippingOverrides[group.product];
+      const shipOverride = lookupShip(group.product, group.market);
       const displayShip = shipOverride !== undefined ? shipOverride : shipFee;
 
       // Aggregate stats
@@ -528,7 +533,7 @@ function render() {
         <td><span class="arrow" id="arrow-${gIdx}">\u25B6</span> ${group.competitorUrl ? `<a href="${esc(group.competitorUrl)}" target="_blank" onclick="event.stopPropagation()">${esc(group.product)}</a>` : esc(group.product)} <span class="variant-count">(${items.length} variant${items.length > 1 ? 's' : ''})</span><br><small>${esc(group.brand)}</small></td>
         <td>${group.market}</td>
         <td class="price-range">${oldRange}</td>
-        <td>${isXT ? `<input type="number" class="shipping-input" value="${displayShip}" data-product="${esc(group.product)}" data-group="${gIdx}" onclick="event.stopPropagation()" onchange="updateShipping(this)">` : '-'}</td>
+        <td>${isXT ? `<input type="number" class="shipping-input" value="${displayShip}" data-product="${esc(group.product)}" data-market="${group.market}" data-group="${gIdx}" onclick="event.stopPropagation()" onchange="updateShipping(this)">` : '-'}</td>
         <td class="price-range">${newRange}</td>
         <td class="${diffClass}">${avgDiff > 0 ? '-' : '+'}${sym}${fmtPrice(Math.abs(avgDiff))} avg</td>
         <td>${esc(group.competitor || '')}<br><small>${sym}${fmtPrice(group.competitorPrice||0)}</small></td>
@@ -685,18 +690,21 @@ async function loadShippingOverrides() {
 
 async function updateShipping(el) {
   const product = el.dataset.product;
+  const market = el.dataset.market || 'US';
   const newShip = parseFloat(el.value) || 0;
-  shippingOverrides[product] = newShip;
+  // Per-market key prevents JP's shipping leaking into CA, etc.
+  shippingOverrides[product + ':' + market] = newShip;
 
-  // Recalculate prices in UI for this group
-  const gIdx = el.dataset.group;
-  const changes = statusData.priceChanges.filter(c => c.product === product);
+  // Recalculate prices in UI — only for this product+market combination
+  const changes = statusData.priceChanges.filter(c => c.product === product && c.market === market);
   for (const c of changes) {
     if ((c.competitor || '').includes('xtremeinn')) {
       c.shippingFee = newShip;
       if (c.market === 'ID') {
         // Indonesia: +20% tax/duties after shipping
         c.newPrice = Math.round((c.competitorPrice + newShip) * 1.20 * 0.95);
+      } else if (c.market === 'JP') {
+        c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95);
       } else {
         c.newPrice = Math.round((c.competitorPrice + newShip) * 0.95 * 100) / 100;
       }
@@ -705,13 +713,13 @@ async function updateShipping(el) {
   }
   render();
 
-  // Save to server
+  // Save to server (with market so server stores per-market key)
   if (isRailway) {
     try {
       await fetch(`${API_BASE}/api/shipping-override`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productTitle: product, shippingFee: newShip })
+        body: JSON.stringify({ productTitle: product, market, shippingFee: newShip })
       });
     } catch {}
   }

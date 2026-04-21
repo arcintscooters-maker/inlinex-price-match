@@ -437,7 +437,7 @@ const server = http.createServer((req, res) => {
     req.on('data', c => body += c);
     req.on('end', () => {
       try {
-        const { productTitle, shippingFee } = JSON.parse(body);
+        const { productTitle, shippingFee, market } = JSON.parse(body);
         if (!productTitle || shippingFee === undefined) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: 'Missing productTitle or shippingFee' }));
@@ -448,10 +448,12 @@ const server = http.createServer((req, res) => {
         const tmp = file + '.tmp';
         let data;
         try { data = JSON.parse(fs.readFileSync(file, 'utf8')); } catch { data = { overrides: {} }; }
-        data.overrides[productTitle] = parseFloat(shippingFee);
+        // Per-market key prevents cross-market shipping pollution (JP 9500 into CA, etc.)
+        const key = market ? productTitle + ':' + market : productTitle;
+        data.overrides[key] = parseFloat(shippingFee);
         fs.writeFileSync(tmp, JSON.stringify(data, null, 2));
         fs.renameSync(tmp, file);
-        console.log(`[SERVER] Shipping override: "${productTitle}" = ${shippingFee}`);
+        console.log(`[SERVER] Shipping override: "${key}" = ${shippingFee}`);
         pendingShippingPush = true;
         scheduleMappingPush();
 

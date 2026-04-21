@@ -248,7 +248,7 @@ async function main() {
       }
       // Check xtremeinn if no IW match (or if XT is cheaper)
       if (xtMatch && xtMatch.currency === 'USD') {
-        const shipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_USD;
+        const shipFee = shippingOverrides.overrides[shopifyProduct.title + ':US'] ?? XT_SHIPPING_USD;
         const xtUsPrice = Math.round((xtMatch.price + shipFee) * XT_DISCOUNT * 100) / 100;
         if (!usNewPrice || xtUsPrice < usNewPrice) {
           usNewPrice = xtUsPrice;
@@ -307,7 +307,7 @@ async function main() {
       const auComp = (match.xtMatch && xtAuProducts.find(p => p.sku === match.xtMatch.sku)) || null;
 
       if (auComp && auComp.currency === 'AUD') {
-        const auShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_AUD;
+        const auShipFee = shippingOverrides.overrides[shopifyProduct.title + ':AU'] ?? XT_SHIPPING_AUD;
         const totalXtPrice = auComp.price + auShipFee;
         const auNewPrice = Math.round(totalXtPrice * XT_DISCOUNT * 100) / 100;
 
@@ -353,7 +353,7 @@ async function main() {
       const idComp = xtIdProducts.find(p => match.xtMatch && p.sku === match.xtMatch.sku) || null;
 
       if (idComp && idComp.currency === 'IDR') {
-        const idShipFee = shippingOverrides.overrides[shopifyProduct.title] ?? XT_SHIPPING_IDR;
+        const idShipFee = shippingOverrides.overrides[shopifyProduct.title + ':ID'] ?? XT_SHIPPING_IDR;
         // Indonesia: add 20% for import tax/duties after shipping, then apply 5% discount
         const totalXtPrice = (idComp.price + idShipFee) * 1.20;
         const idNewPrice = Math.round(totalXtPrice * XT_DISCOUNT);
