@@ -489,7 +489,7 @@ const server = http.createServer((req, res) => {
         const { log } = require('./lib/utils');
 
         log('SERVER', `Applying ${selections.length} selected prices...`);
-        const { usPriceList, auPriceList, idPriceList, phPriceList } = await shopify.getMarketPriceLists();
+        const { usPriceList, auPriceList, idPriceList, phPriceList, jpPriceList } = await shopify.getMarketPriceLists();
 
         // Group by market
         const usItems = selections.filter(s => s.market === 'US').map(s => ({
@@ -504,11 +504,14 @@ const server = http.createServer((req, res) => {
         const phItems = selections.filter(s => s.market === 'PH').map(s => ({
           variantId: s.variantGid, price: s.newPrice, currency: 'PHP'
         }));
+        const jpItems = selections.filter(s => s.market === 'JP').map(s => ({
+          variantId: s.variantGid, price: s.newPrice, currency: 'JPY'
+        }));
 
         // Log what was dropped so "Applied 0" is never a mystery
-        const known = usItems.length + auItems.length + idItems.length + phItems.length;
+        const known = usItems.length + auItems.length + idItems.length + phItems.length + jpItems.length;
         if (known < selections.length) {
-          const dropped = selections.filter(s => !['US','AU','ID','PH'].includes(s.market));
+          const dropped = selections.filter(s => !['US','AU','ID','PH','JP'].includes(s.market));
           log('SERVER', `WARNING: dropped ${selections.length - known} selections with unknown markets: ${[...new Set(dropped.map(s => s.market))].join(', ')}`);
         }
 
@@ -541,6 +544,13 @@ const server = http.createServer((req, res) => {
         } else if (phItems.length > 0) {
           log('SERVER', `SKIPPED ${phItems.length} PH prices: PH price list not found in Shopify (create a PHP price list in Shopify Markets settings)`);
         }
+        if (jpItems.length > 0 && jpPriceList) {
+          await shopify.setFixedPrices(jpPriceList.id, jpItems);
+          applied += jpItems.length;
+          log('SERVER', `Applied ${jpItems.length} JP prices`);
+        } else if (jpItems.length > 0) {
+          log('SERVER', `SKIPPED ${jpItems.length} JP prices: JP price list not found in Shopify (create a JPY price list in Shopify Markets settings)`);
+        }
 
         // Update status.json — mark selected items as applied
         const statusFile = path.join(__dirname, 'docs', 'status.json');
@@ -571,16 +581,16 @@ const server = http.createServer((req, res) => {
   // Preview what would be reset without deleting
   if (url.pathname.startsWith('/api/preview-reset-prices/') && req.method === 'GET') {
     const market = url.pathname.split('/').pop().toUpperCase();
-    if (!['US', 'AU', 'ID', 'PH'].includes(market)) {
+    if (!['US', 'AU', 'ID', 'PH', 'JP'].includes(market)) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'market must be US, AU, ID or PH' }));
+      res.end(JSON.stringify({ error: 'market must be US, AU, ID, PH, or JP' }));
       return;
     }
     (async () => {
       try {
         const shopify = require('./lib/shopify');
         const pl = await shopify.getMarketPriceLists();
-        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList' };
+        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList', JP: 'jpPriceList' };
         const priceList = pl[keyMap[market]];
         if (!priceList) {
           res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -616,14 +626,14 @@ const server = http.createServer((req, res) => {
     req.on('end', async () => {
       try {
         const { market } = JSON.parse(body);
-        if (!['US', 'AU', 'ID', 'PH'].includes((market || '').toUpperCase())) {
+        if (!['US', 'AU', 'ID', 'PH', 'JP'].includes((market || '').toUpperCase())) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'market must be US, AU, ID or PH' }));
+          res.end(JSON.stringify({ error: 'market must be US, AU, ID, PH, or JP' }));
           return;
         }
         const shopify = require('./lib/shopify');
         const pl = await shopify.getMarketPriceLists();
-        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList' };
+        const keyMap = { US: 'usPriceList', AU: 'auPriceList', ID: 'idPriceList', PH: 'phPriceList', JP: 'jpPriceList' };
         const priceList = pl[keyMap[market.toUpperCase()]];
         if (!priceList) {
           res.writeHead(404, { 'Content-Type': 'application/json' });

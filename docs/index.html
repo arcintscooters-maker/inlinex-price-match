@@ -127,6 +127,8 @@
     <div class="stat us"><div class="num" id="usCount">-</div><div class="label">US Price Updates</div></div>
     <div class="stat au"><div class="num" id="auCount">-</div><div class="label">AU Price Updates</div></div>
     <div class="stat au"><div class="num" id="idCount">-</div><div class="label">ID Price Updates</div></div>
+    <div class="stat au"><div class="num" id="phCount">-</div><div class="label">PH Price Updates</div></div>
+    <div class="stat au"><div class="num" id="jpCount">-</div><div class="label">JP Price Updates</div></div>
     <div class="stat skip"><div class="num" id="skipCount">-</div><div class="label">Already Cheaper</div></div>
     <div class="stat match"><div class="num" id="matchCount">-</div><div class="label">Total Matches</div></div>
   </div>
@@ -260,6 +262,7 @@
         <option value="AU">AU Market</option>
         <option value="ID">ID Market</option>
         <option value="PH">PH Market</option>
+        <option value="JP">JP Market</option>
       </select>
       <select id="sourceSelect">
         <option value="iw">Inline Warehouse</option>
@@ -432,6 +435,8 @@ function render() {
   document.getElementById('usCount').textContent = r.usUpdates;
   document.getElementById('auCount').textContent = r.auUpdates;
   document.getElementById('idCount').textContent = r.idUpdates || 0;
+  document.getElementById('phCount').textContent = r.phUpdates || 0;
+  document.getElementById('jpCount').textContent = r.jpUpdates || 0;
   document.getElementById('skipCount').textContent = r.skipped;
   document.getElementById('matchCount').textContent = r.totalMatches;
 
@@ -488,8 +493,8 @@ function render() {
     let gIdx = 0;
     for (const [key, group] of Object.entries(groups)) {
       const items = group.items;
-      const sym = group.market === 'AU' ? 'A$' : group.market === 'ID' ? 'Rp ' : group.market === 'PH' ? '\u20b1' : '$';
-      const isLargeNum = group.market === 'ID' || group.market === 'PH';
+      const sym = group.market === 'AU' ? 'A$' : group.market === 'ID' ? 'Rp ' : group.market === 'PH' ? '\u20b1' : group.market === 'JP' ? '\u00a5' : '$';
+      const isLargeNum = group.market === 'ID' || group.market === 'PH' || group.market === 'JP';
       const fmtPrice = (p) => isLargeNum ? Math.round(p).toLocaleString() : p.toFixed(2);
       const isXT = (group.competitor || '').includes('xtremeinn');
       const shipFee = items[0].shippingFee || 0;
@@ -613,7 +618,7 @@ function render() {
     uEmpty.style.display = 'none';
     uBody.innerHTML = unmatchedList.map((u, i) => {
       const srcBadge = `<span class="badge ${u.source}">${u.source === 'iw' ? 'IW' : 'XT'}</span>`;
-      const sym = u.currency === 'AUD' ? 'A$' : u.currency === 'IDR' ? 'Rp ' : u.currency === 'PHP' ? '\u20b1' : '$';
+      const sym = u.currency === 'AUD' ? 'A$' : u.currency === 'IDR' ? 'Rp ' : u.currency === 'PHP' ? '\u20b1' : u.currency === 'JPY' ? '\u00a5' : '$';
       const savedCount = savedSkus.get ? (savedSkus.get(u.sku) || 0) : 0;
       const countBadge = savedCount > 0 ? ` <span class="saved-count" style="color:#22c55e; font-size:0.8rem;">(${savedCount} mapped)</span>` : '';
       // If the listing name has a size (e.g. "80mm") it's a price-per-size row,
@@ -1524,6 +1529,8 @@ function updateSourceOptions() {
   } else if (market === 'AU') {
     src.innerHTML = '<option value="xt">xtremeinn</option>';
   } else if (market === 'PH') {
+    src.innerHTML = '<option value="xt">xtremeinn</option>';
+  } else if (market === 'JP') {
     src.innerHTML = '<option value="xt">xtremeinn</option>';
   } else if (market === 'US') {
     src.innerHTML = '<option value="iw">Inline Warehouse</option><option value="xt">xtremeinn</option><option value="both">Both</option>';

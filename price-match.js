@@ -26,10 +26,12 @@ const XT_SHIPPING_USD = 40;       // Default xtremeinn shipping to US
 const XT_SHIPPING_AUD = 80;       // Default xtremeinn shipping to AU
 const XT_SHIPPING_IDR = 900000;   // Default xtremeinn shipping to Indonesia
 const XT_SHIPPING_PHP = 4000;     // Default xtremeinn shipping to Philippines
+const XT_SHIPPING_JPY = 9500;     // Default xtremeinn shipping to Japan
 const US_DEFAULT_MARKUP = 1.18;   // 18% markup for US market
 const AU_DEFAULT_MARKUP = 1.15;   // 15% markup for AU market
 const ID_DEFAULT_MARKUP = 1.15;   // 15% markup for ID market
 const PH_DEFAULT_MARKUP = 1.20;   // 20% markup for PH market
+const JP_DEFAULT_MARKUP = 1.20;   // 20% markup for JP market
 
 // Load per-product shipping overrides
 const shippingOverridesFile = path.join(__dirname, 'shipping-overrides.json');
@@ -46,6 +48,7 @@ async function main() {
   const enableAU = markets.includes('AU');
   const enableID = markets.includes('ID');
   const enablePH = markets.includes('PH');
+  const enableJP = markets.includes('JP');
   const sourceArg = process.argv.find(a => a.startsWith('--source='));
   const source = sourceArg ? sourceArg.split('=')[1] : 'both';
   const enableIW = source === 'iw' || source === 'both';
@@ -93,18 +96,20 @@ async function main() {
   // 2. Get Shopify market price lists
   // ==========================================
   log('MAIN', 'Step 2: Finding market price lists...');
-  const { usPriceList, auPriceList, idPriceList, phPriceList } = await shopify.getMarketPriceLists();
+  const { usPriceList, auPriceList, idPriceList, phPriceList, jpPriceList } = await shopify.getMarketPriceLists();
 
   if (!usPriceList) log('MAIN', 'WARNING: US price list not found');
   if (!auPriceList) log('MAIN', 'WARNING: AU price list not found');
   if (!idPriceList) log('MAIN', 'WARNING: ID price list not found');
   if (enablePH && !phPriceList) log('MAIN', 'WARNING: PH price list not found');
+  if (enableJP && !jpPriceList) log('MAIN', 'WARNING: JP price list not found');
 
   // Get current fixed prices (from price list — explicit FIXED origin)
   let usFixedPrices = {};
   let auFixedPrices = {};
   let idFixedPrices = {};
   let phFixedPrices = {};
+  let jpFixedPrices = {};
   if (usPriceList) {
     log('MAIN', 'Fetching current US fixed prices...');
     usFixedPrices = await shopify.getFixedPrices(usPriceList.id);
@@ -125,6 +130,11 @@ async function main() {
     phFixedPrices = await shopify.getFixedPrices(phPriceList.id);
     log('MAIN', `PH fixed prices: ${Object.keys(phFixedPrices).length}`);
   }
+  if (jpPriceList) {
+    log('MAIN', 'Fetching current JP fixed prices...');
+    jpFixedPrices = await shopify.getFixedPrices(jpPriceList.id);
+    log('MAIN', `JP fixed prices: ${Object.keys(jpFixedPrices).length}`);
+  }
 
   // Get contextual prices — captures BOTH fixed prices and percentage markups
   // Run all enabled markets in parallel to save time
@@ -135,11 +145,12 @@ async function main() {
     if (enableAU) ctxTasks.push(shopify.getContextualPrices(productIds, 'AU').then(p => ['AU', p]));
     if (enableID) ctxTasks.push(shopify.getContextualPrices(productIds, 'ID').then(p => ['ID', p]));
     if (enablePH) ctxTasks.push(shopify.getContextualPrices(productIds, 'PH').then(p => ['PH', p]));
+    if (enableJP) ctxTasks.push(shopify.getContextualPrices(productIds, 'JP').then(p => ['JP', p]));
     if (ctxTasks.length > 0) {
       log('MAIN', `Fetching contextual prices for ${ctxTasks.length} market(s) in parallel...`);
       const ctxResults = await Promise.all(ctxTasks);
       for (const [market, prices] of ctxResults) {
-        const target = market === 'US' ? usFixedPrices : market === 'AU' ? auFixedPrices : market === 'ID' ? idFixedPrices : phFixedPrices;
+        const target = market === 'US' ? usFixedPrices : market === 'AU' ? auFixedPrices : market === 'ID' ? idFixedPrices : market === 'PH' ? phFixedPrices : jpFixedPrices;
         for (const [gid, price] of Object.entries(prices)) target[gid] = price;
         log('MAIN', `${market} effective prices: ${Object.keys(target).length}`);
       }
@@ -157,12 +168,13 @@ async function main() {
     log('MAIN', 'Step 3: Inline Warehouse SKIPPED (source=' + source + ')');
   }
 
-  let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [], xtPhProducts = [];
+  let xtUsProducts = [], xtAuProducts = [], xtIdProducts = [], xtPhProducts = [], xtJpProducts = [];
   if (enableXT) {
     log('MAIN', 'Step 3b: Scraping xtremeinn...');
-    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts, phProducts: xtPhProducts } = await xtScraper.scrapeAll(brands, markets, filteredProducts));
+    ({ usProducts: xtUsProducts, auProducts: xtAuProducts, idProducts: xtIdProducts, phProducts: xtPhProducts, jpProducts: xtJpProducts } = await xtScraper.scrapeAll(brands, markets, filteredProducts));
     xtIdProducts = xtIdProducts || [];
     xtPhProducts = xtPhProducts || [];
+    xtJpProducts = xtJpProducts || [];
   } else {
     log('MAIN', 'Step 3b: xtremeinn SKIPPED (source=' + source + ')');
   }
@@ -181,7 +193,7 @@ async function main() {
   // 4. Match products
   // ==========================================
   log('MAIN', 'Step 4: Matching products...');
-  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts).concat(xtPhProducts), isProducts);
+  const { matches, unmatched } = matcher.matchAll(filteredProducts, iwProducts, xtUsProducts.concat(xtAuProducts).concat(xtIdProducts).concat(xtPhProducts).concat(xtJpProducts), isProducts);
 
   // ==========================================
   // 5. Calculate new prices
@@ -192,6 +204,7 @@ async function main() {
   const auPriceUpdates = [];
   const idPriceUpdates = [];
   const phPriceUpdates = [];
+  const jpPriceUpdates = [];
 
   for (const match of matches) {
     const { shopifyProduct, shopifyVariant, variantGid, currentPrice, iwMatch, iwMethod, xtMatch, xtMethod } = match;
@@ -465,6 +478,51 @@ async function main() {
         priceChanges.push(change);
       }
     }
+
+    // --- JP Market Pricing (xtremeinn + shipping, 5% discount, no tax) ---
+    if (jpPriceList && enableJP) {
+      const jpComp = (match.xtMatch && xtJpProducts.find(p => p.sku === match.xtMatch.sku)) || null;
+
+      if (jpComp && jpComp.currency === 'JPY') {
+        const jpShipFee = shippingOverrides.overrides[shopifyProduct.title + ':JP'] ?? XT_SHIPPING_JPY;
+        // Japan: xt price + shipping, then 5% discount (no tax/duties)
+        const jpNewPrice = Math.round((jpComp.price + jpShipFee) * XT_DISCOUNT);
+
+        const currentJpPrice = jpFixedPrices[variantGid] || (currentPrice * JP_DEFAULT_MARKUP);
+
+        const change = {
+          productTitle: shopifyProduct.title,
+          variantTitle: shopifyVariant.title,
+          sku: shopifyVariant.sku || '',
+          brand: shopifyProduct.vendor || '',
+          market: 'JP',
+          oldPrice: Math.round(currentJpPrice),
+          newPrice: jpNewPrice,
+          competitorPrice: jpComp.price,
+          competitorSource: `xtremeinn (+JPY${jpShipFee.toLocaleString()} ship)`,
+          competitorUrl: jpComp.url,
+          competitorSku: jpComp.sku || '',
+          shippingFee: jpShipFee,
+          matchMethod: match.xtMethod || 'name',
+          variantGid,
+          skipped: false,
+          applied: false,
+        };
+
+        if (currentJpPrice <= jpNewPrice) {
+          change.skipped = true;
+          change.newPrice = currentJpPrice;
+        } else {
+          jpPriceUpdates.push({
+            variantId: variantGid,
+            price: jpNewPrice,
+            currency: 'JPY'
+          });
+        }
+
+        priceChanges.push(change);
+      }
+    }
   }
 
   log('MAIN', `Price changes calculated: ${priceChanges.length} total`);
@@ -472,6 +530,7 @@ async function main() {
   log('MAIN', `  AU updates: ${auPriceUpdates.length}`);
   log('MAIN', `  ID updates: ${idPriceUpdates.length}`);
   log('MAIN', `  PH updates: ${phPriceUpdates.length}`);
+  log('MAIN', `  JP updates: ${jpPriceUpdates.length}`);
   log('MAIN', `  Skipped (already cheaper): ${priceChanges.filter(c => c.skipped).length}`);
 
   // ==========================================
@@ -513,6 +572,15 @@ async function main() {
         if (change) change.applied = true;
       });
     }
+
+    if (jpPriceUpdates.length > 0 && jpPriceList) {
+      log('MAIN', `Step 7e: Applying ${jpPriceUpdates.length} JP price updates...`);
+      await shopify.setFixedPrices(jpPriceList.id, jpPriceUpdates);
+      jpPriceUpdates.forEach(u => {
+        const change = priceChanges.find(c => c.variantGid === u.variantId && c.market === 'JP');
+        if (change) change.applied = true;
+      });
+    }
   } else {
     log('MAIN', 'Step 7: SKIPPED (dry run)');
   }
@@ -534,7 +602,7 @@ async function main() {
   log('MAIN', `Report: ${reportPath}`);
 
   // Save dashboard status
-  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, dryRun, elapsed, null, unmatched);
+  saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, jpPriceUpdates, dryRun, elapsed, null, unmatched);
 
   // Set output for GitHub Actions
   if (process.env.GITHUB_OUTPUT) {
@@ -568,7 +636,7 @@ function savePriceHistory(iwProducts, xtUsProducts, xtAuProducts) {
   log('MAIN', `Price history saved (${history.runs.length} runs)`);
 }
 
-function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, dryRun, elapsed, error, unmatched) {
+function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPriceUpdates, phPriceUpdates, jpPriceUpdates, dryRun, elapsed, error, unmatched) {
   const docsDir = path.join(__dirname, 'docs');
   if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
 
@@ -584,6 +652,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
     auUpdates: auPriceUpdates ? auPriceUpdates.length : 0,
     idUpdates: idPriceUpdates ? idPriceUpdates.length : 0,
     phUpdates: phPriceUpdates ? phPriceUpdates.length : 0,
+    jpUpdates: jpPriceUpdates ? jpPriceUpdates.length : 0,
     skipped: priceChanges ? priceChanges.filter(c => c.skipped).length : 0,
     totalChanges: priceChanges ? priceChanges.length : 0,
     status: error ? 'error' : 'success',
@@ -597,6 +666,7 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
     auUpdates: run.auUpdates,
     idUpdates: run.idUpdates,
     phUpdates: run.phUpdates,
+    jpUpdates: run.jpUpdates,
     status: run.status,
   });
   if (existing.history.length > 20) existing.history = existing.history.slice(-20);
@@ -639,6 +709,6 @@ function saveStatus(priceChanges, matches, usPriceUpdates, auPriceUpdates, idPri
 main().catch(e => {
   log('MAIN', `FATAL ERROR: ${e.message}`);
   console.error(e.stack);
-  saveStatus(null, null, null, null, null, null, false, '0', e.message);
+  saveStatus(null, null, null, null, null, null, null, false, '0', e.message);
   process.exit(1);
 });
