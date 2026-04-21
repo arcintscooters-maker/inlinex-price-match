@@ -2667,6 +2667,12 @@
       "shopifyMatch": "Chaya Voyager Roller Skate",
       "note": "Added from dashboard",
       "slug": "chaya-voyager-roller-skates"
+    },
+    {
+      "source": "xt",
+      "sku": "142971337",
+      "shopifyMatch": "Mesmer Throne Billy O`Neill Aggressive Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
