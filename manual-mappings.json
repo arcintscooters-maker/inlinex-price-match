@@ -232,9 +232,10 @@
     },
     {
       "source": "xt",
-      "sku": "149166136",
+      "sku": "142388040",
       "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 149166136 via similarity (xtremeinn rotation)",
+      "slug": "rollerblade-blank-inline-skates"
     },
     {
       "source": "xt",
@@ -678,19 +679,22 @@
       "source": "xt",
       "sku": "141596038",
       "shopifyMatch": "Rollerblade Crossfire Boot Only",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "rollerblade-crossfire-skates-boots"
     },
     {
       "source": "xt",
-      "sku": "18303898",
+      "sku": "139496569",
       "shopifyMatch": "Rollerblade Blank Frame",
-      "note": "Auto-rebound from 139496569 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 18303898 via similarity (xtremeinn rotation)",
+      "slug": "rollerblade-blank-frame-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "142149776",
+      "sku": "140583052",
       "shopifyMatch": "Rollerblade Flow 5x80 Frame",
-      "note": "Auto-rebound from 140583052 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 142149776 via similarity (xtremeinn rotation)",
+      "slug": "rollerblade-flow-5x80-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -700,15 +704,10 @@
     },
     {
       "source": "xt",
-      "sku": "18303898",
-      "shopifyMatch": "Rollerblade Blank Canvas Aggressive Skates",
-      "note": "Auto-rebound from 142388040 (xtremeinn catalog rotation)"
-    },
-    {
-      "source": "xt",
       "sku": "142388127",
       "shopifyMatch": "Rollerblade Microblade SL Sky Blue Kids Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "rollerblade-microblade-sl-junior-inline-skates"
     },
     {
       "source": "xt",
@@ -720,7 +719,8 @@
       "source": "xt",
       "sku": "141596062",
       "shopifyMatch": "Rollerblade Microblade SL Black Lime Kids Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "rollerblade-microblade-sl-junior-inline-skates"
     },
     {
       "source": "is",
@@ -2405,9 +2405,10 @@
     },
     {
       "source": "xt",
-      "sku": "137868373",
+      "sku": "142388194",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-ubc-110mm-wheel-cover?_pos=8&_sid=44efe06a3&_ss=r",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 137868373 via similarity (xtremeinn rotation)",
+      "slug": "rollerblade-wheel-cover"
     },
     {
       "source": "xt",
@@ -2530,16 +2531,16 @@
     },
     {
       "source": "xt",
-      "sku": "145924183",
+      "sku": "141596038",
       "shopifyMatch": "https://inlinex.com.sg/products/rollerblade-crossfire-boot-only?_pos=3&_sid=e8bde28cd&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 145924183 via slug (xtremeinn rotation)",
       "slug": "rollerblade-crossfire-skates-boots"
     },
     {
       "source": "xt",
-      "sku": "145924258",
+      "sku": "141596062",
       "shopifyMatch": "https://inlinex.com.sg/products/rollerblade-microblade-sl-black-lime-kids-skates?_pos=1&_psq=Microblade+SL&_ss=e&_v=1.0",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 145924258 via slug (xtremeinn rotation)",
       "slug": "rollerblade-microblade-sl-junior-inline-skates"
     },
     {
