@@ -1266,10 +1266,10 @@
     },
     {
       "source": "xt",
-      "sku": "137827776",
+      "sku": "141224917",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-race-pro-glove?_pos=1&_psq=race+pro&_ss=e&_v=1.0",
-      "note": "Auto-rebound from 141224917 via similarity (xtremeinn rotation)",
-      "slug": "rollerblade-race-gloves"
+      "note": "Auto-rebound from 137827776 via similarity (xtremeinn rotation)",
+      "slug": "powerslide-race-pro-gloves"
     },
     {
       "source": "xt",
@@ -1546,9 +1546,10 @@
     },
     {
       "source": "xt",
-      "sku": "137848302",
+      "sku": "138292010",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-zoom-80-skates?_pos=5&_sid=9d7d08cc6&_ss=r",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 137848302 via similarity (xtremeinn rotation)",
+      "slug": "powerslide-zoom-80-inline-skates"
     },
     {
       "source": "xt",
