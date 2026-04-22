@@ -819,9 +819,10 @@
     },
     {
       "source": "xt",
-      "sku": "141293035",
+      "sku": "140375730",
       "shopifyMatch": "USD Shadow Team 60 Aggressive Skates",
-      "note": "Auto-rebound from 140375730 (xtremeinn catalog rotation)"
+      "note": "Auto-rebound from 141293035 via similarity (xtremeinn rotation)",
+      "slug": "usd-skates-shadow-team-60-inline-skates"
     },
     {
       "source": "xt",
