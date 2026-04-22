@@ -2650,6 +2650,12 @@
       "shopifyMatch": "Rollerblade RB 80 Women Skates",
       "note": "Added from dashboard",
       "slug": "rollerblade-rb-80-w-woman-inline-skates"
+    },
+    {
+      "source": "xt",
+      "sku": "141596056",
+      "shopifyMatch": "Rollerblade Microblade Blue Kids Skates",
+      "note": "Added from dashboard"
     }
   ]
 }
