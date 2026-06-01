@@ -1119,7 +1119,8 @@
       "source": "xt",
       "sku": "138888203",
       "shopifyMatch": "https://inlinex.com.sg/products/copy-of-skate-buckle-strap-for-spider-time-buckle?_pos=1&_psq=spider&_ss=e&_v=1.0",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "powerslide-plastic-strap-fitting-spider-and-time-buckle"
     },
     {
       "source": "xt",
@@ -1741,7 +1742,8 @@
       "source": "xt",
       "sku": "141396736",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-skate-carry-strap?variant=41322997448750",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "powerslide-skate-carry-carabiner"
     },
     {
       "source": "xt",
@@ -2043,9 +2045,9 @@
     },
     {
       "source": "xt",
-      "sku": "138888229",
+      "sku": "138888230",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-100mm-wheels?_pos=1&_sid=cfa1cd998&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 138888229 via slug (xtremeinn rotation)",
       "slug": "powerslide-spinner-100-skates-wheels-3-units"
     },
     {
