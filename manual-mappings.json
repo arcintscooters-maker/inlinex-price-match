@@ -2771,6 +2771,12 @@
       "sku": "P245-BK1",
       "shopifyMatch": "Powerslide Renegade 125 SUV Frame",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "TRIFRR-BLK",
+      "shopifyMatch": "Powerslide Nexus Trinity Frame",
+      "note": "Added from dashboard"
     }
   ]
 }
