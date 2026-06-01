@@ -2693,6 +2693,12 @@
       "shopifyMatch": "Rollerblade Microblade Light Blue Kids Skates",
       "note": "Added from dashboard",
       "slug": "rollerblade-microblade-junior-inline-skates"
+    },
+    {
+      "source": "iw",
+      "sku": "P905325",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-spinner-80mm-wheels-1?_pos=2&_sid=6cc798e02&_ss=r",
+      "note": "Added from dashboard"
     }
   ]
 }
