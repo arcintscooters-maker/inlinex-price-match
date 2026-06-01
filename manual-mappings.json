@@ -2699,6 +2699,12 @@
       "sku": "P905325",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-spinner-80mm-wheels-1?_pos=2&_sid=6cc798e02&_ss=r",
       "note": "Added from dashboard"
+    },
+    {
+      "source": "iw",
+      "sku": "940694",
+      "shopifyMatch": "https://inlinex.com.sg/products/powerslide-phuzion-radon-bronze-90?_pos=1&_psq=radon+90&_ss=e&_v=1.0",
+      "note": "Added from dashboard"
     }
   ]
 }
