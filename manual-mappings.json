@@ -233,33 +233,38 @@
     },
     {
       "source": "xt",
-      "sku": "151419611",
+      "sku": "142971327",
       "shopifyMatch": "Iqon ACT TRI Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 151419611 via similarity (xtremeinn rotation)",
+      "slug": "iqon-act-tri-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "150398274",
+      "sku": "142745967",
       "shopifyMatch": "Iqon ACT AG Chad Hornish Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 150398274 via similarity (xtremeinn rotation)",
+      "slug": "iqon-act-ag-chad-hornish-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "148111446",
+      "sku": "142111511",
       "shopifyMatch": "Iqon ACT AG Team Aggressive Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 148111446 via similarity (xtremeinn rotation)",
+      "slug": "iqon-act-ag-team-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "148111453",
+      "sku": "142111512",
       "shopifyMatch": "Iqon ACT CL Team Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 148111453 via similarity (xtremeinn rotation)",
+      "slug": "iqon-act-cl-team-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "148111466",
+      "sku": "142111516",
       "shopifyMatch": "Iqon ACT WZ Team Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 148111466 via similarity (xtremeinn rotation)",
+      "slug": "iqon-act-wz-team-inline-skates"
     },
     {
       "source": "xt",
@@ -275,33 +280,38 @@
     },
     {
       "source": "xt",
-      "sku": "140464143",
+      "sku": "140139791",
       "shopifyMatch": "Iqon AG 30 Lite Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 140464143 via similarity (xtremeinn rotation)",
+      "slug": "iqon-ag-30-lite-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "140464209",
+      "sku": "140139827",
       "shopifyMatch": "Iqon CL 20 Lite Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 140464209 via similarity (xtremeinn rotation)",
+      "slug": "iqon-cl-20-lite-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "140464136",
+      "sku": "140139790",
       "shopifyMatch": "Iqon AG 30 Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 140464136 via similarity (xtremeinn rotation)",
+      "slug": "iqon-ag-30-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "140464203",
+      "sku": "140139826",
       "shopifyMatch": "Iqon CL 20 Skate",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 140464203 via similarity (xtremeinn rotation)",
+      "slug": "iqon-cl-20-inline-skates"
     },
     {
       "source": "xt",
-      "sku": "151419623",
+      "sku": "142971333",
       "shopifyMatch": "Kizer Soulframe 60",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 151419623 via similarity (xtremeinn rotation)",
+      "slug": "kizer-soulframe-60-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -359,9 +369,10 @@
     },
     {
       "source": "xt",
-      "sku": "17898018",
+      "sku": "139408252",
       "shopifyMatch": "Kizer Fluid IV Superfluid Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 17898018 via similarity (xtremeinn rotation)",
+      "slug": "kizer-fluid-iv-superfluid-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -377,51 +388,59 @@
     },
     {
       "source": "xt",
-      "sku": "145205094",
+      "sku": "141396650",
       "shopifyMatch": "Kizer Edge NT 580 UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205094 via similarity (xtremeinn rotation)",
+      "slug": "kizer-edge-nt-580-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205095",
+      "sku": "141396651",
       "shopifyMatch": "Kizer Soulframe 65 White Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205095 via similarity (xtremeinn rotation)",
+      "slug": "kizer-soulframe-65-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205100",
+      "sku": "141396654",
       "shopifyMatch": "Kizer Suspension Skeleton White Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205100 via similarity (xtremeinn rotation)",
+      "slug": "kizer-suspension-skeleton-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205097",
+      "sku": "141396652",
       "shopifyMatch": "Kizer Soulframe 65 Superfluid Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205097 via similarity (xtremeinn rotation)",
+      "slug": "kizer-soulframe-65-superfluid-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205102",
+      "sku": "141396655",
       "shopifyMatch": "Kizer Suspension Skeleton Superfluid Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205102 via similarity (xtremeinn rotation)",
+      "slug": "kizer-suspension-skeleton-superfluid-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205091",
+      "sku": "141396647",
       "shopifyMatch": "Kizer Edge 80 NT Silver UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205091 via similarity (xtremeinn rotation)",
+      "slug": "kizer-edge-80-nt-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205093",
+      "sku": "141396649",
       "shopifyMatch": "Kizer Edge 90 NT Silver UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205093 via similarity (xtremeinn rotation)",
+      "slug": "kizer-edge-90-nt-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "145205092",
+      "sku": "141396648",
       "shopifyMatch": "Kizer Edge 84 NT Silver UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 145205092 via similarity (xtremeinn rotation)",
+      "slug": "kizer-edge-84-nt-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -431,9 +450,10 @@
     },
     {
       "source": "xt",
-      "sku": "17898021",
+      "sku": "139408253",
       "shopifyMatch": "Kizer Fluid V Superfluid Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 17898021 via similarity (xtremeinn rotation)",
+      "slug": "kizer-fluid-v-superfluid-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -449,15 +469,17 @@
     },
     {
       "source": "xt",
-      "sku": "16307965",
+      "sku": "138966418",
       "shopifyMatch": "Kizer Element 80 UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 16307965 via similarity (xtremeinn rotation)",
+      "slug": "kizer-element-80-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "17002396",
+      "sku": "139130496",
       "shopifyMatch": "Kizer Slim Line Axle set",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 17002396 via similarity (xtremeinn rotation)",
+      "slug": "kizer-slim-line-axle-screw"
     },
     {
       "source": "xt",
@@ -473,21 +495,24 @@
     },
     {
       "source": "xt",
-      "sku": "14765740",
+      "sku": "138510561",
       "shopifyMatch": "Kizer SoulFrame 68",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 14765740 via similarity (xtremeinn rotation)",
+      "slug": "kizer-soulframe-68-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "11998071",
+      "sku": "137868688",
       "shopifyMatch": "Kizer SUV 125 Ti, UFS Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 11998071 via similarity (xtremeinn rotation)",
+      "slug": "kizer-suv-125-ufs-inline-skates-frame"
     },
     {
       "source": "xt",
-      "sku": "11949108",
+      "sku": "137848490",
       "shopifyMatch": "Kizer Slim line II Frame",
-      "note": "Added from dashboard"
+      "note": "Auto-rebound from 11949108 via similarity (xtremeinn rotation)",
+      "slug": "kizer-slim-line-ii-inline-skates-frame"
     },
     {
       "source": "xt",
@@ -945,9 +970,9 @@
     },
     {
       "source": "xt",
-      "sku": "137869012",
+      "sku": "137966359",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-phuzion-trinity-argon-ash-100-skates?_pos=1&_sid=f67185a64&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 137869012 via slug (xtremeinn rotation)",
       "slug": "powerslide-phuzion-argon-100-inline-skates"
     },
     {
@@ -1553,10 +1578,10 @@
     },
     {
       "source": "xt",
-      "sku": "143113060",
+      "sku": "137966388",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-zoom-one-100-skates?_pos=2&_sid=b2c735eb0&_ss=r",
-      "note": "Added from dashboard",
-      "slug": "powerslide-zoom-100-inline-skates-refurbished"
+      "note": "Auto-rebound from 143113060 via similarity (xtremeinn rotation)",
+      "slug": "powerslide-zoom-100-inline-skates"
     },
     {
       "source": "xt",
@@ -1852,10 +1877,10 @@
     },
     {
       "source": "xt",
-      "sku": "141224909",
+      "sku": "137848323",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-habs-brake-pads?_pos=2&_sid=e0bb4be2a&_ss=r",
-      "note": "Added from dashboard",
-      "slug": "powerslide-habs-universal-pad-toe-stop"
+      "note": "Auto-rebound from 141224909 via similarity (xtremeinn rotation)",
+      "slug": "powerslide-habs-s-brake"
     },
     {
       "source": "xt",
@@ -1914,9 +1939,9 @@
     },
     {
       "source": "xt",
-      "sku": "140374139",
+      "sku": "140374141",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-neons-90mm-led-wheels?_pos=2&_sid=4d9050605&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 140374139 via slug (xtremeinn rotation)",
       "slug": "powerslide-neons-skates-wheels-4-units"
     },
     {
@@ -2011,9 +2036,9 @@
     },
     {
       "source": "xt",
-      "sku": "138888231",
+      "sku": "138888232",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-spinner-110mm-wheels-1?variant=40556790382638",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 138888231 via slug (xtremeinn rotation)",
       "slug": "powerslide-spinner-110-skates-wheels-3-units"
     },
     {
@@ -2116,16 +2141,16 @@
     },
     {
       "source": "xt",
-      "sku": "139030909",
+      "sku": "139030905",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-white?_pos=10&_sid=e2515cd02&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 139030909 via slug (xtremeinn rotation)",
       "slug": "powerslide-waxed-laces"
     },
     {
       "source": "xt",
-      "sku": "139030907",
+      "sku": "139030905",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-pink?_pos=6&_sid=e2515cd02&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 139030907 via slug (xtremeinn rotation)",
       "slug": "powerslide-waxed-laces"
     },
     {
@@ -2137,16 +2162,16 @@
     },
     {
       "source": "xt",
-      "sku": "139030906",
+      "sku": "139030905",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-grey?_pos=8&_sid=e2515cd02&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 139030906 via slug (xtremeinn rotation)",
       "slug": "powerslide-waxed-laces"
     },
     {
       "source": "xt",
-      "sku": "139030908",
+      "sku": "139030905",
       "shopifyMatch": "https://inlinex.com.sg/products/powerslide-waxed-laces-pro-red?_pos=4&_sid=e2515cd02&_ss=r",
-      "note": "Added from dashboard",
+      "note": "Auto-rebound from 139030908 via slug (xtremeinn rotation)",
       "slug": "powerslide-waxed-laces"
     },
     {
@@ -2629,13 +2654,15 @@
       "source": "xt",
       "sku": "142971337",
       "shopifyMatch": "Mesmer Throne Billy O`Neill Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "mesmer-throne-billy-oneill-inline-skates"
     },
     {
       "source": "xt",
       "sku": "140144447",
       "shopifyMatch": "Mesmer Throne Dominic Bruce Aggressive Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "mesmer-throne-dominic-bruce-pro-inline-skates"
     },
     {
       "source": "xt",
@@ -2655,13 +2682,15 @@
       "source": "xt",
       "sku": "141596056",
       "shopifyMatch": "Rollerblade Microblade Blue Kids Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "rollerblade-microblade-junior-inline-skates"
     },
     {
       "source": "xt",
       "sku": "141596057",
       "shopifyMatch": "Rollerblade Microblade Light Blue Kids Skates",
-      "note": "Added from dashboard"
+      "note": "Added from dashboard",
+      "slug": "rollerblade-microblade-junior-inline-skates"
     }
   ]
 }
