@@ -120,6 +120,14 @@ async function pushFilesToGitHub() {
   }
 }
 
+// Powerslide BuyButton feed proxy. Shopify's CDN caches the bare file URL for
+// up to a year and only a changing ?v= param busts it, so Powerslide's
+// fixed-URL importer would read stale data straight from the CDN. This route
+// fetches with a fresh ?v= on every request and falls back to the last good
+// copy if the CDN is unreachable.
+const BUYBUTTON_CDN = 'https://cdn.shopify.com/s/files/1/0439/2773/files/Input_BuyButton_Inlinex.txt';
+let buybuttonLastGood = null;
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
 
@@ -128,6 +136,31 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+  if (url.pathname === '/buybutton.txt' && req.method === 'GET') {
+    fetch(`${BUYBUTTON_CDN}?v=${Date.now()}`)
+      .then(r => {
+        if (!r.ok) throw new Error(`CDN responded ${r.status}`);
+        return r.text();
+      })
+      .then(body => {
+        if (!body.startsWith('EAN\t')) throw new Error('unexpected feed content');
+        buybuttonLastGood = body;
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end(body);
+      })
+      .catch(e => {
+        console.log('[SERVER] buybutton CDN fetch failed:', e.message);
+        if (buybuttonLastGood) {
+          res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+          res.end(buybuttonLastGood);
+        } else {
+          res.writeHead(502, { 'Content-Type': 'text/plain' });
+          res.end('feed temporarily unavailable');
+        }
+      });
+    return;
+  }
 
   // --- API Routes ---
 
