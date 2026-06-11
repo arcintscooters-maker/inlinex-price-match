@@ -137,7 +137,15 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
-  if (url.pathname === '/buybutton.txt' && req.method === 'GET') {
+  if (url.pathname === '/buybutton.txt' && (req.method === 'GET' || req.method === 'HEAD')) {
+    const sendFeed = (body) => {
+      res.writeHead(200, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Content-Length': Buffer.byteLength(body),
+        'Cache-Control': 'no-store',
+      });
+      res.end(req.method === 'HEAD' ? undefined : body);
+    };
     fetch(`${BUYBUTTON_CDN}?v=${Date.now()}`)
       .then(r => {
         if (!r.ok) throw new Error(`CDN responded ${r.status}`);
@@ -146,14 +154,12 @@ const server = http.createServer((req, res) => {
       .then(body => {
         if (!body.startsWith('EAN\t')) throw new Error('unexpected feed content');
         buybuttonLastGood = body;
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
-        res.end(body);
+        sendFeed(body);
       })
       .catch(e => {
         console.log('[SERVER] buybutton CDN fetch failed:', e.message);
         if (buybuttonLastGood) {
-          res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
-          res.end(buybuttonLastGood);
+          sendFeed(buybuttonLastGood);
         } else {
           res.writeHead(502, { 'Content-Type': 'text/plain' });
           res.end('feed temporarily unavailable');
